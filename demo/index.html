@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meddy — Booking Demo</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a1a; overflow: hidden; }
+
+.demo-wrap { display: flex; height: 100vh; }
+
+/* ─── WHATSAPP PANEL ─────────────────────────────────── */
+.wa-panel {
+  width: 38%; min-width: 320px;
+  display: flex; flex-direction: column;
+  background: #ECE5DD;
+  border-right: 1px solid rgba(0,0,0,0.18);
+  box-shadow: 2px 0 12px rgba(0,0,0,0.12);
+}
+.wa-header {
+  background: #075E54;
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+.wa-avatar {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: #128C7E;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+  border: 1.5px solid rgba(255,255,255,0.15);
+}
+.wa-clinic-info { flex: 1; min-width: 0; }
+.wa-clinic-name { font-size: 14px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wa-clinic-sub { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 1px; display: flex; align-items: center; gap: 5px; }
+.meddy-tag {
+  display: inline-flex; align-items: center;
+  background: rgba(255,255,255,0.12);
+  border: 0.5px solid rgba(255,255,255,0.2);
+  border-radius: 10px; padding: 1px 7px;
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.9); letter-spacing: .02em;
+}
+.wa-status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #25D366;
+  box-shadow: 0 0 0 2px rgba(37,211,102,0.3);
+  flex-shrink: 0;
+}
+.wa-chat {
+  flex: 1; overflow-y: auto;
+  padding: 12px 12px 8px;
+  display: flex; flex-direction: column; gap: 4px;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c4b5a0' fill-opacity='0.12'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.msg-row { display: flex; margin: 2px 0; }
+.msg-row.bot { justify-content: flex-start; }
+.msg-row.patient { justify-content: flex-end; }
+.msg-bubble {
+  max-width: 80%; padding: 7px 11px 6px;
+  border-radius: 8px; font-size: 13px; line-height: 1.5;
+  animation: bubbleIn 0.2s ease; white-space: pre-wrap;
+}
+@keyframes bubbleIn {
+  from { opacity: 0; transform: scale(0.95) translateY(4px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.msg-bubble.bot { background: #fff; border-top-left-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.msg-bubble.patient { background: #DCF8C6; border-top-right-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+.msg-time { font-size: 10px; color: rgba(0,0,0,0.38); margin-top: 3px; text-align: right; }
+
+.typing-indicator {
+  display: none; padding: 8px 12px;
+  background: #fff; border-radius: 8px; border-top-left-radius: 2px;
+  width: fit-content; box-shadow: 0 1px 2px rgba(0,0,0,0.1); margin: 2px 0;
+}
+.typing-indicator.visible { display: flex; gap: 4px; align-items: center; }
+.typing-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #90949c; animation: typingBounce 1.2s ease infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+}
+.quick-replies {
+  padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 7px;
+  background: rgba(236,229,221,0.97);
+  border-top: 0.5px solid rgba(0,0,0,0.1);
+  min-height: 48px; align-items: center; flex-shrink: 0;
+}
+.qr-btn {
+  background: #fff; border: 1px solid #128C7E; color: #075E54;
+  padding: 6px 14px; border-radius: 20px;
+  font-size: 12.5px; font-weight: 500; cursor: pointer;
+  transition: all 0.15s; white-space: nowrap;
+}
+.qr-btn:hover { background: #128C7E; color: #fff; }
+.qr-btn.wide { flex: 0 0 100%; text-align: center; }
+.wa-input-row {
+  display: flex; gap: 8px; padding: 8px 12px;
+  background: #f0f0f0; flex-shrink: 0; align-items: center;
+  border-top: 0.5px solid rgba(0,0,0,0.1);
+}
+.wa-input {
+  flex: 1; padding: 8px 14px; border-radius: 22px;
+  border: none; background: #fff; font-size: 13px; outline: none; color: #1a1a1a;
+}
+.wa-send {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #128C7E; border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.wa-send svg { fill: #fff; }
+.wa-input-row.hidden { display: none; }
+
+/* ─── ADMIN PANEL ────────────────────────────────────── */
+.admin-panel { flex: 1; display: flex; flex-direction: column; background: #f7f6f3; overflow: hidden; }
+:root {
+  --bg: #f7f6f3; --surface: #ffffff;
+  --text: #1a1a1a; --text-2: #6b6b68; --text-3: #9b9b97;
+  --border: rgba(0,0,0,0.1); --border-2: rgba(0,0,0,0.18);
+  --purple: #534AB7; --purple-bg: #EEEDFE; --purple-text: #3C3489;
+  --teal: #0F6E56; --teal-bg: #E1F5EE; --teal-text: #085041;
+  --red: #A32D2D; --red-bg: #FCEBEB; --red-text: #791F1F;
+  --gray-bg: #F1EFE8; --gray-text: #444441;
+  --radius: 10px; --radius-sm: 6px;
+}
+.topbar {
+  background: var(--surface); border-bottom: 0.5px solid var(--border-2);
+  padding: 0 20px; height: 52px;
+  display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.logo { font-size: 15px; font-weight: 700; color: var(--purple); letter-spacing: -.4px; display: flex; align-items: center; gap: 5px; }
+.logo-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--purple); }
+.clinic-name { font-size: 13px; color: var(--text-2); padding-left: 10px; border-left: 1px solid var(--border-2); }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.date-pill { font-size: 12px; font-weight: 500; background: var(--purple-bg); color: var(--purple-text); padding: 4px 10px; border-radius: 20px; }
+.live-badge {
+  font-size: 10px; font-weight: 600;
+  background: #E1F5EE; color: #0F6E56;
+  padding: 3px 8px; border-radius: 20px;
+  letter-spacing: .04em; display: flex; align-items: center; gap: 4px;
+  opacity: 0; transition: opacity 0.3s;
+}
+.live-badge.visible { opacity: 1; }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: #0F6E56; animation: livePulse 1.5s ease infinite; }
+@keyframes livePulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.summary-strip { display: flex; gap: 10px; padding: 14px 20px 0; overflow-x: auto; flex-shrink: 0; }
+.stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 16px; min-width: 110px; flex-shrink: 0; }
+.stat-label { font-size: 10px; color: var(--text-3); font-weight: 500; letter-spacing: .05em; text-transform: uppercase; margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: 500; transition: all 0.3s; }
+.sv-total { color: var(--text); } .sv-booked { color: var(--purple); } .sv-done { color: var(--teal); } .sv-absent { color: var(--red); }
+
+.tabs-wrap { padding: 14px 20px 0; flex-shrink: 0; }
+.tabs { display: flex; gap: 6px; border-bottom: 0.5px solid var(--border-2); }
+.tab {
+  font-size: 12px; font-weight: 500; padding: 7px 14px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  cursor: pointer; border: 0.5px solid transparent; border-bottom: none;
+  background: none; color: var(--text-2); position: relative; bottom: -0.5px;
+}
+.tab:hover { background: var(--surface); color: var(--text); }
+.tab.active { background: var(--surface); color: var(--purple); border-color: var(--border-2); border-bottom-color: var(--surface); }
+.tab-count { display: inline-block; font-size: 10px; font-weight: 500; background: var(--purple-bg); color: var(--purple-text); padding: 1px 6px; border-radius: 10px; margin-left: 5px; }
+.tab.active .tab-count { background: var(--purple); color: #fff; }
+
+.appt-scroll { flex: 1; overflow-y: auto; padding: 0 20px 20px; }
+.appt-panel { background: var(--surface); border: 0.5px solid var(--border-2); border-top: none; border-radius: 0 0 var(--radius) var(--radius); overflow: hidden; }
+.appt-panel-header {
+  display: grid; grid-template-columns: 70px 1fr 50px 1fr 120px 110px;
+  gap: 12px; padding: 9px 16px; background: var(--bg);
+  border-bottom: 0.5px solid var(--border);
+  font-size: 10px; font-weight: 500; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: .05em;
+}
+.appt-row {
+  display: grid; grid-template-columns: 70px 1fr 50px 1fr 120px 110px;
+  gap: 12px; padding: 11px 16px;
+  border-bottom: 0.5px solid var(--border);
+  align-items: center; transition: background 0.2s;
+}
+.appt-row:last-child { border-bottom: none; }
+.appt-row:hover { background: var(--bg); }
+.appt-row.new-booking { animation: newBookingFlash 1.5s ease; background: #E1F5EE; }
+@keyframes newBookingFlash {
+  0%   { background: #25D366; opacity: 0; transform: translateY(-8px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  60%  { background: #b8f0d4; }
+  100% { background: #E1F5EE; }
+}
+.appt-time { font-size: 13px; font-weight: 500; }
+.appt-name { font-size: 13px; font-weight: 500; }
+.appt-age  { font-size: 12px; color: var(--text-2); }
+.appt-reason { font-size: 12px; color: var(--text-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.badge { display: inline-flex; align-items: center; font-size: 10px; font-weight: 500; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+.b-booked    { background: var(--purple-bg); color: var(--purple-text); }
+.b-completed { background: var(--teal-bg);   color: var(--teal-text); }
+.b-no-show   { background: var(--red-bg);    color: var(--red-text); }
+.b-new       { background: #DCF8C6; color: #075E54; font-weight: 700; }
+.actions { display: flex; gap: 6px; }
+.action-btn {
+  font-size: 11px; font-weight: 500; padding: 4px 9px;
+  border-radius: var(--radius-sm); cursor: pointer;
+  border: 0.5px solid var(--border-2); background: var(--surface); color: var(--text-2); white-space: nowrap;
+}
+.action-btn.done:hover   { background: var(--teal-bg); color: var(--teal-text); border-color: var(--teal); }
+.action-btn.absent:hover { background: var(--red-bg);  color: var(--red-text);  border-color: var(--red); }
+.action-done { font-size: 11px; color: var(--text-3); }
+
+.demo-label {
+  position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; color: rgba(255,255,255,0.3);
+  letter-spacing: .08em; text-transform: uppercase; pointer-events: none; z-index: 100;
+}
+</style>
+</head>
+<body>
+
+<div class="demo-wrap">
+
+  <!-- ══════════ WHATSAPP PANEL ══════════ -->
+  <div class="wa-panel">
+    <div class="wa-header">
+      <div class="wa-avatar">🏥</div>
+      <div class="wa-clinic-info">
+        <div class="wa-clinic-name">Vista Vascular Clinic</div>
+        <div class="wa-clinic-sub">
+          <span class="meddy-tag">via Meddy</span>
+          Coimbatore
+        </div>
+      </div>
+      <div class="wa-status-dot"></div>
+    </div>
+    <div class="wa-chat" id="waChat">
+      <div class="typing-indicator" id="typingIndicator">
+        <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+      </div>
+    </div>
+    <div class="quick-replies" id="quickReplies"></div>
+    <div class="wa-input-row hidden" id="waInputRow">
+      <input class="wa-input" id="waInput" placeholder="Type a message…" />
+      <button class="wa-send" onclick="sendFreeText()">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ ADMIN PANEL ══════════ -->
+  <div class="admin-panel">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="logo"><span class="logo-dot"></span>Meddy</span>
+        <span class="clinic-name">Vista Vascular Clinic</span>
+      </div>
+      <div class="topbar-right">
+        <span class="live-badge" id="liveBadge"><span class="live-dot"></span> LIVE</span>
+        <span class="date-pill">Today · Mon, 15 Jun 2026</span>
+      </div>
+    </div>
+
+    <div class="summary-strip">
+      <div class="stat-card"><div class="stat-label">Total today</div><div class="stat-value sv-total">18</div></div>
+      <div class="stat-card"><div class="stat-label">Upcoming</div><div class="stat-value sv-booked">11</div></div>
+      <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-value sv-done">5</div></div>
+      <div class="stat-card"><div class="stat-label">No show</div><div class="stat-value sv-absent">2</div></div>
+    </div>
+
+    <div class="tabs-wrap">
+      <div class="tabs">
+        <button class="tab active" id="tab-madan"  onclick="switchTab('madan')">Dr. Madan Mohan <span class="tab-count" id="cnt-madan">7</span></button>
+        <button class="tab"        id="tab-priya"  onclick="switchTab('priya')">Dr. Priya Nair <span class="tab-count" id="cnt-priya">6</span></button>
+        <button class="tab"        id="tab-suresh" onclick="switchTab('suresh')">Dr. Suresh Kumar <span class="tab-count" id="cnt-suresh">5</span></button>
+      </div>
+    </div>
+
+    <div class="appt-scroll">
+      <div class="appt-panel" id="panel-madan">
+        <div class="appt-panel-header"><span>Time</span><span>Patient</span><span>Age</span><span>Reason</span><span>Status</span><span>Actions</span></div>
+        <div class="appt-row"><span class="appt-time">9:00 AM</span><span class="appt-name">Ramesh Kumar</span><span class="appt-age">54</span><span class="appt-reason">Varicose veins · follow-up</span><span><span class="badge b-completed">Completed</span></span><span class="action-done">✓ Done</span></div>
+        <div class="appt-row"><span class="appt-time">9:30 AM</span><span class="appt-name">Meenakshi S.</span><span class="appt-age">47</span><span class="appt-reason">DVT consultation</span><span><span class="badge b-completed">Completed</span></span><span class="action-done">✓ Done</span></div>
+        <div class="appt-row"><span class="appt-time">10:00 AM</span><span class="appt-name">Anand Pillai</span><span class="appt-age">61</span><span class="appt-reason">Post-op checkup</span><span><span class="badge b-no-show">No show</span></span><span class="action-done">—</span></div>
+        <div class="appt-row"><span class="appt-time">10:30 AM</span><span class="appt-name">Lakshmi Devi</span><span class="appt-age">38</span><span class="appt-reason">Leg swelling · new patient</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+        <div class="appt-row"><span class="appt-time">11:00 AM</span><span class="appt-name">Vijay Anand</span><span class="appt-age">43</span><span class="appt-reason">Peripheral artery disease</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+        <div class="appt-row"><span class="appt-time">11:30 AM</span><span class="appt-name">Savitha Rajan</span><span class="appt-age">29</span><span class="appt-reason">General checkup</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+        <div class="appt-row"><span class="appt-time">2:00 PM</span><span class="appt-name">Karthik M.</span><span class="appt-age">32</span><span class="appt-reason">Spider veins</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+      </div>
+      <div class="appt-panel" id="panel-priya" style="display:none">
+        <div class="appt-panel-header"><span>Time</span><span>Patient</span><span>Age</span><span>Reason</span><span>Status</span><span>Actions</span></div>
+        <div class="appt-row"><span class="appt-time">9:00 AM</span><span class="appt-name">Pradeep R.</span><span class="appt-age">55</span><span class="appt-reason">Aortic aneurysm follow-up</span><span><span class="badge b-completed">Completed</span></span><span class="action-done">✓ Done</span></div>
+        <div class="appt-row"><span class="appt-time">9:30 AM</span><span class="appt-name">Usha Nair</span><span class="appt-age">62</span><span class="appt-reason">Hypertension + vascular</span><span><span class="badge b-no-show">No show</span></span><span class="action-done">—</span></div>
+        <div class="appt-row"><span class="appt-time">10:00 AM</span><span class="appt-name">Balamurugan T.</span><span class="appt-age">48</span><span class="appt-reason">Carotid stenosis · new</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+        <div class="appt-row"><span class="appt-time">10:30 AM</span><span class="appt-name">Geetha S.</span><span class="appt-age">58</span><span class="appt-reason">Leg cramps · new patient</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+        <div class="appt-row"><span class="appt-time">11:00 AM</span><span class="appt-name">Ravi Shankar</span><span class="appt-age">44</span><span class="appt-reason">Stent follow-up</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+        <div class="appt-row"><span class="appt-time">2:00 PM</span><span class="appt-name">Sunitha K.</span><span class="appt-age">36</span><span class="appt-reason">Varicose veins · consultation</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+      </div>
+      <div class="appt-panel" id="panel-suresh" style="display:none">
+        <div class="appt-panel-header"><span>Time</span><span>Patient</span><span>Age</span><span>Reason</span><span>Status</span><span>Actions</span></div>
+        <div class="appt-row"><span class="appt-time">9:00 AM</span><span class="appt-name">Murugan D.</span><span class="appt-age">67</span><span class="appt-reason">Bypass surgery follow-up</span><span><span class="badge b-completed">Completed</span></span><span class="action-done">✓ Done</span></div>
+        <div class="appt-row"><span class="appt-time">10:00 AM</span><span class="appt-name">Deepa Krishnan</span><span class="appt-age">41</span><span class="appt-reason">Wound care · post-op</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+        <div class="appt-row"><span class="appt-time">11:00 AM</span><span class="appt-name">Senthil Kumar</span><span class="appt-age">52</span><span class="appt-reason">Diabetic foot · new</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+        <div class="appt-row"><span class="appt-time">11:30 AM</span><span class="appt-name">Aruna Devi</span><span class="appt-age">45</span><span class="appt-reason">Vascular screening</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+        <div class="appt-row"><span class="appt-time">2:00 PM</span><span class="appt-name">Venkat Rao</span><span class="appt-age">59</span><span class="appt-reason">Renal artery stenosis</span><span><span class="badge b-booked">Upcoming</span></span><div class="actions"><button class="action-btn done" onclick="markDone(this)">✓ Done</button><button class="action-btn absent" onclick="markAbsent(this)">Absent</button></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="demo-label">Meddy · Booking Demo v3 · Jun 2026</div>
+
+<script>
+// ── DEMO CONFIG ───────────────────────────────────────
+// Simulate a returning user with existing profiles.
+// Toggle DEMO_MODE to show different flows.
+// 'new'      → Flow A (new number, first time)
+// 'returning' → Flow B (returning number, profile selector)
+
+const DEMO_MODE = 'new';
+
+// Simulated existing profiles for returning flow demo
+const EXISTING_PROFILES = [
+  { name: 'Rupa M.',  age: '34', gender: 'Female' },
+  { name: 'Arjun M.', age: '8',  gender: 'Male'   },
+];
+
+// ── STATE ─────────────────────────────────────────────
+const nowStr = () => new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+let state = 'idle';
+let activeProfile = { name: '', age: '', gender: '' };
+let patientReason  = '';
+let selectedDoctor = null;
+let selectedDate   = '';
+let selectedTime   = '';
+let confirmedNumber = '+91 98765 43210'; // simulated WA number
+
+const docMap = {
+  '1': { name: 'Dr. Madan Mohan',  spec: 'Vascular Surgery',       panel: 'madan'  },
+  '2': { name: 'Dr. Priya Nair',   spec: 'Vascular Medicine',      panel: 'priya'  },
+  '3': { name: 'Dr. Suresh Kumar', spec: 'Interventional Vascular', panel: 'suresh' },
+};
+const dates = { '1': 'Mon, 16 Jun', '2': 'Tue, 17 Jun', '3': 'Wed, 18 Jun', '4': 'Thu, 19 Jun' };
+const slots  = { '1': '10:00 AM',   '2': '11:30 AM',   '3': '3:00 PM',     '4': '4:30 PM'    };
+
+// ── CHAT UTILS ────────────────────────────────────────
+const chat     = document.getElementById('waChat');
+const typing   = document.getElementById('typingIndicator');
+const qr       = document.getElementById('quickReplies');
+const inputRow = document.getElementById('waInputRow');
+const input    = document.getElementById('waInput');
+
+function addMsg(text, who) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const row = document.createElement('div');
+      row.className = `msg-row ${who}`;
+      row.innerHTML = `<div class="msg-bubble ${who}">${text.replace(/\n/g,'<br>')}<div class="msg-time">${nowStr()}</div></div>`;
+      chat.insertBefore(row, typing);
+      chat.scrollTop = chat.scrollHeight;
+      resolve();
+    }, 0);
+  });
+}
+function showTyping() { typing.classList.add('visible'); chat.scrollTop = chat.scrollHeight; }
+function hideTyping() { typing.classList.remove('visible'); }
+
+function setQR(options) {
+  qr.innerHTML = '';
+  inputRow.classList.add('hidden');
+  options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'qr-btn' + (opt.wide ? ' wide' : '');
+    btn.textContent = opt.label;
+    btn.onclick = () => opt.action();
+    qr.appendChild(btn);
+  });
+}
+function showInput(placeholder) {
+  qr.innerHTML = '';
+  inputRow.classList.remove('hidden');
+  input.placeholder = placeholder || 'Type your reply…';
+  input.value = ''; input.focus();
+}
+function sendFreeText() {
+  const val = input.value.trim();
+  if (!val) return;
+  input.value = ''; inputRow.classList.add('hidden');
+  handleInput(val);
+}
+input.addEventListener('keydown', e => { if (e.key === 'Enter') sendFreeText(); });
+
+async function botSay(text, ms = 800) {
+  showTyping();
+  await new Promise(r => setTimeout(r, ms));
+  hideTyping();
+  await addMsg(text, 'bot');
+}
+async function patientSay(text) { await addMsg(text, 'patient'); }
+
+// ── FLOW ROUTER ───────────────────────────────────────
+async function startDemo() {
+  qr.innerHTML = '';
+  if (DEMO_MODE === 'returning') {
+    await flowB_start();
+  } else {
+    await flowA_start();
+  }
+}
+
+// ── FLOW A — New Number ───────────────────────────────
+async function flowA_start() {
+  state = 'a_await_name';
+  await botSay(
+    `Hi 👋 I'm Meddy.\n\nBefore we begin, I need a few quick details — this is a one-time step. I'll remember you the next time :)\n\nMay I have your name?`,
+    1200
+  );
+  setQR([
+    { label: 'Rupa M.',  action: () => handleInput('Rupa M.')  },
+    { label: 'Anand K.', action: () => handleInput('Anand K.') },
+    { label: 'Other',    action: () => showInput('Enter your name') },
+  ]);
+}
+
+// ── FLOW B — Returning Number ─────────────────────────
+async function flowB_start() {
+  state = 'b_await_profile';
+  await botSay(`Welcome back 👋 Who are we booking for today?`, 900);
+  const chips = EXISTING_PROFILES.map(p => ({
+    label: p.name,
+    action: () => handleInput(p.name)
+  }));
+  chips.push({ label: 'Someone new', action: () => handleInput('__new__') });
+  setQR(chips);
+}
+
+// ── PHASE II — Doctor → Date → Slot → Confirm ────────
+async function phaseII_start() {
+  state = 'await_doctor';
+  await botSay(
+    `Here are the doctors available at Vista Vascular Clinic:\n\n1️⃣  Dr. Madan Mohan — Vascular Surgery\n2️⃣  Dr. Priya Nair — Vascular Medicine\n3️⃣  Dr. Suresh Kumar — Interventional Vascular\n\nWho would you like to see?`,
+    900
+  );
+  setQR([
+    { label: '1 · Dr. Madan Mohan',  action: () => handleInput('1') },
+    { label: '2 · Dr. Priya Nair',   action: () => handleInput('2') },
+    { label: '3 · Dr. Suresh Kumar', action: () => handleInput('3') },
+  ]);
+}
+
+// ── MAIN INPUT HANDLER ────────────────────────────────
+async function handleInput(value) {
+  if (value !== '__new__') await patientSay(value);
+
+  // ── FLOW A steps ──
+  if (state === 'a_await_name') {
+    activeProfile.name = value;
+    state = 'a_await_age';
+    await botSay(`How old are you, ${activeProfile.name}?`, 600);
+    setQR([
+      { label: '28', action: () => handleInput('28') },
+      { label: '34', action: () => handleInput('34') },
+      { label: '45', action: () => handleInput('45') },
+      { label: 'Other', action: () => showInput('Enter your age') },
+    ]);
+    return;
+  }
+
+  if (state === 'a_await_age') {
+    activeProfile.age = value;
+    state = 'a_await_gender';
+    await botSay(`May I have your gender, ${activeProfile.name}?`, 600);
+    setQR([
+      { label: 'Male',   action: () => handleInput('Male')   },
+      { label: 'Female', action: () => handleInput('Female') },
+      { label: 'Other',  action: () => handleInput('Other')  },
+    ]);
+    return;
+  }
+
+  if (state === 'a_await_gender') {
+    activeProfile.gender = value;
+    state = 'await_reason';
+    await botSay(`Thanks for the information, ${activeProfile.name}. So, what brings you in today?`, 800);
+    setQR([
+      { label: 'General checkup', action: () => handleInput('General checkup') },
+      { label: 'Follow-up visit', action: () => handleInput('Follow-up visit') },
+      { label: 'Varicose veins',  action: () => handleInput('Varicose veins')  },
+      { label: 'Other',           action: () => showInput('Describe your reason') },
+    ]);
+    return;
+  }
+
+  // ── FLOW B steps ──
+  if (state === 'b_await_profile') {
+    if (value === '__new__') {
+      await patientSay('Someone new');
+      state = 'b_await_name';
+      await botSay(`May I have their name?`, 700);
+      showInput('Enter their name');
+      return;
+    }
+    const profile = EXISTING_PROFILES.find(p => p.name === value);
+    if (profile) {
+      activeProfile = { ...profile };
+      state = 'await_reason';
+      await botSay(`Got it. What brings ${activeProfile.name} in today?`, 700);
+      setQR([
+        { label: 'General checkup', action: () => handleInput('General checkup') },
+        { label: 'Follow-up visit', action: () => handleInput('Follow-up visit') },
+        { label: 'Varicose veins',  action: () => handleInput('Varicose veins')  },
+        { label: 'Other',           action: () => showInput('Describe your reason') },
+      ]);
+    }
+    return;
+  }
+
+  if (state === 'b_await_name') {
+    activeProfile.name = value;
+    state = 'b_await_age';
+    await botSay(`How old are they, ${activeProfile.name}?`, 600);
+    setQR([
+      { label: '8',  action: () => handleInput('8')  },
+      { label: '28', action: () => handleInput('28') },
+      { label: '45', action: () => handleInput('45') },
+      { label: 'Other', action: () => showInput('Enter their age') },
+    ]);
+    return;
+  }
+
+  if (state === 'b_await_age') {
+    activeProfile.age = value;
+    state = 'b_await_gender';
+    await botSay(`May I have their gender?`, 600);
+    setQR([
+      { label: 'Male',   action: () => handleInput('Male')   },
+      { label: 'Female', action: () => handleInput('Female') },
+      { label: 'Other',  action: () => handleInput('Other')  },
+    ]);
+    return;
+  }
+
+  if (state === 'b_await_gender') {
+    activeProfile.gender = value;
+    state = 'await_reason';
+    await botSay(`Thanks. What brings ${activeProfile.name} in today?`, 700);
+    setQR([
+      { label: 'General checkup', action: () => handleInput('General checkup') },
+      { label: 'Follow-up visit', action: () => handleInput('Follow-up visit') },
+      { label: 'Varicose veins',  action: () => handleInput('Varicose veins')  },
+      { label: 'Other',           action: () => showInput('Describe your reason') },
+    ]);
+    return;
+  }
+
+  // ── PHASE II steps (shared) ──
+  if (state === 'await_reason') {
+    patientReason = value;
+    await phaseII_start();
+    return;
+  }
+
+  if (state === 'await_doctor') {
+    if (!['1','2','3'].includes(value.trim()[0])) {
+      await botSay(`No worries — tap 1, 2, or 3 to pick a doctor.`, 500);
+      return;
+    }
+    selectedDoctor = docMap[value.trim()[0]];
+    state = 'await_date';
+    await botSay(
+      `Here are the next available dates for ${selectedDoctor.name}:\n\n1️⃣  Mon, 16 Jun\n2️⃣  Tue, 17 Jun\n3️⃣  Wed, 18 Jun\n4️⃣  Thu, 19 Jun`,
+      900
+    );
+    setQR([
+      { label: '1 · Mon, 16 Jun', action: () => handleInput('1') },
+      { label: '2 · Tue, 17 Jun', action: () => handleInput('2') },
+      { label: '3 · Wed, 18 Jun', action: () => handleInput('3') },
+      { label: '4 · Thu, 19 Jun', action: () => handleInput('4') },
+    ]);
+    return;
+  }
+
+  if (state === 'await_date') {
+    if (!['1','2','3','4'].includes(value.trim()[0])) {
+      await botSay(`No worries — tap a date to continue.`, 500);
+      return;
+    }
+    selectedDate = dates[value.trim()[0]];
+    state = 'await_slot';
+    await botSay(
+      `Available slots on ${selectedDate}:\n\n1️⃣  10:00 AM\n2️⃣  11:30 AM\n3️⃣  3:00 PM\n4️⃣  4:30 PM`,
+      800
+    );
+    setQR([
+      { label: '1 · 10:00 AM', action: () => handleInput('1') },
+      { label: '2 · 11:30 AM', action: () => handleInput('2') },
+      { label: '3 · 3:00 PM',  action: () => handleInput('3') },
+      { label: '4 · 4:30 PM',  action: () => handleInput('4') },
+    ]);
+    return;
+  }
+
+  if (state === 'await_slot') {
+    if (!['1','2','3','4'].includes(value.trim()[0])) {
+      await botSay(`No worries — tap a slot to continue.`, 500);
+      return;
+    }
+    selectedTime = slots[value.trim()[0]];
+    state = 'await_number';
+    await botSay(
+      `We'll send your confirmation to ${confirmedNumber} — is that right?`,
+      800
+    );
+    setQR([
+      { label: 'Yes, that\'s right',   action: () => handleInput('yes') },
+      { label: 'Use a different number', action: () => showInput('Enter your number') },
+    ]);
+    return;
+  }
+
+  if (state === 'await_number') {
+    if (value !== 'yes') confirmedNumber = value;
+    state = 'confirmed';
+    await botSay(
+      `You're all set. ✅\n\n${activeProfile.name}'s appointment is confirmed:\n📅  ${selectedDate}\n⏰  ${selectedTime}\n🩺  ${selectedDoctor.name} — ${selectedDoctor.spec}\n🏥  Vista Vascular Clinic\n\nI'll remind you before the appointment. Take care, ${activeProfile.name} :)`,
+      1000
+    );
+    qr.innerHTML = '';
+    inputRow.classList.add('hidden');
+    setTimeout(() => injectBooking(), 600);
+    return;
+  }
+}
+
+// ── BOOT ──────────────────────────────────────────────
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    setQR([{ label: '▶  Start demo', action: () => startDemo(), wide: true }]);
+  }, 300);
+});
+
+// ── DASHBOARD UTILS ───────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.appt-panel').forEach(p => p.style.display = 'none');
+  document.getElementById('tab-' + id).classList.add('active');
+  document.getElementById('panel-' + id).style.display = 'block';
+}
+function markDone(btn) {
+  const row = btn.closest('.appt-row');
+  row.querySelector('.badge').parentElement.innerHTML = '<span class="badge b-completed">Completed</span>';
+  row.querySelector('.actions').innerHTML = '<span class="action-done">✓ Done</span>';
+  updateCounts();
+}
+function markAbsent(btn) {
+  const row = btn.closest('.appt-row');
+  row.querySelector('.badge').parentElement.innerHTML = '<span class="badge b-no-show">No show</span>';
+  row.querySelector('.actions').innerHTML = '<span class="action-done">—</span>';
+  updateCounts();
+}
+function updateCounts() {
+  let done = 0, absent = 0, upcoming = 0;
+  document.querySelectorAll('.badge').forEach(b => {
+    if (b.classList.contains('b-completed')) done++;
+    else if (b.classList.contains('b-no-show')) absent++;
+    else if (b.classList.contains('b-booked') || b.classList.contains('b-new')) upcoming++;
+  });
+  document.querySelector('.sv-done').textContent    = done;
+  document.querySelector('.sv-absent').textContent  = absent;
+  document.querySelector('.sv-booked').textContent  = upcoming;
+  document.querySelector('.sv-total').textContent   = done + absent + upcoming;
+  ['madan','priya','suresh'].forEach(id => {
+    document.getElementById('cnt-' + id).textContent =
+      document.getElementById('panel-' + id).querySelectorAll('.appt-row').length;
+  });
+}
+function injectBooking() {
+  const panel = document.getElementById('panel-' + selectedDoctor.panel);
+  const row = document.createElement('div');
+  row.className = 'appt-row new-booking';
+  row.innerHTML = `
+    <span class="appt-time">${selectedTime}</span>
+    <span class="appt-name">${activeProfile.name}</span>
+    <span class="appt-age">${activeProfile.age}</span>
+    <span class="appt-reason">${patientReason}</span>
+    <span><span class="badge b-new">NEW</span></span>
+    <div class="actions">
+      <button class="action-btn done" onclick="markDone(this)">✓ Done</button>
+      <button class="action-btn absent" onclick="markAbsent(this)">Absent</button>
+    </div>`;
+  panel.appendChild(row);
+  switchTab(selectedDoctor.panel);
+  document.getElementById('liveBadge').classList.add('visible');
+  setTimeout(() => {
+    const badge = row.querySelector('.badge');
+    if (badge) { badge.classList.remove('b-new'); badge.classList.add('b-booked'); badge.textContent = 'Upcoming'; row.classList.remove('new-booking'); }
+  }, 3000);
+  updateCounts();
+  setTimeout(() => row.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+}
+</script>
+</body>
+</html>
