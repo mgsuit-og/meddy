@@ -1,6 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/hospital", "destination": "/hospital.html" },
-    { "source": "/patient",  "destination": "/patient.html"  }
-  ]
-}
