@@ -120,6 +120,89 @@
         <span class="demo-tag">OPD Queue</span>
         <span class="demo-tag">Smart Appointments</span>
       </div>
+      <a href="/demo/index.html" class="btn-access">Access Demo →</a>
+    </div>
+
+    <div class="demo-card pending">
+      <div class="demo-status status-pending"><span class="status-dot"></span> Pending</div>
+      <div class="demo-clinic">THANC Hospital</div>
+      <div class="demo-meta">ENT · Dental / OMFS · Chennai</div>
+      <div class="demo-tags">
+        <span class="demo-tag">Dr. Sudha</span>
+        <span class="demo-tag">Dr. Veerabahu</span>
+        <span class="demo-tag">Awaiting schedule data</span>
+      </div>
+      <span class="btn-coming">Coming Soon</span>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  // Auth check
+  if (sessionStorage.getItem('meddy_admin_auth') !== 'true') {
+    window.location.href = '/admin';
+  }
+
+  function signOut() {
+    sessionStorage.removeItem('meddy_admin_auth');
+    window.location.href = '/admin';
+  }
+</script>
+</body>
+</html>
+  .btn-access {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 20px; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 700; color: #fff;
+    background: var(--teal); border: none; cursor: pointer;
+    text-decoration: none; transition: background 0.18s; font-family: var(--font-body);
+  }
+  .btn-access:hover { background: var(--teal-dark); }
+  .btn-coming { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; color: var(--ink-light); background: var(--surface-2); border: 1px solid var(--border); cursor: default; }
+
+  @media (max-width: 600px) { .demo-grid { grid-template-columns: 1fr; } .nav-by { display: none; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <div class="nav-brand-stack">
+        <div class="nav-brand-top">
+          <img src="/logo.png" alt="Meddy" class="nav-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <span class="nav-wordmark">meddy</span>
+          <span class="nav-by">by Viyuha Technologies</span>
+        </div>
+        <div class="nav-tagline-text">Connecting doctors and patients through smarter care</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="admin-badge">Admin</span>
+      <button class="btn-signout" onclick="signOut()">Sign Out</button>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+  <div class="page-header">
+    <h1>Demo Dashboard</h1>
+    <p>Clinic-specific demos for presentations and validation calls.</p>
+  </div>
+
+  <div class="section-label">Available Demos</div>
+  <div class="demo-grid">
+
+    <div class="demo-card live">
+      <div class="demo-status status-live"><span class="status-dot"></span> Live</div>
+      <div class="demo-clinic">Vista Vascular Clinic</div>
+      <div class="demo-meta">Vascular Surgery · Coimbatore</div>
+      <div class="demo-tags">
+        <span class="demo-tag">Dr. Madan Mohan</span>
+        <span class="demo-tag">OPD Queue</span>
+        <span class="demo-tag">Smart Appointments</span>
+      </div>
       <a href="/demo" class="btn-access">Access Demo →</a>
     </div>
 
