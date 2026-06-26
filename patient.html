@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meddy for Patients &amp; Families</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300;1,9..144,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:       #1aaa8e;
+    --teal-dark:  #0d6e5a;
+    --teal-light: #e6f7f4;
+    --teal-mid:   #b3e8e0;
+    --ink:        #0f1a17;
+    --ink-mid:    #3a4e49;
+    --ink-light:  #6b7f7a;
+    --surface:    #ffffff;
+    --surface-2:  #f4faf8;
+    --surface-3:  #eaf6f3;
+    --border:     #d4ede8;
+    --border-dark:#a8d8cf;
+    --warn-bg:    #fff8ec;
+    --warn-border:#f0c96e;
+    --font-display: 'Fraunces', serif;
+    --font-body:    'Inter', sans-serif;
+    --radius-sm: 6px; --radius-md: 12px; --radius-lg: 20px;
+    --max-w: 1100px; --nav-h: 76px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-body); color: var(--ink); background: var(--surface); -webkit-font-smoothing: antialiased; line-height: 1.6; }
+  a { color: inherit; text-decoration: none; }
+  .container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; height: var(--nav-h); background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+  .nav-inner { width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .nav-brand { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .nav-brand-stack { display: flex; flex-direction: column; gap: 1px; }
+  .nav-brand-top { display: flex; align-items: center; gap: 12px; }
+  .nav-tagline-text { font-size: 11px; color: var(--ink-light); letter-spacing: 0.2px; padding-left: 2px; }
+  .nav-logo { height: 34px; width: auto; }
+  .nav-wordmark { display: none; font-family: var(--font-body); font-size: 22px; font-weight: 800; color: var(--teal); letter-spacing: -0.5px; }
+  .nav-by { font-size: 11px; color: var(--ink-light); border-left: 1px solid var(--border-dark); padding-left: 12px; }
+  .nav-actions { display: flex; align-items: center; gap: 8px; }
+  .btn-ghost { padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; color: var(--ink-mid); border: 1px solid var(--border-dark); transition: all 0.18s; white-space: nowrap; display: inline-block; }
+  .btn-ghost:hover { background: var(--surface-3); color: var(--teal); border-color: var(--teal); }
+  .btn-teal { padding: 8px 18px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; color: #fff; background: var(--teal); border: 1px solid var(--teal); transition: all 0.18s; white-space: nowrap; display: inline-block; }
+  .btn-teal:hover { background: var(--teal-dark); }
+
+  /* PAGE HERO */
+  .page-hero { padding: 72px 0 56px; text-align: center; animation: fadeUp 0.5s ease both; }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-light); margin-bottom: 24px; transition: color 0.18s; }
+  .back-link:hover { color: var(--teal); }
+  .page-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--teal); margin-bottom: 16px; }
+  .page-headline { font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px); font-weight: 700; letter-spacing: -1.5px; color: var(--ink); margin-bottom: 20px; line-height: 1.1; }
+  .page-headline em { font-style: italic; color: var(--teal); font-weight: 300; }
+  .page-sub { font-size: 18px; color: var(--ink-mid); max-width: 560px; margin: 0 auto; line-height: 1.6; }
+
+  /* BIG QUESTION */
+  .big-question-section { background: var(--surface-3); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 64px 0; text-align: center; }
+  .big-question { font-family: var(--font-display); font-size: clamp(26px, 4vw, 48px); font-weight: 700; font-style: italic; color: var(--ink); max-width: 720px; margin: 0 auto 16px; line-height: 1.15; letter-spacing: -1px; }
+  .big-question-sub { font-size: 17px; color: var(--ink-mid); max-width: 500px; margin: 0 auto 24px; }
+  .legal-note { display: flex; align-items: flex-start; gap: 10px; max-width: 580px; margin: 0 auto; background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: var(--radius-md); padding: 14px 18px; text-align: left; }
+  .legal-note-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .legal-note-text { font-size: 13px; color: var(--ink-mid); line-height: 1.55; }
+  .legal-note-text strong { color: var(--ink); }
+
+  /* PROBLEMS */
+  .problems-bg { background: var(--surface-2); padding: 64px 0; }
+  .problems-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .problem-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px 28px; position: relative; overflow: hidden; }
+  .problem-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--teal); }
+  .problem-tag { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal); background: var(--teal-light); padding: 4px 12px; border-radius: 100px; margin-bottom: 14px; display: inline-block; }
+  .problem-body { font-size: 15px; color: var(--ink-mid); line-height: 1.65; margin-bottom: 20px; }
+  .problem-stat { background: var(--surface-3); border-left: 3px solid var(--teal); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 12px 14px; font-size: 14px; color: var(--ink); line-height: 1.55; margin-bottom: 6px; }
+  .problem-stat strong { color: var(--teal); font-weight: 700; }
+  .stat-source { font-size: 11px; color: var(--ink-light); padding-left: 4px; }
+  .problem-maps { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--ink-light); }
+  .problem-maps span { font-weight: 600; color: var(--teal); }
+
+  /* MEET MEDDY */
+  .meet-meddy { padding: 72px 0; }
+  .meet-header { text-align: center; margin-bottom: 52px; }
+  .champion-line { font-family: var(--font-display); font-size: clamp(26px, 4vw, 44px); font-weight: 700; letter-spacing: -0.8px; color: var(--ink); margin-bottom: 14px; }
+  .champion-line em { color: var(--teal); font-style: italic; font-weight: 300; }
+  .champion-sub { font-size: 17px; color: var(--ink-mid); max-width: 540px; margin: 0 auto; line-height: 1.6; }
+  .meet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .meet-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 32px 28px; transition: all 0.2s; }
+  .meet-card:hover { border-color: var(--teal); box-shadow: 0 8px 28px rgba(26,170,142,0.1); transform: translateY(-2px); }
+  .meet-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--teal-light); border: 2px solid var(--teal-mid); display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 18px; }
+  .meet-feature { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; }
+  .meet-title { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 10px; }
+  .meet-desc { font-size: 14px; color: var(--ink-mid); line-height: 1.65; }
+  .meet-footer-note { text-align: center; margin-top: 24px; font-size: 13px; color: var(--ink-light); font-style: italic; }
+
+  /* WAITLIST */
+  .waitlist-section { background: var(--surface-2); padding: 80px 0; }
+  .waitlist-inner { max-width: 600px; margin: 0 auto; text-align: center; }
+  .waitlist-inner h2 { font-family: var(--font-display); font-size: clamp(26px, 3.5vw, 40px); font-weight: 700; letter-spacing: -0.6px; color: var(--ink); margin-bottom: 12px; }
+  .waitlist-inner > p { font-size: 16px; color: var(--ink-mid); margin-bottom: 36px; line-height: 1.6; }
+  .waitlist-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: left; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group label { font-size: 12px; font-weight: 600; color: var(--ink-mid); letter-spacing: 0.3px; }
+  .form-group input, .form-group select { padding: 10px 14px; border: 1px solid var(--border-dark); border-radius: var(--radius-sm); font-size: 14px; color: var(--ink); font-family: var(--font-body); background: var(--surface); transition: border-color 0.18s; -webkit-appearance: none; appearance: none; }
+  .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(26,170,142,0.12); }
+  .form-full { grid-column: 1 / -1; }
+  .btn-waitlist { width: 100%; padding: 14px; border-radius: var(--radius-sm); font-size: 16px; font-weight: 700; color: #fff; background: var(--teal); border: none; cursor: pointer; transition: background 0.18s; font-family: var(--font-body); }
+  .btn-waitlist:hover { background: var(--teal-dark); }
+  .privacy-note { font-size: 12px; color: var(--ink-light); line-height: 1.6; margin-top: 12px; }
+  .waitlist-success { display: none; padding: 24px; background: var(--surface-3); border: 1px solid var(--teal-mid); border-radius: var(--radius-md); text-align: center; margin-top: 16px; }
+  .waitlist-success.show { display: block; animation: fadeIn 0.4s ease; }
+  .waitlist-success p { color: var(--teal-dark); font-weight: 500; font-size: 15px; }
+
+  /* FOOTER */
+  footer { background: var(--ink); color: rgba(255,255,255,0.6); padding: 48px 0; }
+  .footer-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; display: flex; flex-direction: column; align-items: center; gap: 16px; text-align: center; }
+  .footer-logo { height: 28px; width: auto; filter: brightness(0) invert(1); opacity: 0.85; }
+  .footer-wordmark { display: none; font-size: 18px; font-weight: 800; color: #fff; }
+  .footer-tagline { font-size: 13px; color: rgba(255,255,255,0.4); }
+  .footer-contact a { color: rgba(255,255,255,0.6); font-size: 13px; }
+  .footer-contact a:hover { color: var(--teal); }
+  .footer-legal { font-size: 12px; color: rgba(255,255,255,0.3); line-height: 1.7; max-width: 600px; }
+
+  @media (max-width: 900px) { .problems-grid, .meet-grid { grid-template-columns: 1fr; } }
+  @media (max-width: 600px) { .nav-by { display: none; } .waitlist-form { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <div class="nav-brand-stack">
+        <div class="nav-brand-top">
+          <img src="logo.png" alt="Meddy" class="nav-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+          <span class="nav-wordmark">meddy</span>
+          <span class="nav-by">by Viyuha Technologies</span>
+        </div>
+        <div class="nav-tagline-text">Connecting doctors and patients through smarter care</div>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="/admin" class="btn-ghost">Look at Demos</a>
+      <a href="/admin" class="btn-teal">Admin Login</a>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<section class="page-hero">
+  <div class="container">
+    <a href="/" class="back-link">← Back to Meddy</a>
+    <div class="page-eyebrow">For Patients &amp; Families</div>
+    <h1 class="page-headline">Own your <em>health story.</em></h1>
+    <p class="page-sub">Understand your diagnosis, keep your records, and arrive at every appointment fully prepared.</p>
+  </div>
+</section>
+
+<!-- BIG QUESTION -->
+<section class="big-question-section">
+  <div class="container">
+    <p class="big-question">"When did you last see your own complete medical record?"</p>
+    <p class="big-question-sub">As a patient, you have the right to access your complete medical records. Always.</p>
+    <div class="legal-note">
+      <span class="legal-note-icon">⚖️</span>
+      <div class="legal-note-text">
+        <strong>Your legal right:</strong> Hospitals are required to provide medical records within 72 hours of a patient's request under MCI guidelines. Most patients don't know this.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMS -->
+<section class="problems-bg">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:32px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--teal);">Three problems. One champion.</div>
+    <div class="problems-grid">
+
+      <div class="problem-card">
+        <div class="problem-tag">Medical Literacy</div>
+        <div class="problem-body">Your doctor said "bilateral adenotonsillar hypertrophy." Your discharge summary says "GERD with reflux oesophagitis." You nodded. But did you understand? Most Indians don't. And it's not their fault.</div>
+        <div class="problem-stat"><strong>8 in 10 Indians</strong> have limited health literacy. They cannot fully understand their own diagnosis, prescription, or discharge summary.</div>
+        <div class="stat-source">Source: Medfin, citing Indian health literacy data</div>
+        <div class="problem-stat" style="margin-top:10px;">Limited health literacy is directly linked to <strong>medication errors, worse outcomes, and higher hospitalisation rates.</strong></div>
+        <div class="stat-source">Source: PMC / REALM study, Coastal Karnataka</div>
+      </div>
+
+      <div class="problem-card">
+        <div class="problem-tag">Fragmented Records</div>
+        <div class="problem-body">Five hospitals. Twelve doctors. Zero connected records. Every new doctor you see starts from scratch. Your history lives in paper files across different cities, clinics, and WhatsApp threads. The burden of connecting them falls on you.</div>
+        <div class="problem-stat">Records scattered: prescriptions lost, medications recalled by <strong>colour or shape</strong>, not name.</div>
+        <div class="stat-source">Source: NITI Aayog FrontierTech, 2026</div>
+      </div>
+
+      <div class="problem-card">
+        <div class="problem-tag">Preventable Errors</div>
+        <div class="problem-body">Most drug interaction errors don't happen because doctors are careless. They happen because no one gave the doctor the full picture. A medication you forgot to mention. An allergy not in the system. That's not a doctor problem. That's an information problem.</div>
+        <div class="problem-stat">In Indian hospitals, <strong>1 in 3 patients</strong> has at least one prescribing error. 68% are drug-drug interactions. Most preventable with a complete medication history.</div>
+        <div class="stat-source">Source: PMC / Chandigarh Government Medical College study</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MEET MEDDY -->
+<section class="meet-meddy">
+  <div class="container">
+    <div class="meet-header">
+      <p class="champion-line">Meddy is your <em>personal health champion.</em></p>
+      <p class="champion-sub">Meddy knows your history, keeps your doctor informed, and makes sure you understand every word of your care.</p>
+    </div>
+    <div class="meet-grid">
+      <div class="meet-card">
+        <div class="meet-icon">💬</div>
+        <div class="meet-feature">Meddy</div>
+        <div class="meet-title">Medical literacy, solved.</div>
+        <div class="meet-desc">Every diagnosis explained. Every prescription decoded. In plain language, every time.</div>
+      </div>
+      <div class="meet-card">
+        <div class="meet-icon">📋</div>
+        <div class="meet-feature">Meddy Card</div>
+        <div class="meet-title">One complete record.</div>
+        <div class="meet-desc">Every hospital. Every doctor. Always with you. Your full medical history. Portable, secure, readable by any doctor anywhere.</div>
+      </div>
+      <div class="meet-card">
+        <div class="meet-icon">📄</div>
+        <div class="meet-feature">Consult Packet</div>
+        <div class="meet-title">Your doctor knows before you walk in.</div>
+        <div class="meet-desc">Before every consultation, your doctor already knows your history, medications, and allergies.</div>
+      </div>
+    </div>
+    <p class="meet-footer-note">Meddy Card, Consult Packet, and Smart Appointments are all part of Meddy.</p>
+  </div>
+</section>
+
+<!-- WAITLIST -->
+<section class="waitlist-section">
+  <div class="container">
+    <div class="waitlist-inner">
+      <h2>Get early access.</h2>
+      <p>Meddy is rolling out through partner hospitals. Join the waitlist to get early access when Meddy is available in your city.</p>
+
+      <form class="waitlist-form" id="waitlist-form">
+        <div class="form-group">
+          <label for="wl-name">Full Name</label>
+          <input type="text" id="wl-name" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="wl-mobile">Mobile Number</label>
+          <input type="tel" id="wl-mobile" name="mobile" placeholder="+91 98765 43210" required>
+        </div>
+        <div class="form-group">
+          <label for="wl-email">Email</label>
+          <input type="email" id="wl-email" name="email" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label for="wl-city">City</label>
+          <input type="text" id="wl-city" name="city" placeholder="Chennai, Mumbai..." required>
+        </div>
+        <div class="form-group">
+          <label for="wl-age">Age</label>
+          <input type="number" id="wl-age" name="age" placeholder="32" min="1" max="120" required>
+        </div>
+        <div class="form-group">
+          <label for="wl-gender">Gender</label>
+          <select id="wl-gender" name="gender" required>
+            <option value="" disabled selected>Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Prefer not to say</option>
+          </select>
+        </div>
+        <div class="form-group form-full">
+          <button type="submit" class="btn-waitlist">Join the Waitlist</button>
+        </div>
+      </form>
+
+      <div class="waitlist-success" id="waitlist-success">
+        <p>✓ You're on the list. We'll reach out when Meddy is available in your city.</p>
+      </div>
+
+      <p class="privacy-note">Your information is stored securely and used only to notify you about Meddy's availability. We will never share your data with third parties. Handled in compliance with India's Digital Personal Data Protection Act (DPDP).</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <img src="logo.png" alt="Meddy" class="footer-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="footer-wordmark">meddy</span>
+    <p class="footer-tagline">Connecting doctors and patients through smarter care</p>
+    <p class="footer-contact"><a href="mailto:hello@meddy.co.in">hello@meddy.co.in</a></p>
+    <p class="footer-legal">Viyuha Technologies · India &nbsp;·&nbsp; © 2026 Viyuha Technologies.<br>All clinical decisions remain with treating clinicians. Patient data handled in compliance with India's Digital Personal Data Protection Act (DPDP).</p>
+  </div>
+</footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('waitlist-form');
+    if (form) {
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        form.style.display = 'none';
+        var success = document.getElementById('waitlist-success');
+        if (success) success.classList.add('show');
+      });
+    }
+  });
+</script>
+</body>
+</html>

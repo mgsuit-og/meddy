@@ -1,0 +1,11 @@
+{
+  "redirects": [
+    { "source": "/demo", "destination": "/admin", "permanent": false }
+  ],
+  "rewrites": [
+    { "source": "/hospital",         "destination": "/hospital.html" },
+    { "source": "/patient",          "destination": "/patient.html" },
+    { "source": "/admin",            "destination": "/admin.html" },
+    { "source": "/admin/dashboard",  "destination": "/admin/dashboard.html" }
+  ]
+}
