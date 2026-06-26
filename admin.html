@@ -92,6 +92,55 @@
 </div>
 
 <script>
+  document.getElementById('password').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  function doLogin() {
+    var u = document.getElementById('username').value.trim();
+    var p = document.getElementById('password').value;
+    var card = document.getElementById('login-card');
+    var err = document.getElementById('error-msg');
+
+    if (u === 'superadmin@meddy.co.in' && p === '20@5@1997') {
+      sessionStorage.setItem('meddy_admin_auth', 'true');
+      window.location.href = '/admin/dashboard';
+    } else {
+      err.classList.add('show');
+      card.classList.remove('shake');
+      void card.offsetWidth; // reflow to restart animation
+      card.classList.add('shake');
+      document.getElementById('password').value = '';
+      document.getElementById('password').focus();
+    }
+  }
+</script>
+</body>
+</html></head>
+<body>
+<div class="login-card" id="login-card">
+  <div class="login-brand">
+    <img src="/logo.png" alt="Meddy" class="login-logo" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+    <span class="login-wordmark">meddy</span>
+    <p class="login-label">Admin Access</p>
+  </div>
+
+  <div class="error-msg" id="error-msg">Incorrect credentials. Try again.</div>
+
+  <div class="form-group">
+    <label for="username">Username</label>
+    <input type="email" id="username" placeholder="admin@meddy.co.in" autocomplete="username">
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" id="password" placeholder="••••••••••" autocomplete="current-password">
+  </div>
+  <button class="btn-login" onclick="doLogin()">Sign In</button>
+
+  <p class="back-link"><a href="/">← Back to Meddy</a></p>
+</div>
+
+<script>
   // Check if already authed in this session
   if (sessionStorage.getItem('meddy_admin_auth') === 'true') {
     window.location.href = '/admin/dashboard';
