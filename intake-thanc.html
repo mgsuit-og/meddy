@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Intake — Meddy / THANC</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --primary: #028090;
+    --dark: #0D3D4A;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .header {
+    background: linear-gradient(135deg, #0D3D4A 0%, #028090 100%);
+    color: white;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .header h1 { font-size: 16px; font-weight: 700; }
+  .header-sub { font-size: 11px; opacity: 0.75; margin-top: 2px; }
+
+  /* Patient summary bar */
+  .patient-bar {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 24px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .patient-bar .pname { font-size: 16px; font-weight: 700; color: var(--dark); }
+  .patient-bar .pmeta { font-size: 12px; color: var(--muted); }
+  .appt-chip {
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* Mode tabs */
+  .mode-tabs {
+    background: white;
+    border-bottom: 2px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    gap: 0;
+  }
+  .mode-tab {
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .mode-tab:hover { color: var(--primary); }
+  .mode-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+  .mode-tab .tab-icon { font-size: 16px; }
+
+  /* Content area */
+  .content { max-width: 760px; margin: 24px auto; padding: 0 24px 40px; }
+
+  /* Mode panels */
+  .mode-panel { display: none; }
+  .mode-panel.active { display: block; }
+
+  /* QR panel */
+  .qr-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .qr-card h2 { font-size: 16px; margin-bottom: 6px; color: var(--dark); }
+  .qr-card p { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .qr-img-wrap {
+    display: inline-block;
+    padding: 16px;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+  .qr-img-wrap img { width: 200px; height: 200px; display: block; }
+  .qr-url {
+    font-size: 11px;
+    color: var(--muted);
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    word-break: break-all;
+    margin-top: 8px;
+    display: inline-block;
+  }
+  .qr-instructions {
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 20px;
+    text-align: left;
+    font-size: 13px;
+    color: #065f46;
+    line-height: 1.6;
+  }
+
+  /* Form (shared between tablet + assisted modes) */
+  .form-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .form-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .form-row.full { grid-template-columns: 1fr; }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 5px;
+  }
+  .field label .required { color: #ef4444; margin-left: 2px; }
+  .field label .hospital-only {
+    font-size: 9px;
+    background: #fef9c3;
+    color: #a16207;
+    border-radius: 3px;
+    padding: 1px 5px;
+    margin-left: 4px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0;
+  }
+  .field input, .field select, .field textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 11px;
+    font-size: 13px;
+    color: var(--text);
+    background: #f8fafc;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    font-family: inherit;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(2,128,144,0.12);
+    background: white;
+  }
+  .field input:disabled, .field select:disabled, .field textarea:disabled {
+    background: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+  }
+  .field textarea { resize: vertical; min-height: 80px; }
+
+  /* Assisted mode banner */
+  .assisted-banner {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #1e40af;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Vitals grid */
+  .vitals-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .vital-input-wrap { position: relative; }
+  .vital-unit {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 11px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .vital-input-wrap input { padding-right: 36px; }
+
+  /* Submit area */
+  .submit-area {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+  }
+  .submit-note { font-size: 12px; color: var(--muted); }
+  .btn-submit {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-submit:hover { background: var(--dark); }
+
+  /* Success state */
+  .success-msg {
+    display: none;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    margin-top: 16px;
+  }
+  .success-msg .check { font-size: 40px; margin-bottom: 10px; }
+  .success-msg h3 { font-size: 16px; color: #15803d; margin-bottom: 6px; }
+  .success-msg p { font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Patient Intake — THANC Hospital</h1>
+    <div class="header-sub">Meddy Clinical Intake Form</div>
+  </div>
+  <div style="font-size:12px;opacity:0.75" id="headerAppt">—</div>
+</div>
+
+<!-- PATIENT SUMMARY BAR -->
+<div class="patient-bar">
+  <div>
+    <div class="pname" id="pbarName">Loading…</div>
+    <div class="pmeta" id="pbarMeta">—</div>
+  </div>
+  <div class="appt-chip" id="pbarAppt">—</div>
+</div>
+
+<!-- MODE TABS -->
+<div class="mode-tabs">
+  <div class="mode-tab active" onclick="switchMode('qr')" id="tab-qr">
+    <span class="tab-icon">📲</span> QR Code
+  </div>
+  <div class="mode-tab" onclick="switchMode('tablet')" id="tab-tablet">
+    <span class="tab-icon">📱</span> Tablet
+  </div>
+  <div class="mode-tab" onclick="switchMode('assisted')" id="tab-assisted">
+    <span class="tab-icon">🧑‍⚕️</span> Assisted
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- ── QR MODE ── -->
+  <div class="mode-panel active" id="panel-qr">
+    <div class="qr-card">
+      <h2>Patient Self-Service</h2>
+      <p>Ask the patient to scan this QR code on their phone to fill the intake form themselves.</p>
+      <div class="qr-img-wrap">
+        <img id="qrImage" src="" alt="QR Code" />
+      </div>
+      <br>
+      <span class="qr-url" id="qrUrl">—</span>
+      <div class="qr-instructions">
+        <strong>Instructions for staff:</strong><br>
+        1. Show the patient this QR code on your screen or a printed card.<br>
+        2. Patient scans and fills in their personal details on their phone.<br>
+        3. <em>Hospital-only fields (Patient ID, vitals) are locked from patient view.</em><br>
+        4. Once submitted, the intake record appears automatically here.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TABLET MODE ── -->
+  <div class="mode-panel" id="panel-tablet">
+    <div class="form-card">
+      <h3>Patient Details</h3>
+      <div class="form-row">
+        <div class="field">
+          <label>Full Name <span class="required">*</span></label>
+          <input type="text" id="t-name" placeholder="As per ID proof" />
+        </div>
+        <div class="field">
+          <label>Date of Birth</label>
+          <input type="date" id="t-dob" />
+        </div>
+      </div>
+      <div class="form-row three">
+        <div class="field">
+          <label>Age <span class="required">*</span></label>
+          <input type="number" id="t-age" placeholder="Years" min="0" max="120" />
+        </div>
+        <div class="field">
+          <label>Gender <span class="required">*</span></label>
+          <select id="t-gender">
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Blood Group</label>
+          <select id="t-blood">
+            <option value="">Unknown</option>
+            <option>A+</option><option>A−</option>
+            <option>B+</option><option>B−</option>
+            <option>O+</option><option>O−</option>
+            <option>AB+</option><option>AB−</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Mobile Number <span class="required">*</span></label>
+          <input type="tel" id="t-phone" placeholder="+91 XXXXX XXXXX" />
+        </div>
+        <div class="field">
+          <label>Email (optional)</label>
+          <input type="email" id="t-email" placeholder="patient@email.com" />
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Address</label>
+          <input type="text" id="t-address" placeholder="Street, City, PIN" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Chief Complaint &amp; History</h3>
+      <div class="form-row full">
+        <div class="field">
+          <label>Chief Complaint <span class="required">*</span></label>
+          <textarea id="t-complaint" placeholder="Describe the main reason for today's visit…"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Duration of Symptoms</label>
+          <input type="text" id="t-duration" placeholder="e.g., 2 weeks, 3 months" />
+        </div>
+        <div class="field">
+          <label>Previous Visits to THANC?</label>
+          <select id="t-prev">
+            <option value="">Select</option>
+            <option>First visit</option>
+            <option>Returning patient</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Known Allergies</label>
+          <input type="text" id="t-allergies" placeholder="Drug/food allergies, or 'None'" />
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Current Medications</label>
+          <textarea id="t-meds" placeholder="List current medications and dosages, or 'None'" style="min-height:60px"></textarea>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Past Medical History</label>
+          <textarea id="t-history" placeholder="Diabetes, hypertension, surgeries, etc." style="min-height:60px"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Hospital Use Only <span style="font-size:10px;color:#a16207;background:#fef9c3;padding:2px 6px;border-radius:3px;margin-left:6px;font-weight:700">STAFF ONLY</span></h3>
+      <div class="form-row">
+        <div class="field">
+          <label>Patient ID <span class="hospital-only">HMS</span></label>
+          <input type="text" id="t-pid" placeholder="Generated on first visit" />
+        </div>
+        <div class="field">
+          <label>Referred by</label>
+          <input type="text" id="t-ref" placeholder="Doctor / external referral" />
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Staff Notes</label>
+          <textarea id="t-notes" placeholder="Internal notes for the doctor…" style="min-height:60px"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-area">
+      <span class="submit-note">Submitting will mark intake as <strong>Complete</strong> and notify the nurse station.</span>
+      <button class="btn-submit" onclick="submitIntake('tablet')">Submit Intake →</button>
+    </div>
+    <div class="success-msg" id="success-tablet">
+      <div class="check">✅</div>
+      <h3>Intake Complete</h3>
+      <p>Nurse station has been notified. Vitals can now be recorded.</p>
+    </div>
+  </div>
+
+  <!-- ── ASSISTED MODE ── -->
+  <div class="mode-panel" id="panel-assisted">
+    <div class="assisted-banner">
+      🧑‍⚕️ <strong>Assisted Mode</strong> — Nurse / receptionist fills this form on behalf of the patient. All fields including hospital-only fields are unlocked.
+    </div>
+
+    <div class="form-card">
+      <h3>Patient Details</h3>
+      <div class="form-row">
+        <div class="field">
+          <label>Full Name <span class="required">*</span></label>
+          <input type="text" id="a-name" placeholder="As per ID proof" />
+        </div>
+        <div class="field">
+          <label>Date of Birth</label>
+          <input type="date" id="a-dob" />
+        </div>
+      </div>
+      <div class="form-row three">
+        <div class="field">
+          <label>Age <span class="required">*</span></label>
+          <input type="number" id="a-age" placeholder="Years" min="0" max="120" />
+        </div>
+        <div class="field">
+          <label>Gender <span class="required">*</span></label>
+          <select id="a-gender">
+            <option value="">Select</option>
+            <option>Male</option><option>Female</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Blood Group</label>
+          <select id="a-blood">
+            <option value="">Unknown</option>
+            <option>A+</option><option>A−</option>
+            <option>B+</option><option>B−</option>
+            <option>O+</option><option>O−</option>
+            <option>AB+</option><option>AB−</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Mobile Number <span class="required">*</span></label>
+          <input type="tel" id="a-phone" placeholder="+91 XXXXX XXXXX" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="email" id="a-email" placeholder="Optional" />
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Address</label>
+          <input type="text" id="a-address" placeholder="Street, City, PIN" />
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Chief Complaint &amp; History</h3>
+      <div class="form-row full">
+        <div class="field">
+          <label>Chief Complaint <span class="required">*</span></label>
+          <textarea id="a-complaint" placeholder="Describe the main reason for today's visit…"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Duration of Symptoms</label>
+          <input type="text" id="a-duration" placeholder="e.g., 2 weeks" />
+        </div>
+        <div class="field">
+          <label>Previous Visits?</label>
+          <select id="a-prev">
+            <option value="">Select</option>
+            <option>First visit</option>
+            <option>Returning patient</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Known Allergies</label>
+          <input type="text" id="a-allergies" placeholder="Drug/food allergies, or 'None'" />
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Current Medications</label>
+          <textarea id="a-meds" placeholder="List medications and dosages, or 'None'" style="min-height:60px"></textarea>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Past Medical History</label>
+          <textarea id="a-history" placeholder="Diabetes, hypertension, surgeries, etc." style="min-height:60px"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Vitals <span style="font-size:10px;font-weight:400;color:var(--muted)">— record at nurse station</span></h3>
+      <div class="vitals-grid">
+        <div class="field">
+          <label>BP (Systolic)</label>
+          <div class="vital-input-wrap">
+            <input type="number" id="a-bp-sys" placeholder="120" />
+            <span class="vital-unit">mmHg</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>BP (Diastolic)</label>
+          <div class="vital-input-wrap">
+            <input type="number" id="a-bp-dia" placeholder="80" />
+            <span class="vital-unit">mmHg</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Pulse</label>
+          <div class="vital-input-wrap">
+            <input type="number" id="a-pulse" placeholder="72" />
+            <span class="vital-unit">bpm</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Temperature</label>
+          <div class="vital-input-wrap">
+            <input type="number" id="a-temp" step="0.1" placeholder="98.6" />
+            <span class="vital-unit">°F</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>SpO2</label>
+          <div class="vital-input-wrap">
+            <input type="number" id="a-spo2" placeholder="98" min="0" max="100" />
+            <span class="vital-unit">%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label>Weight</label>
+          <div class="vital-input-wrap">
+            <input type="number" id="a-weight" step="0.1" placeholder="65" />
+            <span class="vital-unit">kg</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <h3>Hospital Use <span style="font-size:10px;color:#a16207;background:#fef9c3;padding:2px 6px;border-radius:3px;margin-left:6px;font-weight:700">STAFF</span></h3>
+      <div class="form-row">
+        <div class="field">
+          <label>Patient ID <span class="hospital-only">HMS</span></label>
+          <input type="text" id="a-pid" placeholder="Generated on first visit" />
+        </div>
+        <div class="field">
+          <label>Referred by</label>
+          <input type="text" id="a-ref" placeholder="Doctor / external" />
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="field">
+          <label>Staff Notes</label>
+          <textarea id="a-notes" placeholder="Internal notes for the doctor…" style="min-height:60px"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-area">
+      <span class="submit-note">Submitting will mark intake as <strong>Complete</strong> and queue for consult prep.</span>
+      <button class="btn-submit" onclick="submitIntake('assisted')">Submit Intake →</button>
+    </div>
+    <div class="success-msg" id="success-assisted">
+      <div class="check">✅</div>
+      <h3>Intake Complete</h3>
+      <p>Consult packet is being prepared. Doctor will be notified.</p>
+    </div>
+  </div>
+
+</div><!-- /.content -->
+
+<script>
+// ── URL Params ────────────────────────────────────────────────────
+const params = new URLSearchParams(window.location.search);
+const P = {
+  id:     params.get("id")     || "",
+  name:   params.get("name")   || "",
+  age:    params.get("age")    || "",
+  gender: params.get("gender") || "",
+  reason: params.get("reason") || "",
+  doctor: params.get("doctor") || "",
+  time:   params.get("time")   || "",
+  date:   params.get("date")   || "",
+};
+
+// ── Populate summary bar ──────────────────────────────────────────
+document.getElementById("pbarName").textContent = P.name || "Unknown Patient";
+document.getElementById("pbarMeta").textContent = [P.age ? P.age + " yrs" : "", P.gender].filter(Boolean).join(" · ") || "—";
+document.getElementById("pbarAppt").textContent = P.doctor ? `Dr. ${P.doctor} · ${fmtTime(P.time)} · ${P.date}` : "—";
+document.getElementById("headerAppt").textContent = P.date || "";
+
+// ── Pre-fill form fields ──────────────────────────────────────────
+function prefill(prefix) {
+  const f = (id, val) => { const el = document.getElementById(prefix+"-"+id); if(el && val) el.value = val; };
+  f("name",      P.name);
+  f("age",       P.age);
+  f("gender",    P.gender);
+  f("complaint", P.reason);
+  f("phone",     ""); // user will fill this in
+}
+prefill("t");
+prefill("a");
+
+// ── QR Code ───────────────────────────────────────────────────────
+const intakeUrl = `https://meddy.co.in/intake/${P.id || "demo"}?name=${encodeURIComponent(P.name)}&age=${P.age}&mode=qr`;
+const qrApiUrl  = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(intakeUrl)}`;
+document.getElementById("qrImage").src = qrApiUrl;
+document.getElementById("qrUrl").textContent = intakeUrl;
+
+// ── Mode switching ────────────────────────────────────────────────
+function switchMode(mode) {
+  ["qr","tablet","assisted"].forEach(m => {
+    document.getElementById("panel-"+m).classList.toggle("active", m === mode);
+    document.getElementById("tab-"+m).classList.toggle("active",   m === mode);
+  });
+}
+
+// ── Submit ────────────────────────────────────────────────────────
+function submitIntake(mode) {
+  // In production: POST to /intake endpoint
+  // For now: show success state
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = "Submitting…";
+  setTimeout(() => {
+    btn.style.display = "none";
+    document.getElementById("success-"+mode).style.display = "block";
+    // Signal to parent window (dashboard) that intake is done
+    if (window.opener) {
+      try {
+        const id = P.id;
+        if (id && window.opener.intakeDone) {
+          window.opener.intakeDone[id] = true;
+          const badge = window.opener.document.getElementById("ibadge-"+id);
+          if (badge) { badge.textContent = "Done"; badge.className = "intake-badge ib-done"; }
+        }
+      } catch(e) { /* cross-origin guard */ }
+    }
+  }, 800);
+}
+
+function fmtTime(t) {
+  if (!t) return "";
+  const [h, m] = t.split(":");
+  const hr = parseInt(h, 10);
+  return `${hr % 12 || 12}:${m} ${hr >= 12 ? "PM" : "AM"}`;
+}
+</script>
+</body>
+</html>
