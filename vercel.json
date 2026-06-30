@@ -3,9 +3,12 @@
     { "source": "/demo", "destination": "/admin", "permanent": false }
   ],
   "rewrites": [
-    { "source": "/hospital",        "destination": "/hospital.html" },
-    { "source": "/patient",         "destination": "/patient.html" },
-    { "source": "/admin",           "destination": "/admin.html" },
-    { "source": "/admin/dashboard", "destination": "/admin-dashboard.html" }
+    { "source": "/hospital",             "destination": "/hospital.html" },
+    { "source": "/patient",              "destination": "/patient.html" },
+    { "source": "/admin",                "destination": "/admin.html" },
+    { "source": "/admin/dashboard",      "destination": "/admin-dashboard.html" },
+    { "source": "/admin/demo/thanc",     "destination": "/demo-thanc.html" },
+    { "source": "/admin/dashboard/thanc","destination": "/dashboard-thanc.html" },
+    { "source": "/intake/thanc",         "destination": "/intake-thanc.html" }
   ]
 }
