@@ -4,354 +4,369 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Meddy × THANC — Live Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f0f4f5;
+    html, body {
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .split {
+      display: flex;
+      height: 100vh;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
-    /* ── Header ─────────────────────────────────────────────── */
-    header {
-      background: linear-gradient(135deg, #0D3D4A 0%, #028090 100%);
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-    .logo-row img {
-      height: 36px;
-      filter: brightness(0) invert(1);
-    }
-    .logo-row .wordmark {
-      color: #fff;
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-    }
-    .demo-badge {
-      background: rgba(255,255,255,0.15);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      padding: 5px 12px;
-      border-radius: 20px;
-      text-transform: uppercase;
-    }
-
-    /* ── Main ───────────────────────────────────────────────── */
-    main {
+    /* ── LEFT — Dark teal, QR ────────────────────────────────── */
+    .left {
       flex: 1;
+      background: linear-gradient(160deg, #0D3D4A 0%, #05606e 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 48px 24px;
-      gap: 48px;
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* ── Intro ───────────────────────────────────────────────── */
-    .intro {
+    /* Subtle texture rings */
+    .left::before {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.05);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .left::after {
+      content: '';
+      position: absolute;
+      width: 420px; height: 420px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .left-content {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .left-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .qr-wrap {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+    }
+    .qr-wrap img {
+      display: block;
+      width: 240px;
+      height: 240px;
+    }
+
+    .left-caption {
       text-align: center;
     }
-    .clinic-name {
+    .left-caption .primary {
+      font-size: 17px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 5px;
+    }
+    .left-caption .secondary {
       font-size: 13px;
+      color: rgba(255,255,255,0.45);
+    }
+
+    .wa-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: rgba(255,255,255,0.55);
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 8px 16px;
+      transition: all 0.15s;
+    }
+    .wa-link:hover {
+      color: #fff;
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.06);
+    }
+    .wa-link svg { width: 15px; height: 15px; }
+
+    /* ── RIGHT — Light, dashboard CTA ───────────────────────── */
+    .right {
+      width: 380px;
+      flex-shrink: 0;
+      background: #f6fafa;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+
+    /* Top nav strip */
+    .right-nav {
+      padding: 24px 32px;
+      border-bottom: 1px solid #e0ecee;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .right-nav img {
+      height: 26px;
+      opacity: 0.9;
+    }
+    .right-nav .wordmark {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0D3D4A;
+      letter-spacing: -0.4px;
+    }
+    .live-badge {
+      margin-left: auto;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #16a34a;
+      background: #dcfce7;
+      padding: 3px 9px;
+      border-radius: 20px;
+    }
+
+    /* Main right content */
+    .right-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 32px;
+      gap: 32px;
+    }
+
+    .right-intro .clinic-tag {
+      font-size: 11px;
       font-weight: 600;
       color: #028090;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       margin-bottom: 10px;
     }
-    .headline {
-      font-size: 32px;
+    .right-intro h2 {
+      font-size: 26px;
       font-weight: 700;
       color: #0D3D4A;
       line-height: 1.2;
-      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
     }
-    .subline {
-      font-size: 16px;
-      color: #5a7a82;
-      line-height: 1.5;
-    }
-
-    /* ── Cards row ───────────────────────────────────────────── */
-    .cards {
-      display: flex;
-      gap: 32px;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    /* ── QR Card ─────────────────────────────────────────────── */
-    .qr-card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 36px 40px;
-      box-shadow: 0 4px 24px rgba(13,61,74,0.10);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      min-width: 300px;
-    }
-    .card-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: #028090;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .qr-frame {
-      background: #f8fafa;
-      border: 2px solid #e0ecee;
-      border-radius: 16px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .qr-frame img {
-      width: 220px;
-      height: 220px;
-      display: block;
-    }
-    .qr-instruction {
-      text-align: center;
-    }
-    .qr-instruction .primary {
-      font-size: 15px;
-      font-weight: 600;
-      color: #0D3D4A;
-      margin-bottom: 4px;
-    }
-    .qr-instruction .secondary {
-      font-size: 13px;
-      color: #7a9aa2;
-    }
-    .whatsapp-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #25D366;
-      color: #fff;
+    .right-intro p {
       font-size: 14px;
-      font-weight: 600;
-      padding: 11px 22px;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: background 0.15s;
-    }
-    .whatsapp-btn:hover { background: #1db954; }
-    .whatsapp-btn svg { width: 18px; height: 18px; }
-
-    /* ── Divider ─────────────────────────────────────────────── */
-    .or-divider {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      padding-top: 40px;
-    }
-    .or-divider .line {
-      width: 1px;
-      height: 60px;
-      background: #c5d8dc;
-    }
-    .or-divider .label {
-      font-size: 12px;
-      color: #9ab5bb;
-      font-weight: 500;
+      color: #5a7a82;
+      line-height: 1.6;
     }
 
-    /* ── Dashboard Card ──────────────────────────────────────── */
-    .dashboard-card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 36px 40px;
-      box-shadow: 0 4px 24px rgba(13,61,74,0.10);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      min-width: 300px;
-    }
-    .dashboard-preview {
-      width: 220px;
-      height: 140px;
-      background: linear-gradient(135deg, #0D3D4A 0%, #028090 100%);
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      padding: 14px;
-      gap: 8px;
+    /* Dashboard mockup */
+    .dashboard-mock {
+      background: #0D3D4A;
+      border-radius: 12px;
       overflow: hidden;
+      box-shadow: 0 8px 32px rgba(13,61,74,0.2);
     }
-    .dp-header {
+    .mock-bar {
+      background: rgba(255,255,255,0.08);
+      padding: 9px 14px;
       display: flex;
       align-items: center;
+      gap: 5px;
+    }
+    .mock-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .mock-dot.r { background: #ef4444; }
+    .mock-dot.y { background: #f59e0b; }
+    .mock-dot.g { background: #22c55e; }
+    .mock-title { font-size: 9px; color: rgba(255,255,255,0.4); margin-left: 6px; font-weight: 500; }
+    .mock-body { padding: 14px; display: flex; flex-direction: column; gap: 7px; }
+    .mock-row {
+      background: rgba(255,255,255,0.07);
+      border-radius: 5px;
+      height: 9px;
+    }
+    .mock-row.w80 { width: 80%; }
+    .mock-row.w60 { width: 60%; }
+    .mock-row.w90 { width: 90%; }
+    .mock-highlight {
+      background: rgba(2,128,144,0.4);
+      border-left: 2px solid #028090;
+      border-radius: 0 5px 5px 0;
+    }
+    .mock-green-row {
+      display: flex;
       gap: 6px;
+      align-items: center;
+      margin-top: 2px;
     }
-    .dp-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.4); }
-    .dp-dot.g { background: #4ade80; }
-    .dp-title { font-size: 9px; color: rgba(255,255,255,0.7); font-weight: 600; }
-    .dp-row {
-      background: rgba(255,255,255,0.1);
-      border-radius: 4px;
-      height: 10px;
-      width: 100%;
-    }
-    .dp-row.short { width: 70%; }
-    .dp-row.shorter { width: 55%; }
-    .dp-badge {
-      background: #4ade80;
+    .mock-green-pill {
+      background: #22c55e;
       border-radius: 3px;
       height: 8px;
-      width: 40px;
-      display: inline-block;
+      width: 48px;
     }
-    .dashboard-instruction {
-      text-align: center;
+    .mock-gray-pill {
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      height: 8px;
+      width: 70px;
     }
-    .dashboard-instruction .primary {
-      font-size: 15px;
-      font-weight: 600;
-      color: #0D3D4A;
-      margin-bottom: 4px;
+
+    /* CTA */
+    .dashboard-cta {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
-    .dashboard-instruction .secondary {
-      font-size: 13px;
-      color: #7a9aa2;
-    }
-    .dashboard-btn {
+    .btn-dashboard {
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 8px;
       background: #0D3D4A;
       color: #fff;
       font-size: 14px;
       font-weight: 600;
-      padding: 11px 22px;
+      padding: 14px 24px;
       border-radius: 10px;
       text-decoration: none;
       transition: background 0.15s;
+      font-family: inherit;
     }
-    .dashboard-btn:hover { background: #028090; }
-
-    /* ── Footer ─────────────────────────────────────────────── */
-    footer {
+    .btn-dashboard:hover { background: #028090; }
+    .cta-note {
       text-align: center;
-      padding: 20px;
-      font-size: 12px;
+      font-size: 11px;
       color: #9ab5bb;
     }
 
-    @media (max-width: 680px) {
-      .cards { flex-direction: column; }
-      .or-divider { flex-direction: row; }
-      .or-divider .line { width: 60px; height: 1px; }
-      .headline { font-size: 24px; }
+    /* Bottom strip */
+    .right-footer {
+      padding: 20px 32px;
+      border-top: 1px solid #e0ecee;
+      font-size: 11px;
+      color: #b0c8cc;
+    }
+
+    @media (max-width: 700px) {
+      .split { flex-direction: column; }
+      .right { width: 100%; }
+      .left { min-height: 60vh; }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="logo-row">
+<div class="split">
+
+  <!-- LEFT: QR -->
+  <div class="left">
+    <div class="left-content">
+      <div class="left-label">Step 1 — Book via WhatsApp</div>
+
+      <div class="qr-wrap">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=https://wa.me/916369655671&color=0D3D4A&bgcolor=ffffff&margin=6"
+          alt="WhatsApp QR Code"
+        />
+      </div>
+
+      <div class="left-caption">
+        <div class="primary">Scan with your phone camera</div>
+        <div class="secondary">Book in English, Tamil or Hindi</div>
+      </div>
+
+      <a class="wa-link" href="https://wa.me/916369655671" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        Open on phone instead
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT: Dashboard CTA -->
+  <div class="right">
+
+    <div class="right-nav">
       <img src="https://www.meddy.co.in/logo.png" alt="Meddy" onerror="this.style.display='none'" />
       <span class="wordmark">meddy</span>
-    </div>
-    <span class="demo-badge">Live Demo</span>
-  </header>
-
-  <main>
-
-    <div class="intro">
-      <div class="clinic-name">THANC Hospital · Kilpauk, Chennai</div>
-      <h1 class="headline">See Meddy in action.</h1>
-      <p class="subline">
-        Scan the QR to book an appointment via WhatsApp.<br />
-        Watch it appear in the admin dashboard in real time.
-      </p>
+      <span class="live-badge">● Live</span>
     </div>
 
-    <div class="cards">
+    <div class="right-body">
 
-      <!-- WhatsApp QR -->
-      <div class="qr-card">
-        <div class="card-label">Step 1 — Book via WhatsApp</div>
-        <div class="qr-frame">
-          <img
-            src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://wa.me/916369655671&color=0D3D4A&bgcolor=f8fafa&margin=8"
-            alt="WhatsApp QR Code"
-          />
-        </div>
-        <div class="qr-instruction">
-          <div class="primary">Scan with your phone camera</div>
-          <div class="secondary">Opens WhatsApp · Book in English, Tamil or Hindi</div>
-        </div>
-        <a class="whatsapp-btn" href="https://wa.me/916369655671" target="_blank">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-          </svg>
-          Open on Phone
-        </a>
+      <div class="right-intro">
+        <div class="clinic-tag">THANC Hospital · Kilpauk, Chennai</div>
+        <h2>Watch it land in real time.</h2>
+        <p>Book an appointment on the left. Open the dashboard to see it appear — no refresh needed.</p>
       </div>
 
-      <!-- Divider -->
-      <div class="or-divider">
-        <div class="line"></div>
-        <div class="label">THEN</div>
-        <div class="line"></div>
-      </div>
-
-      <!-- Dashboard -->
-      <div class="dashboard-card">
-        <div class="card-label">Step 2 — View Admin Dashboard</div>
-        <div class="dashboard-preview">
-          <div class="dp-header">
-            <div class="dp-dot g"></div>
-            <div class="dp-dot"></div>
-            <div class="dp-dot"></div>
-            <div class="dp-title">meddy ADMIN · THANC Hospital</div>
-          </div>
-          <div class="dp-row"></div>
-          <div class="dp-row short"></div>
-          <div class="dp-row"></div>
-          <div class="dp-row shorter"></div>
-          <div style="display:flex;gap:4px;margin-top:4px;">
-            <div class="dp-badge"></div>
-            <div style="background:rgba(255,255,255,0.2);border-radius:3px;height:8px;width:60px;display:inline-block;"></div>
+      <div class="dashboard-mock">
+        <div class="mock-bar">
+          <div class="mock-dot r"></div>
+          <div class="mock-dot y"></div>
+          <div class="mock-dot g"></div>
+          <span class="mock-title">meddy ADMIN · THANC Hospital</span>
+        </div>
+        <div class="mock-body">
+          <div class="mock-row w90"></div>
+          <div class="mock-row w80 mock-highlight"></div>
+          <div class="mock-row w60"></div>
+          <div class="mock-row w90"></div>
+          <div class="mock-row w80 mock-highlight"></div>
+          <div class="mock-green-row">
+            <div class="mock-green-pill"></div>
+            <div class="mock-gray-pill"></div>
           </div>
         </div>
-        <div class="dashboard-instruction">
-          <div class="primary">Watch appointments appear live</div>
-          <div class="secondary">Real-time · No refresh needed</div>
-        </div>
-        <a class="dashboard-btn" href="/admin/dashboard/thanc" target="_blank">
-          Open Dashboard →
+      </div>
+
+      <div class="dashboard-cta">
+        <a class="btn-dashboard" href="/admin/dashboard/thanc" target="_blank">
+          Open Admin Dashboard →
         </a>
+        <div class="cta-note">Opens in a new tab · Auto-refreshes every 60 seconds</div>
       </div>
 
     </div>
 
-  </main>
+    <div class="right-footer">
+      Meddy by Viyuha Technologies &nbsp;·&nbsp; Pilot · THANC Hospital
+    </div>
 
-  <footer>
-    Meddy by Viyuha Technologies &nbsp;·&nbsp; Pilot · THANC Hospital, Kilpauk
-  </footer>
+  </div>
+
+</div>
 
 </body>
 </html>
