@@ -15,7 +15,7 @@
     --border: #d4ede8; --border-dark: #a8d8cf;
     --font-body: 'Inter', sans-serif; --font-display: 'Fraunces', serif;
     --radius-sm: 6px; --radius-md: 12px; --radius-lg: 20px;
-    --max-w: 900px; --nav-h: 76px;
+    --max-w: 960px; --nav-h: 76px;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: var(--font-body); background: var(--surface-2); min-height: 100vh; -webkit-font-smoothing: antialiased; color: var(--ink); }
@@ -46,39 +46,48 @@
 
   .section-label { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--ink-light); margin-bottom: 16px; }
 
-  .demo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 40px; }
+  .demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px; }
+
   .demo-card {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 28px 24px;
+    border-radius: var(--radius-lg); padding: 24px 20px;
     transition: all 0.2s; animation: fadeUp 0.4s ease both;
   }
   .demo-card.live { border-color: var(--border-dark); }
   .demo-card.live:hover { border-color: var(--teal); box-shadow: 0 6px 24px rgba(26,170,142,0.1); transform: translateY(-2px); }
-  .demo-card.pending { opacity: 0.65; }
+  .demo-card.setup { opacity: 0.85; }
+  .demo-card.pending { opacity: 0.7; }
+  .demo-card.soon { opacity: 0.55; }
 
-  .demo-status { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+  .demo-status { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; }
   .status-dot { width: 7px; height: 7px; border-radius: 50%; }
   .status-live .status-dot { background: #22c55e; }
   .status-live { color: #16a34a; }
-  .status-pending .status-dot { background: #f59e0b; }
-  .status-pending { color: #b45309; }
+  .status-setup .status-dot { background: #3b82f6; }
+  .status-setup { color: #1d4ed8; }
+  .status-awaiting .status-dot { background: #f59e0b; }
+  .status-awaiting { color: #b45309; }
+  .status-soon .status-dot { background: #94a3b8; }
+  .status-soon { color: #64748b; }
 
-  .demo-clinic { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
-  .demo-meta { font-size: 13px; color: var(--ink-light); margin-bottom: 18px; }
-  .demo-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
-  .demo-tag { font-size: 11px; padding: 3px 10px; border-radius: 100px; background: var(--surface-3); color: var(--ink-mid); border: 1px solid var(--border); }
+  .demo-clinic { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 3px; }
+  .demo-clinic.redacted { filter: blur(5px); user-select: none; pointer-events: none; }
+  .demo-meta { font-size: 12px; color: var(--ink-light); margin-bottom: 16px; }
+  .demo-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 18px; }
+  .demo-tag { font-size: 10px; padding: 3px 9px; border-radius: 100px; background: var(--surface-3); color: var(--ink-mid); border: 1px solid var(--border); }
 
   .btn-access {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 10px 20px; border-radius: var(--radius-sm);
-    font-size: 13px; font-weight: 700; color: #fff;
+    padding: 9px 18px; border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 700; color: #fff;
     background: var(--teal); border: none; cursor: pointer;
     text-decoration: none; transition: background 0.18s; font-family: var(--font-body);
   }
   .btn-access:hover { background: var(--teal-dark); }
-  .btn-coming { display: inline-flex; align-items: center; gap: 6px; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; color: var(--ink-light); background: var(--surface-2); border: 1px solid var(--border); cursor: default; }
+  .btn-state { display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; color: var(--ink-light); background: var(--surface-2); border: 1px solid var(--border); cursor: default; }
 
-  @media (max-width: 600px) { .demo-grid { grid-template-columns: 1fr; } .nav-by { display: none; } }
+  @media (max-width: 768px) { .demo-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .demo-grid { grid-template-columns: 1fr; } .nav-by { display: none; } }
 </style>
 </head>
 <body>
@@ -111,6 +120,7 @@
   <div class="section-label">Available Demos</div>
   <div class="demo-grid">
 
+    <!-- LIVE -->
     <div class="demo-card live">
       <div class="demo-status status-live"><span class="status-dot"></span> Live</div>
       <div class="demo-clinic">Vista Vascular Clinic</div>
@@ -136,15 +146,72 @@
       <a href="/admin/demo/thanc" class="btn-access">Access Demo →</a>
     </div>
 
+    <!-- IN SETUP -->
+    <div class="demo-card setup">
+      <div class="demo-status status-setup"><span class="status-dot"></span> In Setup</div>
+      <div class="demo-clinic redacted">Multispeciality Hospital</div>
+      <div class="demo-meta">Orthopaedics · Spine · Coimbatore</div>
+      <div class="demo-tags">
+        <span class="demo-tag">Multi-doctor</span>
+        <span class="demo-tag">OPD + IP</span>
+        <span class="demo-tag">HMS Integration</span>
+      </div>
+      <span class="btn-state">Setting Up</span>
+    </div>
+
+    <div class="demo-card pending">
+      <div class="demo-status status-awaiting"><span class="status-dot"></span> Awaiting Details</div>
+      <div class="demo-clinic redacted">Tertiary Care Hospital</div>
+      <div class="demo-meta">Multi-speciality · Trichy</div>
+      <div class="demo-tags">
+        <span class="demo-tag">Emergency</span>
+        <span class="demo-tag">OPD</span>
+        <span class="demo-tag">Awaiting Schedule</span>
+      </div>
+      <span class="btn-state">Awaiting Details</span>
+    </div>
+
+    <!-- COMING SOON -->
+    <div class="demo-card soon">
+      <div class="demo-status status-soon"><span class="status-dot"></span> Coming Soon</div>
+      <div class="demo-clinic redacted">ENT & General Hospital</div>
+      <div class="demo-meta">ENT · General Medicine · Coimbatore</div>
+      <div class="demo-tags">
+        <span class="demo-tag">Multi-speciality</span>
+        <span class="demo-tag">Outpatient</span>
+      </div>
+      <span class="btn-state">Coming Soon</span>
+    </div>
+
+    <div class="demo-card soon">
+      <div class="demo-status status-soon"><span class="status-dot"></span> Coming Soon</div>
+      <div class="demo-clinic redacted">International Hospital</div>
+      <div class="demo-meta">Orthopaedics · Neurology · Chennai</div>
+      <div class="demo-tags">
+        <span class="demo-tag">Tertiary Care</span>
+        <span class="demo-tag">Multi-campus</span>
+      </div>
+      <span class="btn-state">Coming Soon</span>
+    </div>
+
+    <div class="demo-card soon">
+      <div class="demo-status status-soon"><span class="status-dot"></span> Coming Soon</div>
+      <div class="demo-clinic redacted">Surgical Hospital</div>
+      <div class="demo-meta">General Surgery · Chennai</div>
+      <div class="demo-tags">
+        <span class="demo-tag">Day Care</span>
+        <span class="demo-tag">OPD</span>
+      </div>
+      <span class="btn-state">Coming Soon</span>
+    </div>
+
   </div>
 </main>
 
 <script>
-  // Auth check
   if (sessionStorage.getItem('meddy_admin_auth') !== 'true') {
     window.location.href = '/admin';
   }
-
   function signOut() {
     sessionStorage.removeItem('meddy_admin_auth');
     window.location.href = '/admin';
