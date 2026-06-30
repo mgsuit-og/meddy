@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meddy Admin — THANC Hospital</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f0f4f8;
+    --card: #ffffff;
+    --border: #e2e8f0;
+    --primary: #028090;
+    --primary-dark: #0D3D4A;
+    --text: #1e293b;
+    --muted: #64748b;
+    --shadow: 0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.04);
+    --sidebar-w: 220px;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  body { display: flex; flex-direction: column; }
+
+  /* ── HEADER ── */
+  .header {
+    background: linear-gradient(135deg, #0D3D4A 0%, #028090 100%);
+    color: white;
+    padding: 0 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    flex-shrink: 0;
+    z-index: 20;
+  }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+  .logo-badge {
+    font-size: 10px;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 4px;
+    padding: 2px 7px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .last-updated { font-size: 11px; opacity: 0.75; }
+  .btn-refresh {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: white;
+    padding: 5px 13px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+  }
+  .btn-refresh:hover { background: rgba(255,255,255,0.28); }
+
+  /* ── LAYOUT ── */
+  .app-layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--card);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .clinic-card {
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .clinic-logo-img {
+    height: 56px;
+    width: auto;
+    max-width: 170px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 10px;
+  }
+  .clinic-logo-fallback {
+    font-size: 22px;
+    font-weight: 900;
+    color: #0D3D4A;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    display: none;
+  }
+  .clinic-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .clinic-sub  { font-size: 10px; color: var(--muted); line-height: 1.5; }
+
+  .stats-section { padding: 14px 12px; }
+  .stats-lbl-header {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    padding: 0 4px;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .stat-item {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    border-radius: 7px;
+    padding: 9px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .stat-item:last-child { margin-bottom: 0; }
+  .stat-item.s-total   { border-left-color: #94a3b8; }
+  .stat-item.s-booked  { border-left-color: #3b82f6; }
+  .stat-item.s-arrived { border-left-color: #10b981; }
+  .stat-item.s-done    { border-left-color: #059669; }
+  .stat-item.s-noshow  { border-left-color: #f59e0b; }
+  .stat-lbl { font-size: 11px; color: var(--muted); }
+  .stat-num { font-size: 18px; font-weight: 700; color: var(--text); }
+  .stat-item.s-booked  .stat-num { color: #2563eb; }
+  .stat-item.s-arrived .stat-num { color: #059669; }
+  .stat-item.s-done    .stat-num { color: #059669; }
+  .stat-item.s-noshow  .stat-num { color: #d97706; }
+
+  /* ── MAIN ── */
+  .main {
+    flex: 1;
+    padding: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 14px;
+  }
+
+  /* ── FILTERS ── */
+  .filters {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: var(--shadow);
+    flex-shrink: 0;
+  }
+  .filter-label { font-size: 12px; color: var(--muted); white-space: nowrap; font-weight: 500; }
+  .filters select, .filters input[type="date"] {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-size: 13px;
+    color: var(--text);
+    background: #f8fafc;
+    cursor: pointer;
+  }
+  .filters select:focus, .filters input:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+
+  /* ── TABLE SECTION ── */
+  .table-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+  .table-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    background: #fafbfc;
+  }
+  .table-title { font-size: 13px; font-weight: 700; }
+  .appt-count  { font-size: 11px; color: var(--muted); }
+
+  .table-scroll { overflow-x: auto; overflow-y: auto; flex: 1; }
+
+  table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+  thead th {
+    background: #f8fafc;
+    padding: 8px 11px;
+    text-align: left;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f8fafc; }
+  td { padding: 9px 11px; font-size: 12px; vertical-align: middle; }
+
+  td.col-sno { color: var(--muted); font-size: 11px; font-weight: 600; width: 36px; text-align: center; }
+
+  .patient-link {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--primary);
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+  .patient-link:hover { text-decoration: underline; }
+  .patient-meta { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+  .pid-input {
+    width: 76px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 4px;
+    padding: 3px 6px;
+    font-size: 11px;
+    color: var(--muted);
+    background: transparent;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .pid-input:focus { outline: none; border: 1px solid var(--primary); color: var(--text); background: #f0fdfa; }
+  .pid-input::placeholder { color: #cbd5e1; font-size: 10px; }
+
+  .doc-name { font-size: 12px; font-weight: 500; }
+  .doc-spec  { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+  .time-val { font-weight: 700; font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .queue-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #059669;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .eta-val { font-size: 11px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  .reason-val {
+    color: var(--muted);
+    font-size: 11px;
+    max-width: 120px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+
+  /* Status select */
+  .status-sel {
+    border-radius: 6px;
+    padding: 4px 22px 4px 7px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    min-width: 108px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 7px center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Cpath d='M0 0l4.5 5L9 0z' fill='%2394a3b8'/%3E%3C/svg%3E");
+    border: 1px solid transparent;
+    transition: box-shadow 0.15s;
+  }
+  .status-sel:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+  .ss-booked    { background-color: #eff6ff; color: #2563eb; border-color: #bfdbfe; }
+  .ss-arrived   { background-color: #f0fdf4; color: #15803d; border-color: #86efac; }
+  .ss-delayed   { background-color: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+  .ss-completed { background-color: #ecfdf5; color: #065f46; border-color: #6ee7b7; }
+  .ss-no_show   { background-color: #fffbeb; color: #b45309; border-color: #fde68a; }
+  .ss-cancelled { background-color: #fef2f2; color: #dc2626; border-color: #fecaca; }
+
+  /* Intake */
+  .intake-cell { display: flex; align-items: center; gap: 5px; flex-wrap: nowrap; }
+  .intake-badge {
+    font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.3px;
+    padding: 2px 7px; border-radius: 999px;
+  }
+  .ib-pending { background: #fef9c3; color: #a16207; }
+  .ib-done    { background: #dcfce7; color: #15803d; }
+  .btn-intake {
+    padding: 3px 9px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    background: #f8fafc;
+    color: var(--muted);
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .btn-intake:hover { background: var(--primary); color: white; border-color: var(--primary); }
+
+  /* Action buttons */
+  .actions-cell { display: flex; gap: 4px; }
+  .btn-act {
+    padding: 4px 9px;
+    border-radius: 5px;
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: filter 0.15s;
+  }
+  .btn-act:hover { filter: brightness(0.9); }
+  .b-done   { background: #dcfce7; color: #15803d; }
+  .b-noshow { background: #fef9c3; color: #a16207; }
+  .b-reset  { background: #f1f5f9; color: #475569; }
+
+  /* States */
+  .state-msg { text-align: center; padding: 50px 20px; color: var(--muted); font-size: 13px; }
+  .state-msg .ico { font-size: 32px; margin-bottom: 10px; }
+  .err { color: #dc2626; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px; right: 20px;
+    background: #1e293b;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 999;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-left: 4px solid #10b981; }
+  .toast.fail    { border-left: 4px solid #ef4444; }
+  .toast.info    { border-left: 4px solid #3b82f6; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <div class="logo">meddy</div>
+    <span class="logo-badge">ADMIN</span>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="lastUpdated">—</span>
+    <button class="btn-refresh" onclick="loadAll()">↻ Refresh</button>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="app-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="clinic-card">
+      <img class="clinic-logo-img"
+           src="https://thanchospital.com/en/img/logo.png"
+           onerror="this.style.display='none';document.getElementById('logoFb').style.display='block'"
+           alt="THANC Hospital" />
+      <div class="clinic-logo-fallback" id="logoFb">THANC</div>
+      <div class="clinic-name">THANC Hospital</div>
+      <div class="clinic-sub">Head &amp; Neck Centre<br>Kilpauk, Chennai</div>
+    </div>
+
+    <div class="stats-section">
+      <span class="stats-lbl-header">Today's Overview</span>
+      <div class="stat-item s-total">
+        <span class="stat-lbl">Total</span>
+        <span class="stat-num" id="statTotal">—</span>
+      </div>
+      <div class="stat-item s-booked">
+        <span class="stat-lbl">Booked</span>
+        <span class="stat-num" id="statBooked">—</span>
+      </div>
+      <div class="stat-item s-arrived">
+        <span class="stat-lbl">Arrived</span>
+        <span class="stat-num" id="statArrived">0</span>
+      </div>
+      <div class="stat-item s-done">
+        <span class="stat-lbl">Completed</span>
+        <span class="stat-num" id="statDone">—</span>
+      </div>
+      <div class="stat-item s-noshow">
+        <span class="stat-lbl">No-Show</span>
+        <span class="stat-num" id="statNoshow">—</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <div class="filters">
+      <span class="filter-label">Date</span>
+      <input type="date" id="filterDate" onchange="loadAll()" />
+      <span class="filter-label" style="margin-left:6px">Doctor</span>
+      <select id="filterDoctor" onchange="loadAppointments()">
+        <option value="">All Doctors</option>
+      </select>
+    </div>
+
+    <div class="table-section">
+      <div class="table-header">
+        <span class="table-title">Today's Queue</span>
+        <span class="appt-count" id="apptCount"></span>
+      </div>
+      <div class="table-scroll">
+        <div id="tableBody">
+          <div class="state-msg"><div class="ico">⏳</div>Loading appointments…</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BASE = "https://meddy-backend-production.up.railway.app";
+
+// Local state (not persisted to DB)
+const localStatus = {};  // id → override status string
+const intakeDone  = {};  // id → boolean
+const patientIds  = {};  // id → HMS ID string
+const apptStore   = {};  // id → full appointment object
+
+// ── HELPERS ──────────────────────────────────────────────────────
+
+function todayStr() { return new Date().toISOString().split("T")[0]; }
+
+function fmtTime(t) {
+  if (!t) return "—";
+  const [h, m] = t.split(":");
+  const hr = parseInt(h, 10);
+  return `${hr % 12 || 12}:${m} ${hr >= 12 ? "PM" : "AM"}`;
+}
+
+function esc(s) {
+  if (s == null) return "";
+  return String(s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+}
+
+function showToast(msg, type = "success") {
+  const el = document.getElementById("toast");
+  el.textContent = msg;
+  el.className = `toast ${type} show`;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => { el.className = "toast"; }, 3000);
+}
+
+function refreshArrivedCount() {
+  const n = Object.values(localStatus).filter(s => s === "arrived").length;
+  document.getElementById("statArrived").textContent = n;
+}
+
+// ── STATUS HANDLING ───────────────────────────────────────────────
+
+function applyStatusClass(sel) {
+  sel.className = "status-sel ss-" + sel.value;
+}
+
+async function onStatusChange(id, sel) {
+  const newStatus = sel.value;
+  const prev = localStatus[id] || sel.dataset.orig;
+
+  // Arrived / Delayed: local-only, no API call
+  if (newStatus === "arrived" || newStatus === "delayed") {
+    localStatus[id] = newStatus;
+    applyStatusClass(sel);
+    refreshArrivedCount();
+    rebuildActions(id, newStatus);
+    showToast("Marked " + newStatus, "info");
+    return;
+  }
+
+  // Everything else: PATCH the API
+  try {
+    const res = await fetch(`${BASE}/admin/appointments/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: newStatus }),
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    localStatus[id] = newStatus;
+    applyStatusClass(sel);
+    refreshArrivedCount();
+    rebuildActions(id, newStatus);
+    const lbl = { completed:"Marked complete ✓", no_show:"Marked no-show", booked:"Reset to Booked ↺", cancelled:"Cancelled" };
+    showToast(lbl[newStatus] || "Updated", "success");
+    loadStats();
+  } catch (e) {
+    showToast("Update failed — " + e.message, "fail");
+    sel.value = prev;
+    applyStatusClass(sel);
+  }
+}
+
+async function quickSetStatus(id, newStatus) {
+  const sel = document.getElementById("ssel-" + id);
+  if (!sel) return;
+  sel.value = newStatus;
+  await onStatusChange(id, sel);
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────
+
+function buildActions(id, status) {
+  if (status === "completed" || status === "no_show" || status === "cancelled") {
+    return `<button class="btn-act b-reset" onclick="quickSetStatus('${id}','booked')">↺ Reset</button>`;
+  }
+  return `<button class="btn-act b-done"   onclick="quickSetStatus('${id}','completed')">✓ Done</button>
+          <button class="btn-act b-noshow" onclick="quickSetStatus('${id}','no_show')">✗ No-show</button>`;
+}
+
+function rebuildActions(id, status) {
+  const el = document.getElementById("act-" + id);
+  if (el) el.innerHTML = buildActions(id, status);
+}
+
+// ── INTAKE ────────────────────────────────────────────────────────
+
+function openIntake(id) {
+  const a = apptStore[id];
+  if (!a) return;
+  const p = new URLSearchParams({
+    id:     a.id,
+    name:   a.patient_name      || "",
+    age:    a.patient_age       || "",
+    gender: a.patient_gender    || "",
+    reason: a.reason_for_visit  || "",
+    doctor: (a.doctors || {}).name      || "",
+    time:   (a.slots   || {}).slot_time || "",
+    date:   document.getElementById("filterDate").value || todayStr(),
+  });
+  window.open("/intake/thanc?" + p.toString(), "_blank");
+}
+
+function toggleIntakeDone(id) {
+  intakeDone[id] = !intakeDone[id];
+  const badge = document.getElementById("ibadge-" + id);
+  if (badge) {
+    badge.textContent = intakeDone[id] ? "Done" : "Pending";
+    badge.className   = "intake-badge " + (intakeDone[id] ? "ib-done" : "ib-pending");
+  }
+}
+
+// ── API CALLS ─────────────────────────────────────────────────────
+
+async function loadStats() {
+  try {
+    const date = document.getElementById("filterDate").value || todayStr();
+    const d    = await fetch(`${BASE}/admin/stats?date=${date}`).then(r => r.json());
+    document.getElementById("statTotal").textContent  = d.total     ?? "—";
+    document.getElementById("statBooked").textContent = d.booked    ?? "—";
+    document.getElementById("statDone").textContent   = d.completed ?? "—";
+    document.getElementById("statNoshow").textContent = d.no_show   ?? "—";
+  } catch (e) { console.error("Stats:", e); }
+}
+
+async function loadDoctors() {
+  try {
+    const d   = await fetch(`${BASE}/admin/doctors`).then(r => r.json());
+    const sel = document.getElementById("filterDoctor");
+    const cur = sel.value;
+    sel.innerHTML = '<option value="">All Doctors</option>';
+    (d.doctors || []).forEach(doc => {
+      const o = document.createElement("option");
+      o.value = doc.id; o.textContent = doc.name;
+      sel.appendChild(o);
+    });
+    sel.value = cur;
+  } catch (e) { console.error("Doctors:", e); }
+}
+
+async function loadAppointments() {
+  const body = document.getElementById("tableBody");
+  body.innerHTML = '<div class="state-msg"><div class="ico">⏳</div>Loading…</div>';
+
+  const date     = document.getElementById("filterDate").value || todayStr();
+  const doctorId = document.getElementById("filterDoctor").value;
+  let url = `${BASE}/admin/appointments?date=${date}`;
+  if (doctorId) url += `&doctor_id=${doctorId}`;
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const d     = await res.json();
+    const appts = d.appointments || [];
+
+    document.getElementById("apptCount").textContent =
+      appts.length ? `${appts.length} appointment${appts.length !== 1 ? "s" : ""}` : "";
+
+    if (!appts.length) {
+      body.innerHTML = `<div class="state-msg"><div class="ico">📅</div>No appointments for ${date}</div>`;
+      return;
+    }
+
+    appts.forEach(a => { apptStore[a.id] = a; });
+
+    const rows = appts.map((a, idx) => {
+      const doc    = a.doctors || {};
+      const slot   = a.slots   || {};
+      const status = localStatus[a.id] || a.status || "booked";
+      const qn     = idx + 1;
+      const pid    = patientIds[a.id] || "";
+      const intk   = intakeDone[a.id] || false;
+
+      return `<tr id="row-${a.id}">
+        <td class="col-sno">${qn}</td>
+        <td>
+          <a class="patient-link" href="javascript:void(0)" onclick="openIntake('${a.id}')">${esc(a.patient_name) || "—"}</a>
+          <div class="patient-meta">${[a.patient_age ? a.patient_age+" yrs" : "", a.patient_gender || ""].filter(Boolean).join(" · ") || "—"}</div>
+        </td>
+        <td>
+          <input class="pid-input" id="pid-${a.id}"
+            placeholder="— ID —" value="${esc(pid)}"
+            title="Patient Hospital ID (HMS)"
+            onchange="patientIds['${a.id}']=this.value" />
+        </td>
+        <td>
+          <div class="doc-name">${esc(doc.name) || "—"}</div>
+          <div class="doc-spec">${esc(doc.specialty) || ""}</div>
+        </td>
+        <td><span class="time-val">${fmtTime(slot.slot_time)}</span></td>
+        <td><span class="queue-chip">${qn}</span></td>
+        <td><span class="eta-val">${fmtTime(slot.slot_time)}</span></td>
+        <td><span class="reason-val" title="${esc(a.reason_for_visit)}">${esc(a.reason_for_visit) || "—"}</span></td>
+        <td>
+          <select id="ssel-${a.id}"
+            class="status-sel ss-${status}"
+            data-orig="${status}"
+            onchange="onStatusChange('${a.id}',this)">
+            <option value="booked"    ${status==="booked"    ?"selected":""}>Booked</option>
+            <option value="arrived"   ${status==="arrived"   ?"selected":""}>Arrived</option>
+            <option value="delayed"   ${status==="delayed"   ?"selected":""}>Delayed</option>
+            <option value="completed" ${status==="completed" ?"selected":""}>Completed</option>
+            <option value="no_show"   ${status==="no_show"   ?"selected":""}>No-Show</option>
+            <option value="cancelled" ${status==="cancelled" ?"selected":""}>Cancelled</option>
+          </select>
+        </td>
+        <td>
+          <div class="intake-cell">
+            <span class="intake-badge ${intk?"ib-done":"ib-pending"}" id="ibadge-${a.id}">${intk?"Done":"Pending"}</span>
+            <button class="btn-intake" onclick="openIntake('${a.id}')">📋 Intake</button>
+          </div>
+        </td>
+        <td>
+          <div class="actions-cell" id="act-${a.id}">${buildActions(a.id, status)}</div>
+        </td>
+      </tr>`;
+    }).join("");
+
+    body.innerHTML = `<table>
+      <thead><tr>
+        <th>#</th><th>Patient</th><th>Patient ID</th><th>Doctor</th>
+        <th>Time</th><th>Q#</th><th>ETA</th><th>Reason</th>
+        <th>Status</th><th>Intake</th><th>Actions</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+
+    refreshArrivedCount();
+
+  } catch (e) {
+    body.innerHTML = `<div class="state-msg err">⚠ Could not load — ${e.message}</div>`;
+    console.error(e);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+
+async function loadAll() {
+  document.getElementById("lastUpdated").textContent =
+    "Updated " + new Date().toLocaleTimeString("en-IN", { hour:"2-digit", minute:"2-digit" });
+  await Promise.all([loadStats(), loadDoctors()]);
+  await loadAppointments();
+}
+
+document.getElementById("filterDate").value = todayStr();
+loadAll();
+setInterval(loadAll, 60_000);
+</script>
+</body>
+</html>
