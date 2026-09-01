@@ -94,6 +94,28 @@
   .row { display: flex; gap: 12px; flex-wrap: wrap; }
   .row .field { flex: 1 1 140px; }
 
+  .search-row { display: flex; gap: 8px; }
+  .search-row input { flex: 1; }
+  .search-row button {
+    padding: 10px 16px; border-radius: 6px; border: 1px solid var(--line);
+    background: var(--white); color: var(--teal-deep); font-weight: 600;
+    font-size: 13.5px; font-family: inherit; cursor: pointer; white-space: nowrap;
+  }
+  .search-row button:disabled { opacity: .55; cursor: default; }
+  .places-results {
+    margin-top: 8px; border: 1px solid var(--line); border-radius: 8px;
+    overflow: hidden; display: none;
+  }
+  .places-results.open { display: block; }
+  .places-results button {
+    display: block; width: 100%; text-align: left; padding: 10px 12px;
+    background: var(--white); border: none; border-bottom: 1px solid var(--line);
+    font-family: inherit; font-size: 13.5px; cursor: pointer; color: var(--ink);
+  }
+  .places-results button:last-child { border-bottom: none; }
+  .places-results button:hover { background: var(--locked); }
+  .places-results button .addr { display: block; font-size: 11.5px; color: var(--ink-soft); margin-top: 2px; }
+
   .chips { display: flex; flex-wrap: wrap; gap: 8px; }
   .chips label {
     display: flex; align-items: center; gap: 6px;
@@ -169,13 +191,14 @@
     <h2>Clinic</h2>
     <p class="section-note">Fill before or after the conversation.</p>
     <div class="field">
-      <label for="maps_url">Google Maps listing URL</label>
-      <input type="text" id="maps_url" placeholder="Paste listing link">
-      <span class="hint">Autofill is not connected yet. Fill the fields below by hand for now.</span>
-    </div>
-    <div class="field">
       <label for="clinic_name">Clinic or hospital name</label>
-      <input type="text" id="clinic_name">
+      <div class="search-row">
+        <input type="text" id="clinic_name">
+        <button type="button" class="secondary" id="placesSearchBtn">Search</button>
+      </div>
+      <span class="hint">Search finds it on Google, then fills address, phone and website below. Everything stays editable.</span>
+      <div id="placesResults" class="places-results"></div>
+      <div id="placesStatus" class="hint"></div>
     </div>
     <div class="field">
       <label for="specialty">Specialty</label>
@@ -375,7 +398,9 @@
   // Point this at your Railway backend.
   var API_BASE = "https://meddy-backend-production.up.railway.app";
 
-  var BIO = ["clinic_name","specialty","address","city","pin_code","phone","website","maps_url"];
+  var BIO = ["clinic_name","specialty","address","city","pin_code","phone","website"];
+  var placeId = null;
+  var onlinePresence = {};
   var ANSWERS = ["find_notes","appts_per_day","new_vs_old","new_per_week","day_min","day_max",
     "no_shows","cancellations","review_return","wait_time","token_system","vitals",
     "experience_notes","appt_tracking","checkin","workflow","challenges",
@@ -400,7 +425,7 @@
       .call(document.querySelectorAll('input[name="find_channel"]:checked'))
       .map(function (el) { return el.value; });
 
-    var body = { answers: answers, status: status };
+    var body = { answers: answers, status: status, place_id: placeId, online_presence: onlinePresence };
     BIO.forEach(function (id) { body[id] = val(id); });
     return body;
   }
@@ -491,6 +516,79 @@
 
   document.getElementById("draftBtn").addEventListener("click", function () { send("draft", this); });
   document.getElementById("submitBtn").addEventListener("click", function () { send("submitted", this); });
+
+  // ---- Places search / autofill ----
+  var placesBtn = document.getElementById("placesSearchBtn");
+  var placesResults = document.getElementById("placesResults");
+  var placesStatus = document.getElementById("placesStatus");
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  placesBtn.addEventListener("click", function () {
+    var q = val("clinic_name");
+    if (!q) { placesStatus.textContent = "Type a clinic name first"; return; }
+    placesBtn.disabled = true;
+    placesStatus.textContent = "Searching";
+    placesResults.className = "places-results";
+    placesResults.innerHTML = "";
+
+    fetch(API_BASE + "/intake/places/search?query=" + encodeURIComponent(q), {
+      headers: { "Authorization": "Bearer " + token() }
+    })
+    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      placesBtn.disabled = false;
+      if (!res.ok) { placesStatus.textContent = res.d.detail || "Search failed"; return; }
+      var results = res.d.results || [];
+      if (!results.length) { placesStatus.textContent = "No matches. Fill the fields by hand."; return; }
+      placesStatus.textContent = "";
+      results.forEach(function (r) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.innerHTML = escapeHtml(r.name) + '<span class="addr">' + escapeHtml(r.address) + "</span>";
+        btn.addEventListener("click", function () { selectPlace(r.place_id); });
+        placesResults.appendChild(btn);
+      });
+      placesResults.className = "places-results open";
+    })
+    .catch(function () {
+      placesBtn.disabled = false;
+      placesStatus.textContent = "Could not reach the server";
+    });
+  });
+
+  function selectPlace(id) {
+    placesStatus.textContent = "Filling in details";
+    placesResults.className = "places-results";
+
+    fetch(API_BASE + "/intake/places/details/" + encodeURIComponent(id), {
+      headers: { "Authorization": "Bearer " + token() }
+    })
+    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      if (!res.ok) { placesStatus.textContent = res.d.detail || "Could not fetch details"; return; }
+      var d = res.d;
+      placeId = d.place_id || id;
+      if (d.clinic_name) document.getElementById("clinic_name").value = d.clinic_name;
+      if (d.address) document.getElementById("address").value = d.address;
+      if (d.city) document.getElementById("city").value = d.city;
+      if (d.pin_code) document.getElementById("pin_code").value = d.pin_code;
+      if (d.phone) document.getElementById("phone").value = d.phone;
+      if (d.website) document.getElementById("website").value = d.website;
+      onlinePresence = {
+        google_rating: d.rating != null ? d.rating : null,
+        google_review_count: d.review_count != null ? d.review_count : null
+      };
+      placesStatus.textContent = "Filled from Google. Check the fields, edit anything that's wrong.";
+    })
+    .catch(function () {
+      placesStatus.textContent = "Could not reach the server";
+    });
+  }
 
   if (token()) enterApp();
 })();
