@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meddy Intake</title>
+<style>
+  :root {
+    --paper: #F4F6F5;
+    --ink: #142524;
+    --ink-soft: #55six;
+    --ink-soft: #566B68;
+    --line: #D3DCDA;
+    --teal: #3F7C74;
+    --teal-deep: #2C5951;
+    --white: #FFFFFF;
+    --locked: #EDF1F0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 660px; margin: 0 auto; padding: 24px 16px 120px; }
+
+  .mark { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .mark .word {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 21px; font-weight: 600;
+    color: var(--teal-deep); letter-spacing: -0.01em;
+  }
+  .mark .tag { font-size: 11.5px; color: var(--ink-soft); }
+
+  /* ---------- login ---------- */
+  #loginScreen {
+    min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; padding: 24px;
+  }
+  .login-card {
+    width: 100%; max-width: 340px;
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 10px; padding: 28px 24px;
+  }
+  .login-card .mark { margin-bottom: 22px; }
+  .login-card h2 {
+    font-family: Georgia, serif; font-size: 18px;
+    font-weight: 600; margin: 0 0 16px;
+  }
+
+  /* ---------- form ---------- */
+  #appScreen { display: none; }
+  .topbar {
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 12px; margin-bottom: 26px;
+  }
+  .who { font-size: 12.5px; color: var(--ink-soft); }
+  .linkbtn {
+    background: none; border: none; padding: 0;
+    color: var(--teal-deep); font-size: 12.5px;
+    text-decoration: underline; cursor: pointer; font-family: inherit;
+  }
+
+  h1 {
+    font-family: Georgia, serif; font-size: 25px;
+    font-weight: 600; margin: 0 0 4px; max-width: 24ch;
+  }
+  .sub { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 28px; }
+
+  section { margin-bottom: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+  section.first { border-top: none; padding-top: 0; }
+  h2 {
+    font-family: Georgia, serif; font-size: 17px; font-weight: 600;
+    color: var(--teal-deep); margin: 0 0 4px;
+  }
+  .section-note { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 16px; }
+
+  .field { margin-bottom: 15px; }
+  label { display: block; font-size: 13.5px; margin-bottom: 6px; }
+  .hint { display: block; font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
+  input[type="text"], input[type="password"], input[type="email"], textarea, select {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 6px;
+    background: var(--white); color: var(--ink);
+    font-size: 16px; font-family: inherit;
+  }
+  textarea { resize: vertical; min-height: 62px; }
+  input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--teal); outline-offset: 1px;
+  }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row .field { flex: 1 1 140px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips label {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px; border: 1px solid var(--line);
+    border-radius: 20px; background: var(--white);
+    font-size: 13.5px; margin-bottom: 0; cursor: pointer;
+  }
+  .chips input { width: auto; margin: 0; }
+
+  .locked {
+    background: var(--locked); border: 1px dashed var(--line);
+    border-radius: 8px; padding: 16px;
+  }
+  .locked p { margin: 0; font-size: 13px; color: var(--ink-soft); }
+  .locked ul { margin: 10px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-soft); }
+
+  .actions {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: var(--paper); border-top: 1px solid var(--line);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+  .actions-inner { max-width: 660px; margin: 0 auto; display: flex; gap: 10px; }
+  button.primary, button.secondary {
+    flex: 1; padding: 13px 16px; border-radius: 8px;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: inherit; border: none;
+  }
+  button.primary { background: var(--teal-deep); color: var(--white); }
+  button.secondary { background: var(--white); color: var(--ink); border: 1px solid var(--line); }
+  button:disabled { opacity: .55; cursor: default; }
+  .status { text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: 7px; min-height: 15px; }
+  .error { color: #A6412C; }
+</style>
+</head>
+<body>
+
+<!-- =============== LOGIN =============== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="mark">
+      <span class="word">Meddy</span>
+      <span class="tag">Connecting doctors and patients through smarter care</span>
+    </div>
+    <h2>Sign in</h2>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" autocomplete="username">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password">
+    </div>
+    <button class="primary" id="loginBtn" style="width:100%">Sign in</button>
+    <div class="status" id="loginStatus"></div>
+  </div>
+</div>
+
+<!-- =============== APP =============== -->
+<div id="appScreen">
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="mark">
+      <span class="word">Meddy</span>
+      <span class="tag">Connecting doctors and patients through smarter care</span>
+    </div>
+    <div>
+      <span class="who" id="whoLabel"></span>
+      <button class="linkbtn" id="signOutBtn">Sign out</button>
+    </div>
+  </div>
+
+  <h1>Practice intake</h1>
+  <p class="sub">Front desk conversation. Capture what comes up, skip what does not.</p>
+
+  <!-- ---- BIO ---- -->
+  <section class="first">
+    <h2>Clinic</h2>
+    <p class="section-note">Fill before or after the conversation.</p>
+    <div class="field">
+      <label for="maps_url">Google Maps listing URL</label>
+      <input type="text" id="maps_url" placeholder="Paste listing link">
+      <span class="hint">Autofill is not connected yet. Fill the fields below by hand for now.</span>
+    </div>
+    <div class="field">
+      <label for="clinic_name">Clinic or hospital name</label>
+      <input type="text" id="clinic_name">
+    </div>
+    <div class="field">
+      <label for="specialty">Specialty</label>
+      <input type="text" id="specialty" placeholder="e.g. Oral and maxillofacial surgery">
+    </div>
+    <div class="field">
+      <label for="address">Address</label>
+      <textarea id="address"></textarea>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="city">City</label>
+        <input type="text" id="city">
+      </div>
+      <div class="field">
+        <label for="pin_code">PIN code</label>
+        <input type="text" id="pin_code" inputmode="numeric">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input type="text" id="phone" inputmode="tel">
+      </div>
+      <div class="field">
+        <label for="website">Website</label>
+        <input type="text" id="website">
+      </div>
+    </div>
+  </section>
+
+  <!-- ---- DISCOVERY ---- -->
+  <section>
+    <h2>Discovery</h2>
+    <p class="section-note">Start with how new patients arrive, then get to volume.</p>
+
+    <div class="field">
+      <label>How do new patients find the clinic?</label>
+      <div class="chips">
+        <label><input type="checkbox" name="find_channel" value="Word of mouth"> Word of mouth</label>
+        <label><input type="checkbox" name="find_channel" value="Doctor referral"> Doctor referral</label>
+        <label><input type="checkbox" name="find_channel" value="Google search"> Google search</label>
+        <label><input type="checkbox" name="find_channel" value="Google Maps"> Google Maps</label>
+        <label><input type="checkbox" name="find_channel" value="Social media"> Social media</label>
+        <label><input type="checkbox" name="find_channel" value="Walk-past"> Walk-past</label>
+        <label><input type="checkbox" name="find_channel" value="Insurance panel"> Insurance panel</label>
+      </div>
+      <span class="hint">Ask open first, then tick. Note the ranking if they give one.</span>
+    </div>
+    <div class="field">
+      <label for="find_notes">In their words</label>
+      <textarea id="find_notes"></textarea>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="appts_per_day">Appointments on an average day</label>
+        <input type="text" id="appts_per_day">
+      </div>
+      <div class="field">
+        <label for="new_vs_old">New vs returning split</label>
+        <input type="text" id="new_vs_old" placeholder="e.g. 30 / 70">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="new_per_week">New patients per week</label>
+        <input type="text" id="new_per_week">
+      </div>
+      <div class="field">
+        <label for="day_min">Quietest day</label>
+        <input type="text" id="day_min">
+      </div>
+      <div class="field">
+        <label for="day_max">Busiest day</label>
+        <input type="text" id="day_max">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="no_shows">No-shows</label>
+        <input type="text" id="no_shows" placeholder="per day or per week">
+      </div>
+      <div class="field">
+        <label for="cancellations">Cancellations</label>
+        <input type="text" id="cancellations">
+      </div>
+    </div>
+    <div class="field">
+      <label for="review_return">Review appointments kept</label>
+      <input type="text" id="review_return" placeholder="of 10 given a review date, how many return">
+      <span class="hint">Ask as a ratio. Most desks know this by feel, not by number.</span>
+    </div>
+  </section>
+
+  <!-- ---- ONLINE PRESENCE (backend) ---- -->
+  <section>
+    <h2>Online presence</h2>
+    <p class="section-note">Not asked in the interview. Filled from our own analysis.</p>
+    <div class="locked">
+      <p>Completed backend after the visit:</p>
+      <ul>
+        <li>Google listing completeness, rating, review count and recency</li>
+        <li>Search ranking for specialty plus locality</li>
+        <li>Comparison against nearby competitors on the same terms</li>
+        <li>Website presence and booking path, if any</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ---- PATIENT EXPERIENCE ---- -->
+  <section>
+    <h2>Patient experience</h2>
+    <div class="field">
+      <label for="wait_time">Average waiting time</label>
+      <input type="text" id="wait_time">
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="token_system">Token system</label>
+        <select id="token_system">
+          <option value="">Select</option>
+          <option>Yes</option>
+          <option>No</option>
+          <option>Informal</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="vitals">Vitals recorded</label>
+        <select id="vitals">
+          <option value="">Select</option>
+          <option>Yes, every patient</option>
+          <option>Yes, some patients</option>
+          <option>No</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="experience_notes">Notes</label>
+      <textarea id="experience_notes"></textarea>
+    </div>
+  </section>
+
+  <!-- ---- PMS ---- -->
+  <section>
+    <h2>Patient management</h2>
+    <div class="field">
+      <label for="appt_tracking">How are appointments tracked?</label>
+      <textarea id="appt_tracking" placeholder="Register, spreadsheet, software name"></textarea>
+    </div>
+    <div class="field">
+      <label for="checkin">How are check-ins marked?</label>
+      <textarea id="checkin"></textarea>
+    </div>
+    <div class="field">
+      <label for="workflow">Present workflow, start to finish</label>
+      <textarea id="workflow" placeholder="Patient arrives, then what"></textarea>
+    </div>
+    <div class="field">
+      <label for="challenges">Current challenges</label>
+      <textarea id="challenges"></textarea>
+      <span class="hint">Let them talk. This is the section that sells the next meeting.</span>
+    </div>
+  </section>
+
+  <!-- ---- RECOVERY ---- -->
+  <section>
+    <h2>Recovery</h2>
+    <div class="field">
+      <label for="recovery_followup">Recovery follow-up mechanism</label>
+      <textarea id="recovery_followup"></textarea>
+    </div>
+    <div class="field">
+      <label for="satisfaction">How is patient satisfaction captured?</label>
+      <textarea id="satisfaction"></textarea>
+    </div>
+    <div class="field">
+      <label for="retention">Retention strategies in use</label>
+      <textarea id="retention"></textarea>
+    </div>
+  </section>
+
+</div>
+
+<div class="actions">
+  <div class="actions-inner">
+    <button class="secondary" id="draftBtn">Save draft</button>
+    <button class="primary" id="submitBtn">Submit intake</button>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+</div>
+
+<script>
+(function () {
+  // Point this at your Railway backend.
+  var API_BASE = "https://REPLACE-WITH-YOUR-BACKEND.up.railway.app";
+
+  var BIO = ["clinic_name","specialty","address","city","pin_code","phone","website","maps_url"];
+  var ANSWERS = ["find_notes","appts_per_day","new_vs_old","new_per_week","day_min","day_max",
+    "no_shows","cancellations","review_return","wait_time","token_system","vitals",
+    "experience_notes","appt_tracking","checkin","workflow","challenges",
+    "recovery_followup","satisfaction","retention"];
+
+  var loginScreen = document.getElementById("loginScreen");
+  var appScreen   = document.getElementById("appScreen");
+  var statusEl    = document.getElementById("status");
+  var loginStatus = document.getElementById("loginStatus");
+  var intakeId    = null;
+
+  function token()      { return sessionStorage.getItem("meddy_intake_token"); }
+  function setToken(t)  { sessionStorage.setItem("meddy_intake_token", t); }
+  function clearToken() { sessionStorage.removeItem("meddy_intake_token");
+                          sessionStorage.removeItem("meddy_intake_name"); }
+
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+
+  function payload(status) {
+    var answers = {};
+    ANSWERS.forEach(function (id) { answers[id] = val(id); });
+    answers.find_channel = Array.prototype.slice
+      .call(document.querySelectorAll('input[name="find_channel"]:checked'))
+      .map(function (el) { return el.value; });
+
+    var body = { answers: answers, status: status };
+    BIO.forEach(function (id) { body[id] = val(id); });
+    return body;
+  }
+
+  function show(msg, isError) {
+    statusEl.textContent = msg;
+    statusEl.className = isError ? "status error" : "status";
+  }
+
+  function enterApp(name) {
+    loginScreen.style.display = "none";
+    appScreen.style.display = "block";
+    document.getElementById("whoLabel").textContent = name ? name + " · " : "";
+  }
+
+  document.getElementById("loginBtn").addEventListener("click", function () {
+    var btn = this;
+    var email = val("email"), password = document.getElementById("password").value;
+    if (!email || !password) { loginStatus.textContent = "Enter email and password"; return; }
+    btn.disabled = true;
+    loginStatus.className = "status";
+    loginStatus.textContent = "Signing in";
+
+    fetch(API_BASE + "/intake/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email, password: password })
+    })
+    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      btn.disabled = false;
+      if (!res.ok) {
+        loginStatus.className = "status error";
+        loginStatus.textContent = res.d.detail || "Sign in failed";
+        return;
+      }
+      setToken(res.d.token);
+      sessionStorage.setItem("meddy_intake_name", res.d.name || "");
+      enterApp(res.d.name);
+    })
+    .catch(function () {
+      btn.disabled = false;
+      loginStatus.className = "status error";
+      loginStatus.textContent = "Cannot reach the server";
+    });
+  });
+
+  document.getElementById("password").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("loginBtn").click();
+  });
+
+  document.getElementById("signOutBtn").addEventListener("click", function () {
+    clearToken();
+    location.reload();
+  });
+
+  function send(status, btn) {
+    if (!val("clinic_name")) { show("Clinic name is needed before saving", true); return; }
+    btn.disabled = true;
+    show(status === "submitted" ? "Submitting" : "Saving");
+
+    var url    = API_BASE + "/intake/submit" + (intakeId ? "/" + intakeId : "");
+    var method = intakeId ? "PUT" : "POST";
+
+    fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token()
+      },
+      body: JSON.stringify(payload(status))
+    })
+    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      btn.disabled = false;
+      if (!res.ok) {
+        show(res.d.detail || "Could not save", true);
+        return;
+      }
+      if (res.d.id) intakeId = res.d.id;
+      show(status === "submitted"
+        ? "Submitted at " + new Date().toLocaleTimeString()
+        : "Draft saved at " + new Date().toLocaleTimeString());
+    })
+    .catch(function () {
+      btn.disabled = false;
+      show("Cannot reach the server. Your answers are still on screen.", true);
+    });
+  }
+
+  document.getElementById("draftBtn").addEventListener("click", function () { send("draft", this); });
+  document.getElementById("submitBtn").addEventListener("click", function () { send("submitted", this); });
+
+  if (token()) enterApp(sessionStorage.getItem("meddy_intake_name"));
+})();
+</script>
+</body>
+</html>
