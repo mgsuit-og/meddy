@@ -1,162 +1,499 @@
-"""
-Meddy Sales Intake — FastAPI router.
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meddy Intake</title>
+<style>
+  :root {
+    --paper: #F4F6F5;
+    --ink: #142524;
+    --ink-soft: #55six;
+    --ink-soft: #566B68;
+    --line: #D3DCDA;
+    --teal: #3F7C74;
+    --teal-deep: #2C5951;
+    --white: #FFFFFF;
+    --locked: #EDF1F0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 660px; margin: 0 auto; padding: 24px 16px 120px; }
 
-Mount in main.py:
-    from intake_routes import router as intake_router
-    app.include_router(intake_router)
+  .mark { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .mark .word {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 21px; font-weight: 600;
+    color: var(--teal-deep); letter-spacing: -0.01em;
+  }
+  .mark .tag { font-size: 11.5px; color: var(--ink-soft); }
 
-Env vars:
-    INTAKE_SECRET      # signs session tokens (already set on Railway)
-    INTAKE_PASSWORD    # optional; overrides DEFAULT_PASSWORD below
+  /* ---------- login ---------- */
+  #loginScreen {
+    min-height: 100vh; display: flex; align-items: center;
+    justify-content: center; padding: 24px;
+  }
+  .login-card {
+    width: 100%; max-width: 340px;
+    background: var(--white); border: 1px solid var(--line);
+    border-radius: 10px; padding: 28px 24px;
+  }
+  .login-card .mark { margin-bottom: 22px; }
+  .login-card h2 {
+    font-family: Georgia, serif; font-size: 18px;
+    font-weight: 600; margin: 0 0 16px;
+  }
 
-Auth is a single shared password for the internal sales team.
-No user accounts, no password hashing, no seeding step.
-To change the password: set INTAKE_PASSWORD on Railway (takes effect
-on redeploy), or edit DEFAULT_PASSWORD below and push.
+  /* ---------- form ---------- */
+  #appScreen { display: none; }
+  .topbar {
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 12px; margin-bottom: 26px;
+  }
+  .who { font-size: 12.5px; color: var(--ink-soft); }
+  .linkbtn {
+    background: none; border: none; padding: 0;
+    color: var(--teal-deep); font-size: 12.5px;
+    text-decoration: underline; cursor: pointer; font-family: inherit;
+  }
 
-Zero new dependencies. Reuses the `supabase` client from database.py.
-"""
+  h1 {
+    font-family: Georgia, serif; font-size: 25px;
+    font-weight: 600; margin: 0 0 4px; max-width: 24ch;
+  }
+  .sub { color: var(--ink-soft); font-size: 13.5px; margin: 0 0 28px; }
 
-import os
-import hmac
-import json
-import time
-import base64
-import hashlib
-from typing import Optional, Dict, Any
+  section { margin-bottom: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+  section.first { border-top: none; padding-top: 0; }
+  h2 {
+    font-family: Georgia, serif; font-size: 17px; font-weight: 600;
+    color: var(--teal-deep); margin: 0 0 4px;
+  }
+  .section-note { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 16px; }
 
-from fastapi import APIRouter, HTTPException, Header
-from pydantic import BaseModel
+  .field { margin-bottom: 15px; }
+  label { display: block; font-size: 13.5px; margin-bottom: 6px; }
+  .hint { display: block; font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
+  input[type="text"], input[type="password"], input[type="email"], textarea, select {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 6px;
+    background: var(--white); color: var(--ink);
+    font-size: 16px; font-family: inherit;
+  }
+  textarea { resize: vertical; min-height: 62px; }
+  input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--teal); outline-offset: 1px;
+  }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row .field { flex: 1 1 140px; }
 
-from database import supabase
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips label {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px; border: 1px solid var(--line);
+    border-radius: 20px; background: var(--white);
+    font-size: 13.5px; margin-bottom: 0; cursor: pointer;
+  }
+  .chips input { width: auto; margin: 0; }
 
-router = APIRouter(prefix="/intake", tags=["intake"])
+  .locked {
+    background: var(--locked); border: 1px dashed var(--line);
+    border-radius: 8px; padding: 16px;
+  }
+  .locked p { margin: 0; font-size: 13px; color: var(--ink-soft); }
+  .locked ul { margin: 10px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-soft); }
 
-# Change this, or override with the INTAKE_PASSWORD env var on Railway.
-DEFAULT_PASSWORD = "meddy-intake-2026"
+  .actions {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: var(--paper); border-top: 1px solid var(--line);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+  .actions-inner { max-width: 660px; margin: 0 auto; display: flex; gap: 10px; }
+  button.primary, button.secondary {
+    flex: 1; padding: 13px 16px; border-radius: 8px;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: inherit; border: none;
+  }
+  button.primary { background: var(--teal-deep); color: var(--white); }
+  button.secondary { background: var(--white); color: var(--ink); border: 1px solid var(--line); }
+  button:disabled { opacity: .55; cursor: default; }
+  .status { text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: 7px; min-height: 15px; }
+  .error { color: #A6412C; }
+</style>
+</head>
+<body>
 
-PASSWORD = os.environ.get("INTAKE_PASSWORD") or DEFAULT_PASSWORD
-SECRET = os.environ.get("INTAKE_SECRET", "")
-TOKEN_TTL_SECONDS = 60 * 60 * 12  # 12h — a full day of visits
+<!-- =============== LOGIN =============== -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="mark">
+      <span class="word">Meddy</span>
+      <span class="tag">Connecting doctors and patients through smarter care</span>
+    </div>
+    <h2>Sign in</h2>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" autocomplete="current-password">
+    </div>
+    <button class="primary" id="loginBtn" style="width:100%">Sign in</button>
+    <div class="status" id="loginStatus"></div>
+  </div>
+</div>
 
+<!-- =============== APP =============== -->
+<div id="appScreen">
+<div class="wrap">
 
-# ---------------------------------------------------------------
-# Session tokens — HMAC-signed, stateless
-# ---------------------------------------------------------------
+  <div class="topbar">
+    <div class="mark">
+      <span class="word">Meddy</span>
+      <span class="tag">Connecting doctors and patients through smarter care</span>
+    </div>
+    <div>
+      <button class="linkbtn" id="signOutBtn">Sign out</button>
+    </div>
+  </div>
 
-def _b64e(raw: bytes) -> str:
-    return base64.urlsafe_b64encode(raw).decode().rstrip("=")
+  <h1>Practice intake</h1>
+  <p class="sub">Front desk conversation. Capture what comes up, skip what does not.</p>
 
+  <!-- ---- BIO ---- -->
+  <section class="first">
+    <h2>Clinic</h2>
+    <p class="section-note">Fill before or after the conversation.</p>
+    <div class="field">
+      <label for="maps_url">Google Maps listing URL</label>
+      <input type="text" id="maps_url" placeholder="Paste listing link">
+      <span class="hint">Autofill is not connected yet. Fill the fields below by hand for now.</span>
+    </div>
+    <div class="field">
+      <label for="clinic_name">Clinic or hospital name</label>
+      <input type="text" id="clinic_name">
+    </div>
+    <div class="field">
+      <label for="specialty">Specialty</label>
+      <input type="text" id="specialty" placeholder="e.g. Oral and maxillofacial surgery">
+    </div>
+    <div class="field">
+      <label for="address">Address</label>
+      <textarea id="address"></textarea>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="city">City</label>
+        <input type="text" id="city">
+      </div>
+      <div class="field">
+        <label for="pin_code">PIN code</label>
+        <input type="text" id="pin_code" inputmode="numeric">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input type="text" id="phone" inputmode="tel">
+      </div>
+      <div class="field">
+        <label for="website">Website</label>
+        <input type="text" id="website">
+      </div>
+    </div>
+  </section>
 
-def _b64d(s: str) -> bytes:
-    return base64.urlsafe_b64decode(s + "=" * (-len(s) % 4))
+  <!-- ---- DISCOVERY ---- -->
+  <section>
+    <h2>Discovery</h2>
+    <p class="section-note">Start with how new patients arrive, then get to volume.</p>
 
+    <div class="field">
+      <label>How do new patients find the clinic?</label>
+      <div class="chips">
+        <label><input type="checkbox" name="find_channel" value="Word of mouth"> Word of mouth</label>
+        <label><input type="checkbox" name="find_channel" value="Doctor referral"> Doctor referral</label>
+        <label><input type="checkbox" name="find_channel" value="Google search"> Google search</label>
+        <label><input type="checkbox" name="find_channel" value="Google Maps"> Google Maps</label>
+        <label><input type="checkbox" name="find_channel" value="Social media"> Social media</label>
+        <label><input type="checkbox" name="find_channel" value="Walk-past"> Walk-past</label>
+        <label><input type="checkbox" name="find_channel" value="Insurance panel"> Insurance panel</label>
+      </div>
+      <span class="hint">Ask open first, then tick. Note the ranking if they give one.</span>
+    </div>
+    <div class="field">
+      <label for="find_notes">In their words</label>
+      <textarea id="find_notes"></textarea>
+    </div>
 
-def make_token() -> str:
-    if not SECRET:
-        raise RuntimeError("INTAKE_SECRET not set")
-    payload = {"exp": int(time.time()) + TOKEN_TTL_SECONDS}
-    body = _b64e(json.dumps(payload).encode())
-    sig = _b64e(hmac.new(SECRET.encode(), body.encode(), hashlib.sha256).digest())
-    return f"{body}.{sig}"
+    <div class="row">
+      <div class="field">
+        <label for="appts_per_day">Appointments on an average day</label>
+        <input type="text" id="appts_per_day">
+      </div>
+      <div class="field">
+        <label for="new_vs_old">New vs returning split</label>
+        <input type="text" id="new_vs_old" placeholder="e.g. 30 / 70">
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="new_per_week">New patients per week</label>
+        <input type="text" id="new_per_week">
+      </div>
+      <div class="field">
+        <label for="day_min">Quietest day</label>
+        <input type="text" id="day_min">
+      </div>
+      <div class="field">
+        <label for="day_max">Busiest day</label>
+        <input type="text" id="day_max">
+      </div>
+    </div>
 
+    <div class="row">
+      <div class="field">
+        <label for="no_shows">No-shows</label>
+        <input type="text" id="no_shows" placeholder="per day or per week">
+      </div>
+      <div class="field">
+        <label for="cancellations">Cancellations</label>
+        <input type="text" id="cancellations">
+      </div>
+    </div>
+    <div class="field">
+      <label for="review_return">Review appointments kept</label>
+      <input type="text" id="review_return" placeholder="of 10 given a review date, how many return">
+      <span class="hint">Ask as a ratio. Most desks know this by feel, not by number.</span>
+    </div>
+  </section>
 
-def read_token(token: str) -> Optional[Dict[str, Any]]:
-    if not SECRET or not token or "." not in token:
-        return None
-    body, _, sig = token.partition(".")
-    expected = _b64e(hmac.new(SECRET.encode(), body.encode(), hashlib.sha256).digest())
-    if not hmac.compare_digest(sig, expected):
-        return None
-    try:
-        payload = json.loads(_b64d(body))
-    except Exception:
-        return None
-    if payload.get("exp", 0) < time.time():
-        return None
-    return payload
+  <!-- ---- ONLINE PRESENCE (backend) ---- -->
+  <section>
+    <h2>Online presence</h2>
+    <p class="section-note">Not asked in the interview. Filled from our own analysis.</p>
+    <div class="locked">
+      <p>Completed backend after the visit:</p>
+      <ul>
+        <li>Google listing completeness, rating, review count and recency</li>
+        <li>Search ranking for specialty plus locality</li>
+        <li>Comparison against nearby competitors on the same terms</li>
+        <li>Website presence and booking path, if any</li>
+      </ul>
+    </div>
+  </section>
 
+  <!-- ---- PATIENT EXPERIENCE ---- -->
+  <section>
+    <h2>Patient experience</h2>
+    <div class="field">
+      <label for="wait_time">Average waiting time</label>
+      <input type="text" id="wait_time">
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="token_system">Token system</label>
+        <select id="token_system">
+          <option value="">Select</option>
+          <option>Yes</option>
+          <option>No</option>
+          <option>Informal</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="vitals">Vitals recorded</label>
+        <select id="vitals">
+          <option value="">Select</option>
+          <option>Yes, every patient</option>
+          <option>Yes, some patients</option>
+          <option>No</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="experience_notes">Notes</label>
+      <textarea id="experience_notes"></textarea>
+    </div>
+  </section>
 
-def require_session(authorization: Optional[str]) -> None:
-    if not authorization or not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Not signed in")
-    if not read_token(authorization[7:]):
-        raise HTTPException(status_code=401, detail="Session expired, sign in again")
+  <!-- ---- PMS ---- -->
+  <section>
+    <h2>Patient management</h2>
+    <div class="field">
+      <label for="appt_tracking">How are appointments tracked?</label>
+      <textarea id="appt_tracking" placeholder="Register, spreadsheet, software name"></textarea>
+    </div>
+    <div class="field">
+      <label for="checkin">How are check-ins marked?</label>
+      <textarea id="checkin"></textarea>
+    </div>
+    <div class="field">
+      <label for="workflow">Present workflow, start to finish</label>
+      <textarea id="workflow" placeholder="Patient arrives, then what"></textarea>
+    </div>
+    <div class="field">
+      <label for="challenges">Current challenges</label>
+      <textarea id="challenges"></textarea>
+      <span class="hint">Let them talk. This is the section that sells the next meeting.</span>
+    </div>
+  </section>
 
+  <!-- ---- RECOVERY ---- -->
+  <section>
+    <h2>Recovery</h2>
+    <div class="field">
+      <label for="recovery_followup">Recovery follow-up mechanism</label>
+      <textarea id="recovery_followup"></textarea>
+    </div>
+    <div class="field">
+      <label for="satisfaction">How is patient satisfaction captured?</label>
+      <textarea id="satisfaction"></textarea>
+    </div>
+    <div class="field">
+      <label for="retention">Retention strategies in use</label>
+      <textarea id="retention"></textarea>
+    </div>
+  </section>
 
-# ---------------------------------------------------------------
-# Models
-# ---------------------------------------------------------------
+</div>
 
-class LoginBody(BaseModel):
-    password: str
+<div class="actions">
+  <div class="actions-inner">
+    <button class="secondary" id="draftBtn">Save draft</button>
+    <button class="primary" id="submitBtn">Submit intake</button>
+  </div>
+  <div class="status" id="status"></div>
+</div>
+</div>
 
+<script>
+(function () {
+  // Point this at your Railway backend.
+  var API_BASE = "https://meddy-backend-production.up.railway.app";
 
-class IntakeBody(BaseModel):
-    clinic_name: str
-    specialty: Optional[str] = None
-    address: Optional[str] = None
-    city: Optional[str] = None
-    pin_code: Optional[str] = None
-    phone: Optional[str] = None
-    website: Optional[str] = None
-    maps_url: Optional[str] = None
-    answers: Dict[str, Any] = {}
-    status: str = "draft"
+  var BIO = ["clinic_name","specialty","address","city","pin_code","phone","website","maps_url"];
+  var ANSWERS = ["find_notes","appts_per_day","new_vs_old","new_per_week","day_min","day_max",
+    "no_shows","cancellations","review_return","wait_time","token_system","vitals",
+    "experience_notes","appt_tracking","checkin","workflow","challenges",
+    "recovery_followup","satisfaction","retention"];
 
+  var loginScreen = document.getElementById("loginScreen");
+  var appScreen   = document.getElementById("appScreen");
+  var statusEl    = document.getElementById("status");
+  var loginStatus = document.getElementById("loginStatus");
+  var intakeId    = null;
 
-# ---------------------------------------------------------------
-# Routes
-# ---------------------------------------------------------------
+  function token()      { return sessionStorage.getItem("meddy_intake_token"); }
+  function setToken(t)  { sessionStorage.setItem("meddy_intake_token", t); }
+  function clearToken() { sessionStorage.removeItem("meddy_intake_token"); }
 
-@router.post("/login")
-def login(body: LoginBody):
-    if not hmac.compare_digest(body.password, PASSWORD):
-        raise HTTPException(status_code=401, detail="Password is incorrect")
-    return {"token": make_token()}
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; }
 
+  function payload(status) {
+    var answers = {};
+    ANSWERS.forEach(function (id) { answers[id] = val(id); });
+    answers.find_channel = Array.prototype.slice
+      .call(document.querySelectorAll('input[name="find_channel"]:checked'))
+      .map(function (el) { return el.value; });
 
-@router.post("/submit")
-def submit(body: IntakeBody, authorization: Optional[str] = Header(default=None)):
-    require_session(authorization)
-    res = supabase.table("clinic_intakes").insert(body.model_dump()).execute()
-    if not res.data:
-        raise HTTPException(status_code=500, detail="Could not save. Try again.")
-    return {"id": res.data[0]["id"], "status": body.status}
+    var body = { answers: answers, status: status };
+    BIO.forEach(function (id) { body[id] = val(id); });
+    return body;
+  }
 
+  function show(msg, isError) {
+    statusEl.textContent = msg;
+    statusEl.className = isError ? "status error" : "status";
+  }
 
-@router.put("/submit/{intake_id}")
-def update(intake_id: str, body: IntakeBody, authorization: Optional[str] = Header(default=None)):
-    require_session(authorization)
-    res = (
-        supabase.table("clinic_intakes")
-        .update(body.model_dump())
-        .eq("id", intake_id)
-        .execute()
-    )
-    if not res.data:
-        raise HTTPException(status_code=404, detail="Intake not found")
-    return {"id": intake_id, "status": body.status}
+  function enterApp() {
+    loginScreen.style.display = "none";
+    appScreen.style.display = "block";
+  }
 
+  document.getElementById("loginBtn").addEventListener("click", function () {
+    var btn = this;
+    var password = document.getElementById("password").value;
+    if (!password) { loginStatus.textContent = "Enter the password"; return; }
+    btn.disabled = true;
+    loginStatus.className = "status";
+    loginStatus.textContent = "Signing in";
 
-@router.get("/list")
-def list_intakes(authorization: Optional[str] = Header(default=None)):
-    require_session(authorization)
-    res = (
-        supabase.table("clinic_intakes")
-        .select("id, clinic_name, city, specialty, status, created_at")
-        .order("created_at", desc=True)
-        .limit(200)
-        .execute()
-    )
-    return {"intakes": res.data or []}
+    fetch(API_BASE + "/intake/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: password })
+    })
+    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      btn.disabled = false;
+      if (!res.ok) {
+        loginStatus.className = "status error";
+        loginStatus.textContent = res.d.detail || "Sign in failed";
+        return;
+      }
+      setToken(res.d.token);
+      enterApp();
+    })
+    .catch(function () {
+      btn.disabled = false;
+      loginStatus.className = "status error";
+      loginStatus.textContent = "Cannot reach the server";
+    });
+  });
 
+  document.getElementById("password").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") document.getElementById("loginBtn").click();
+  });
 
-@router.get("/{intake_id}")
-def get_intake(intake_id: str, authorization: Optional[str] = Header(default=None)):
-    require_session(authorization)
-    res = supabase.table("clinic_intakes").select("*").eq("id", intake_id).limit(1).execute()
-    rows = res.data or []
-    if not rows:
-        raise HTTPException(status_code=404, detail="Intake not found")
-    return rows[0]
+  document.getElementById("signOutBtn").addEventListener("click", function () {
+    clearToken();
+    location.reload();
+  });
+
+  function send(status, btn) {
+    if (!val("clinic_name")) { show("Clinic name is needed before saving", true); return; }
+    btn.disabled = true;
+    show(status === "submitted" ? "Submitting" : "Saving");
+
+    var url    = API_BASE + "/intake/submit" + (intakeId ? "/" + intakeId : "");
+    var method = intakeId ? "PUT" : "POST";
+
+    fetch(url, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token()
+      },
+      body: JSON.stringify(payload(status))
+    })
+    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      btn.disabled = false;
+      if (!res.ok) {
+        show(res.d.detail || "Could not save", true);
+        return;
+      }
+      if (res.d.id) intakeId = res.d.id;
+      show(status === "submitted"
+        ? "Submitted at " + new Date().toLocaleTimeString()
+        : "Draft saved at " + new Date().toLocaleTimeString());
+    })
+    .catch(function () {
+      btn.disabled = false;
+      show("Cannot reach the server. Your answers are still on screen.", true);
+    });
+  }
+
+  document.getElementById("draftBtn").addEventListener("click", function () { send("draft", this); });
+  document.getElementById("submitBtn").addEventListener("click", function () { send("submitted", this); });
+
+  if (token()) enterApp();
+})();
+</script>
+</body>
+</html>
