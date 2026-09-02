@@ -13,7 +13,7 @@
     { "source": "/admin/dashboard/thanc", "destination": "/dashboard-thanc.html" },
     { "source": "/intake/thanc", "destination": "/intake-thanc.html" },
     { "source": "/sales", "destination": "/sales-intake.html" },
-    { "source": "/questionnaire/mugham", "destination": "/mugham-questionnaire.html" },
+    { "source": "/onboarding/mugham", "destination": "/mugham-questionnaire.html" },
     {
       "source": "/",
       "has": [{ "type": "host", "value": "sales.meddy.co.in" }],
