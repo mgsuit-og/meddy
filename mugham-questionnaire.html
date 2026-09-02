@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mugham Clinic — Meddy</title>
+<style>
+  :root {
+    --paper: #F4F6F5;
+    --ink: #142524;
+    --ink-soft: #566B68;
+    --line: #D3DCDA;
+    --teal: #3F7C74;
+    --teal-deep: #2C5951;
+    --white: #FFFFFF;
+    --locked: #EDF1F0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.5; -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 660px; margin: 0 auto; padding: 28px 16px 120px; }
+
+  .mark { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .mark .word { font-family: Georgia, serif; font-size: 21px; font-weight: 600; color: var(--teal-deep); }
+  .mark .tag { font-size: 11.5px; color: var(--ink-soft); }
+
+  h1 { font-family: Georgia, serif; font-size: 25px; font-weight: 600; margin: 0 0 8px; max-width: 26ch; }
+  .sub { color: var(--ink-soft); font-size: 14px; margin: 0 0 28px; max-width: 52ch; }
+
+  section { margin-bottom: 26px; padding-top: 22px; border-top: 1px solid var(--line); }
+  section.first { border-top: none; padding-top: 0; }
+  h2 { font-family: Georgia, serif; font-size: 17px; font-weight: 600; color: var(--teal-deep); margin: 0 0 4px; }
+  .section-note { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 16px; }
+
+  .field { margin-bottom: 15px; }
+  label { display: block; font-size: 13.5px; margin-bottom: 6px; }
+  .hint { display: block; font-size: 11.5px; color: var(--ink-soft); margin-top: 4px; }
+  input[type="text"], input[type="password"], textarea, select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px;
+    background: var(--white); color: var(--ink); font-size: 16px; font-family: inherit;
+  }
+  textarea { resize: vertical; min-height: 62px; }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row .field { flex: 1 1 140px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chips label {
+    display: flex; align-items: center; gap: 6px; padding: 8px 12px;
+    border: 1px solid var(--line); border-radius: 20px; background: var(--white);
+    font-size: 13.5px; margin-bottom: 0; cursor: pointer;
+  }
+  .chips input { width: auto; margin: 0; }
+
+  .locked { background: var(--locked); border: 1px dashed var(--line); border-radius: 8px; padding: 16px; }
+  .locked p { margin: 0; font-size: 13px; color: var(--ink-soft); }
+  .locked ul { margin: 10px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-soft); }
+
+  .feature-row {
+    display: flex; justify-content: space-between; align-items: center; gap: 14px;
+    padding: 12px 0; border-bottom: 1px solid var(--line); flex-wrap: wrap;
+  }
+  .feature-row:last-child { border-bottom: none; }
+  .feature-text { flex: 1 1 220px; }
+  .feature-title { font-size: 14px; font-weight: 600; }
+  .feature-desc { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .feature-radios { display: flex; gap: 4px; flex: 0 0 auto; }
+  .feature-radios label {
+    display: flex; align-items: center; gap: 5px; padding: 7px 11px;
+    border: 1px solid var(--line); border-radius: 20px; background: var(--white);
+    font-size: 12.5px; cursor: pointer;
+  }
+  .feature-radios input { width: auto; margin: 0; }
+
+  .actions {
+    position: fixed; left: 0; right: 0; bottom: 0; background: var(--paper);
+    border-top: 1px solid var(--line); padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  }
+  .actions-inner { max-width: 660px; margin: 0 auto; }
+  button.primary {
+    width: 100%; padding: 14px 16px; border-radius: 8px; font-size: 15.5px; font-weight: 600;
+    cursor: pointer; font-family: inherit; border: none; background: var(--teal-deep); color: var(--white);
+  }
+  button.primary:disabled { opacity: .55; cursor: default; }
+  .status { text-align: center; font-size: 12px; color: var(--ink-soft); margin-top: 7px; min-height: 15px; }
+  .error { color: #A6412C; }
+
+  .done { display: none; text-align: center; padding: 60px 20px; }
+  .done.show { display: block; }
+  .done h1 { margin: 0 0 10px; }
+  .done p { color: var(--ink-soft); font-size: 14.5px; max-width: 42ch; margin: 0 auto; }
+</style>
+</head>
+<body>
+<div class="wrap" id="formScreen">
+
+  <div class="mark">
+    <span class="word">Meddy</span>
+    <span class="tag">Connecting doctors and patients through smarter care</span>
+  </div>
+
+  <h1>A few questions about your practice</h1>
+  <p class="sub">This helps us understand how Mugham runs today, so what we build reflects how you actually work rather than a guess. About ten minutes. Leave anything blank if you're not sure.</p>
+
+  <form id="qForm">
+
+    <section class="first">
+      <h2>Practice details</h2>
+      <p class="section-note">Filled in from your listing already. Correct anything that's out of date.</p>
+      <div class="field">
+        <label for="clinic_name">Clinic name</label>
+        <input type="text" id="clinic_name" value="Mugham by Dr Bala">
+      </div>
+      <div class="field">
+        <label for="specialty">Specialty</label>
+        <input type="text" id="specialty" value="Dermatology, hair and laser treatments">
+      </div>
+      <div class="field">
+        <label for="address">Address</label>
+        <textarea id="address">1st floor, The Ark Complex, Jawaharlal Nehru Salai, Adambakkam</textarea>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="city">City</label>
+          <input type="text" id="city" value="Chennai">
+        </div>
+        <div class="field">
+          <label for="pin_code">PIN code</label>
+          <input type="text" id="pin_code" inputmode="numeric">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input type="text" id="phone" inputmode="tel" value="6381313681">
+        </div>
+        <div class="field">
+          <label for="website">Website</label>
+          <input type="text" id="website" value="https://www.mughambydrbala.com">
+        </div>
+      </div>
+      <div class="field">
+        <label for="team_size">Front desk / support team size</label>
+        <input type="text" id="team_size" placeholder="e.g. 2, one on calls one on the floor">
+      </div>
+    </section>
+
+    <section>
+      <h2>Discovery</h2>
+      <p class="section-note">How new patients find you.</p>
+      <div class="field">
+        <label>How do most new patients find you?</label>
+        <div class="chips">
+          <label><input type="checkbox" name="find_channel" value="Word of mouth"> Word of mouth</label>
+          <label><input type="checkbox" name="find_channel" value="Doctor referral"> Doctor referral</label>
+          <label><input type="checkbox" name="find_channel" value="Google search"> Google search</label>
+          <label><input type="checkbox" name="find_channel" value="Google Maps"> Google Maps</label>
+          <label><input type="checkbox" name="find_channel" value="Instagram"> Instagram</label>
+          <label><input type="checkbox" name="find_channel" value="Walk-past"> Walk-past</label>
+        </div>
+      </div>
+      <div class="field">
+        <label for="find_notes">Anything else about how people find you</label>
+        <textarea id="find_notes"></textarea>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="appts_per_day">Patients seen on an average day</label>
+          <input type="text" id="appts_per_day">
+        </div>
+        <div class="field">
+          <label for="new_vs_old">New vs returning split</label>
+          <input type="text" id="new_vs_old" placeholder="a rough guess is fine, e.g. 30 / 70">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="no_shows">No-shows</label>
+          <input type="text" id="no_shows" placeholder="per week or per month">
+        </div>
+        <div class="field">
+          <label for="cancellations">Cancellations</label>
+          <input type="text" id="cancellations">
+        </div>
+      </div>
+      <div class="field">
+        <label for="review_return">Patients who return for follow-up sessions</label>
+        <input type="text" id="review_return" placeholder="e.g. of 10 patients told to come back, roughly how many do">
+      </div>
+    </section>
+
+    <section>
+      <h2>Patient Experience</h2>
+      <p class="section-note">What a visit looks like from the patient's side.</p>
+      <div class="field">
+        <label for="wait_time">Average waiting time</label>
+        <input type="text" id="wait_time">
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="token_system">Token or queue system</label>
+          <select id="token_system">
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>Informal</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="vitals">Vitals recorded before consult</label>
+          <select id="vitals">
+            <option value="">Select</option>
+            <option>Yes, every patient</option>
+            <option>Yes, some patients</option>
+            <option>No</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Clinic Management</h2>
+      <p class="section-note">How appointments, notes and records are handled right now.</p>
+      <div class="field">
+        <label for="appt_tracking">How are appointments tracked today?</label>
+        <textarea id="appt_tracking" placeholder="Register, spreadsheet, software name, or by phone"></textarea>
+      </div>
+      <div class="field">
+        <label for="session_tracking">For treatments that run in a series, like PRP or laser, how do you track which session a patient is on?</label>
+        <textarea id="session_tracking"></textarea>
+      </div>
+      <div class="field">
+        <label for="consult_notes">How are consult notes and treatment history kept?</label>
+        <textarea id="consult_notes" placeholder="Paper, memory, nothing formal"></textarea>
+      </div>
+      <div class="field">
+        <label for="prescriptions">How do you check what was prescribed to a patient last time?</label>
+        <textarea id="prescriptions"></textarea>
+      </div>
+      <div class="field">
+        <label for="checkin">How are check-ins marked?</label>
+        <textarea id="checkin"></textarea>
+      </div>
+      <div class="field">
+        <label for="workflow">Present workflow, start to finish</label>
+        <textarea id="workflow" placeholder="Patient arrives, then what happens"></textarea>
+      </div>
+      <div class="field">
+        <label for="challenges">Anything else about the day-to-day that's frustrating?</label>
+        <textarea id="challenges"></textarea>
+      </div>
+    </section>
+
+    <section>
+      <h2>Billing</h2>
+      <p class="section-note">How payment and billing currently work.</p>
+      <div class="row">
+        <div class="field">
+          <label for="bill_provided">Do you currently give patients a bill or receipt?</label>
+          <select id="bill_provided">
+            <option value="">Select</option>
+            <option>Yes, always</option>
+            <option>Sometimes</option>
+            <option>No</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="gst_needed">Would GST-compliant invoicing matter to you?</label>
+          <select id="gst_needed">
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+            <option>Not sure</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="billing_method">How is payment currently recorded, if at all?</label>
+        <input type="text" id="billing_method" placeholder="cash register, notebook, POS machine, nothing formal">
+      </div>
+      <div class="field">
+        <label for="billing_pain">Anything about billing today that's a hassle?</label>
+        <textarea id="billing_pain"></textarea>
+      </div>
+    </section>
+
+    <section>
+      <h2>Recovery (Follow-up and Retention)</h2>
+      <p class="section-note">What happens after a patient leaves, and what brings them back.</p>
+      <div class="field">
+        <label for="recovery_followup">How do you follow up after a treatment session?</label>
+        <textarea id="recovery_followup"></textarea>
+      </div>
+      <div class="field">
+        <label for="satisfaction">How do you know if a patient is happy with the result?</label>
+        <textarea id="satisfaction"></textarea>
+      </div>
+      <div class="field">
+        <label for="retention">What brings patients back for their next session, today?</label>
+        <textarea id="retention"></textarea>
+      </div>
+    </section>
+
+    <section>
+      <h2>Online presence</h2>
+      <p class="section-note">We look at this separately. Nothing for you to fill in here.</p>
+      <div class="locked">
+        <ul>
+          <li>Google listing completeness, rating, and how it compares to nearby clinics</li>
+          <li>Website performance and search visibility</li>
+          <li>Whether the phone number and address online actually match everywhere</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>What Meddy could help with</h2>
+      <p class="section-note">For each, tell us if it's something you'd want. No commitment, just helps us know what to prioritise.</p>
+      <div id="featureList"></div>
+    </section>
+
+    <section>
+      <h2>Anything else</h2>
+      <p class="section-note">Anything we haven't asked that's worth knowing.</p>
+      <div class="field">
+        <textarea id="other_notes" placeholder="Any other insight or pain point about the clinic"></textarea>
+      </div>
+    </section>
+
+  </form>
+
+  <div class="actions">
+    <div class="actions-inner">
+      <button class="primary" id="submitBtn">Submit</button>
+      <div class="status" id="status"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="done" id="doneScreen">
+  <div class="mark" style="justify-content:center">
+    <span class="word">Meddy</span>
+  </div>
+  <h1>Thank you, Dr. Bala</h1>
+  <p>We've received this and will factor it into what we build for Mugham next. If anything comes to mind afterward, just reply to Karthik directly.</p>
+</div>
+
+<script>
+(function () {
+  // API_BASE and the submit password are the same ones used across
+  // Meddy's internal intake tool. This page skips the login screen
+  // entirely and authenticates in the background on submit, since an
+  // external doctor filling this once shouldn't need to see a login
+  // form built for an internal sales team.
+  var API_BASE = "https://meddy-backend-production.up.railway.app";
+  var SUBMIT_PASSWORD = "meddy-intake-2026";
+
+  var BIO = ["clinic_name","specialty","address","city","pin_code","phone","website"];
+  var ANSWERS = ["team_size","find_notes","appts_per_day","new_vs_old","no_shows","cancellations",
+    "review_return","wait_time","token_system","vitals","appt_tracking","session_tracking",
+    "consult_notes","prescriptions","checkin","workflow","challenges",
+    "bill_provided","gst_needed","billing_method","billing_pain",
+    "recovery_followup","satisfaction","retention","other_notes"];
+
+  var FEATURES = [
+    { id: "feat_appt", title: "Digital appointment tracking", desc: "No more missed or double-booked slots" },
+    { id: "feat_consult", title: "Digital consult notes", desc: "Searchable, not on paper" },
+    { id: "feat_prescriptions", title: "Prescription history", desc: "See what a patient was given last time, in seconds" },
+    { id: "feat_billing", title: "Proper billing and invoicing", desc: "A real bill, every time" },
+    { id: "feat_reminders", title: "WhatsApp appointment reminders", desc: "Automatic, sent without anyone typing them" },
+    { id: "feat_recall", title: "Rebooking reminders for series treatments", desc: "For PRP, laser and similar, sent when the next session is due" },
+    { id: "feat_booking", title: "Online booking", desc: "Patients book without calling in" },
+    { id: "feat_database", title: "Searchable patient database", desc: "One place for every patient's record" }
+  ];
+
+  var statusEl = document.getElementById("status");
+  var submitBtn = document.getElementById("submitBtn");
+  var featureList = document.getElementById("featureList");
+
+  FEATURES.forEach(function (f) {
+    var row = document.createElement("div");
+    row.className = "feature-row";
+    row.innerHTML =
+      '<div class="feature-text"><div class="feature-title">' + f.title + '</div>' +
+      '<div class="feature-desc">' + f.desc + '</div></div>' +
+      '<div class="feature-radios">' +
+      '<label><input type="radio" name="' + f.id + '" value="yes"> Yes</label>' +
+      '<label><input type="radio" name="' + f.id + '" value="no"> No</label>' +
+      '<label><input type="radio" name="' + f.id + '" value="maybe"> Maybe</label>' +
+      '</div>';
+    featureList.appendChild(row);
+  });
+
+  function val(id) { var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+
+  function payload() {
+    var answers = {};
+    ANSWERS.forEach(function (id) { answers[id] = val(id); });
+    answers.find_channel = Array.prototype.slice
+      .call(document.querySelectorAll('input[name="find_channel"]:checked'))
+      .map(function (el) { return el.value; });
+
+    var featureInterest = {};
+    FEATURES.forEach(function (f) {
+      var checked = document.querySelector('input[name="' + f.id + '"]:checked');
+      featureInterest[f.id] = checked ? checked.value : null;
+    });
+    answers.feature_interest = featureInterest;
+
+    var body = { answers: answers, status: "submitted" };
+    BIO.forEach(function (id) { body[id] = val(id); });
+    return body;
+  }
+
+  function show(msg, isError) {
+    statusEl.textContent = msg;
+    statusEl.className = isError ? "status error" : "status";
+  }
+
+  submitBtn.addEventListener("click", function () {
+    if (!val("clinic_name")) { show("Clinic name is needed before submitting", true); return; }
+    submitBtn.disabled = true;
+    show("Submitting");
+
+    fetch(API_BASE + "/intake/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: SUBMIT_PASSWORD })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (loginRes) {
+      if (!loginRes.token) throw new Error("auth failed");
+      return fetch(API_BASE + "/intake/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + loginRes.token
+        },
+        body: JSON.stringify(payload())
+      });
+    })
+    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      if (!res.ok) { throw new Error(res.d.detail || "Could not submit"); }
+      document.getElementById("formScreen").style.display = "none";
+      document.getElementById("doneScreen").className = "done show";
+    })
+    .catch(function (e) {
+      submitBtn.disabled = false;
+      show("Something went wrong, please try again. If it keeps failing, call Karthik directly.", true);
+    });
+  });
+})();
+</script>
+</body>
+</html>

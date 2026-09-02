@@ -8,8 +8,16 @@
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/admin/dashboard", "destination": "/admin-dashboard.html" },
     { "source": "/admin/demo/thanc", "destination": "/demo-thanc.html" },
+    { "source": "/admin/demo/mugham", "destination": "/demo-mugham.html" },
+    { "source": "/admin/demo/reflect", "destination": "/demo-reflect.html" },
     { "source": "/admin/dashboard/thanc", "destination": "/dashboard-thanc.html" },
     { "source": "/intake/thanc", "destination": "/intake-thanc.html" },
-    { "source": "/sales", "destination": "/sales-intake.html" }
+    { "source": "/sales", "destination": "/sales-intake.html" },
+    { "source": "/questionnaire/mugham", "destination": "/mugham-questionnaire.html" },
+    {
+      "source": "/",
+      "has": [{ "type": "host", "value": "sales.meddy.co.in" }],
+      "destination": "/sales-intake.html"
+    }
   ]
 }
