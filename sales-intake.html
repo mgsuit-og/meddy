@@ -482,6 +482,14 @@
 
   function send(status, btn) {
     if (!val("clinic_name")) { show("Clinic name is needed before saving", true); return; }
+    if (status === "submitted" && !placeId) {
+      var proceed = confirm(
+        "No Google listing was selected for this clinic.\n\n" +
+        "The automatic online presence check only runs when a listing is linked. " +
+        "Go back and search for the clinic above, or submit anyway and link it later."
+      );
+      if (!proceed) return;
+    }
     btn.disabled = true;
     show(status === "submitted" ? "Submitting" : "Saving");
 
@@ -579,10 +587,6 @@
       if (d.pin_code) document.getElementById("pin_code").value = d.pin_code;
       if (d.phone) document.getElementById("phone").value = d.phone;
       if (d.website) document.getElementById("website").value = d.website;
-      onlinePresence = {
-        google_rating: d.rating != null ? d.rating : null,
-        google_review_count: d.review_count != null ? d.review_count : null
-      };
       placesStatus.textContent = "Filled from Google. Check the fields, edit anything that's wrong.";
     })
     .catch(function () {
