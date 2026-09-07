@@ -202,7 +202,31 @@
     </div>
     <div class="field">
       <label for="specialty">Specialty</label>
-      <input type="text" id="specialty" placeholder="e.g. Oral and maxillofacial surgery">
+      <select id="specialty">
+        <option value="">Select specialty</option>
+        <option value="dentist">Dentist</option>
+        <option value="dermatologist">Dermatologist</option>
+        <option value="gynecologist">Gynecologist</option>
+        <option value="pediatrician">Pediatrician</option>
+        <option value="general physician">General Physician</option>
+        <option value="ENT specialist">ENT Specialist</option>
+        <option value="orthopedician">Orthopedician</option>
+        <option value="ophthalmologist">Ophthalmologist</option>
+        <option value="cardiologist">Cardiologist</option>
+        <option value="general surgeon">General Surgeon</option>
+        <option value="urologist">Urologist</option>
+        <option value="neurologist">Neurologist</option>
+        <option value="psychiatrist">Psychiatrist</option>
+        <option value="physiotherapist">Physiotherapist</option>
+        <option value="gastroenterologist">Gastroenterologist</option>
+        <option value="nephrologist">Nephrologist</option>
+        <option value="endocrinologist">Endocrinologist</option>
+        <option value="pulmonologist">Pulmonologist</option>
+        <option value="oncologist">Oncologist</option>
+        <option value="multi-specialty hospital">Multi-specialty Hospital</option>
+        <option value="other">Other</option>
+      </select>
+      <input type="text" id="specialty_other" placeholder="Type the specialty" style="display:none; margin-top:8px;">
     </div>
     <div class="field">
       <label for="address">Address</label>
@@ -427,6 +451,7 @@
 
     var body = { answers: answers, status: status, place_id: placeId, online_presence: onlinePresence };
     BIO.forEach(function (id) { body[id] = val(id); });
+    if (body.specialty === "other") { body.specialty = val("specialty_other"); }
     return body;
   }
 
@@ -521,6 +546,18 @@
       show("Cannot reach the server. Your answers are still on screen.", true);
     });
   }
+
+  var specialtySelect = document.getElementById("specialty");
+  var specialtyOther  = document.getElementById("specialty_other");
+  specialtySelect.addEventListener("change", function () {
+    if (specialtySelect.value === "other") {
+      specialtyOther.style.display = "block";
+      specialtyOther.focus();
+    } else {
+      specialtyOther.style.display = "none";
+      specialtyOther.value = "";
+    }
+  });
 
   document.getElementById("draftBtn").addEventListener("click", function () { send("draft", this); });
   document.getElementById("submitBtn").addEventListener("click", function () { send("submitted", this); });
