@@ -232,6 +232,10 @@
       <label for="address">Address</label>
       <textarea id="address"></textarea>
     </div>
+    <div class="field">
+      <label for="sublocality">Locality</label>
+      <input type="text" id="sublocality" placeholder="e.g. Anna Nagar">
+    </div>
     <div class="row">
       <div class="field">
         <label for="city">City</label>
@@ -422,7 +426,7 @@
   // Point this at your Railway backend.
   var API_BASE = "https://meddy-backend-production.up.railway.app";
 
-  var BIO = ["clinic_name","specialty","address","city","pin_code","phone","website"];
+  var BIO = ["clinic_name","specialty","address","city","sublocality","pin_code","phone","website"];
   var placeId = null;
   var onlinePresence = {};
   var ANSWERS = ["find_notes","appts_per_day","new_vs_old","new_per_week","day_min","day_max",
@@ -621,6 +625,7 @@
       if (d.clinic_name) document.getElementById("clinic_name").value = d.clinic_name;
       if (d.address) document.getElementById("address").value = d.address;
       if (d.city) document.getElementById("city").value = d.city;
+      if (d.sublocality) document.getElementById("sublocality").value = d.sublocality;
       if (d.pin_code) document.getElementById("pin_code").value = d.pin_code;
       if (d.phone) document.getElementById("phone").value = d.phone;
       if (d.website) document.getElementById("website").value = d.website;
