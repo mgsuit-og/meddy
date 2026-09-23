@@ -1,11 +1,6 @@
 {
   "redirects": [
     {
-      "source": "/demo",
-      "destination": "https://sales.meddy.co.in/admin/dashboard",
-      "permanent": false
-    },
-    {
       "source": "/sales",
       "destination": "https://sales.meddy.co.in/",
       "permanent": false
@@ -31,10 +26,6 @@
     {
       "source": "/admin/demo/reflect",
       "destination": "/demo-reflect.html"
-    },
-    {
-      "source": "/admin/dashboard/thanc",
-      "destination": "/dashboard-thanc.html"
     },
     {
       "source": "/intake/thanc",
