@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow"><!-- prototype: remove when this becomes the live homepage -->
+<meta name="description" content="Meddy is an AI companion for clinics: it helps patients find, book and come back to their doctor, and helps doctors run the clinic.">
+<title>Meddy · AI companion for clinics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body { --bw: min(236px, 28vh); --by: 54%; }
+:root {
+  --void: #07090c; --void2: #0d1116;
+  --dtx: #eef3f7; --dtx2: #93a2b0; --dtx3: #5f6e7c;
+  --dbd: rgba(150,190,185,.16); --dbd2: rgba(150,190,185,.32);
+  --signal: #4fc4b0; --cyan: #5ad8ff;
+  --dsp: 'Archivo', -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: var(--dsp); background: var(--void); color: var(--dtx); -webkit-font-smoothing: antialiased; overflow: hidden; }
+button { font-family: inherit; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- background: dark when off, lights up on boot ---------- */
+@property --r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+.bg-grid { position: fixed; inset: 0; pointer-events: none; opacity: 0;
+  background-image: linear-gradient(rgba(110,200,185,.11) 1px, transparent 1px), linear-gradient(90deg, rgba(110,200,185,.11) 1px, transparent 1px);
+  background-size: 36px 36px;
+  -webkit-mask-image: radial-gradient(circle at 50% 54%, #000 calc(var(--r) * .55), transparent var(--r));
+          mask-image: radial-gradient(circle at 50% 54%, #000 calc(var(--r) * .55), transparent var(--r));
+  transition: opacity .4s ease; }
+.bg-glow { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.4s ease;
+  background: radial-gradient(ellipse 46% 42% at 50% 54%, rgba(79,196,176,.20), transparent 70%); }
+body.live .bg-grid { opacity: 1; animation: gridIn 1.8s cubic-bezier(.3,.6,.2,1) forwards; }
+body.live .bg-glow { opacity: 1; }
+@keyframes gridIn { from { --r: 0%; } to { --r: 95%; } }
+
+/* ---------- top bar ---------- */
+.bar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 26px; }
+.brand { display: flex; align-items: baseline; gap: 10px; opacity: .35; transition: opacity 1s ease; }
+body.live .brand { opacity: 1; }
+.brand .w { font-family: Georgia, serif; font-size: 21px; font-weight: 600; }
+.brand .t { font-family: var(--mono); font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--signal); }
+.mute { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--dbd2); background: rgba(255,255,255,.03); color: var(--dtx2);
+  display: grid; place-items: center; cursor: pointer; }
+.mute:hover { color: var(--dtx); border-color: var(--signal); }
+.mute svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- stage ---------- */
+.stage { position: fixed; inset: 0; }
+svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+svg.wires path { fill: none; stroke: rgba(79,196,176,.35); stroke-width: 1; stroke-dasharray: 4 5; }
+svg.wires path.draw { stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: wire .7s ease forwards; }
+@keyframes wire { to { stroke-dashoffset: 0; } }
+
+.bot { position: absolute; left: 50%; top: var(--by); width: var(--bw); transform: translate(-50%, -50%); z-index: 3; }
+.bot-inner { position: relative; transform-origin: 50% 90%; transition: transform .9s cubic-bezier(.3,1.4,.4,1), filter .9s ease;
+  transform: rotate(-5deg) translateY(10px) scale(.97); filter: brightness(.5) saturate(.5); }
+.bot-inner .layer { display: block; width: 100%; height: auto; }
+.bot-inner .layer + .layer { position: absolute; left: 0; top: 0; }
+.bot-inner .off { transition: opacity .25s ease; }
+.bot-inner .on, .bot-inner .wave { opacity: 0; transition: opacity .12s linear; }
+.bot-inner .wave { transition: opacity .25s ease; }
+.mglow { position: absolute; left: 53%; top: 23.9%; width: 40%; aspect-ratio: 1.6; transform: translate(-50%, -50%); border-radius: 50%;
+  pointer-events: none; opacity: 0; mix-blend-mode: screen; filter: blur(5px);
+  background: radial-gradient(closest-side, rgba(170,240,255,.95), rgba(79,196,176,.35) 55%, transparent 100%); transition: opacity .12s linear; }
+.shadow { position: absolute; left: 50%; bottom: -4%; width: 62%; height: 7%; transform: translateX(-50%); border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(0,0,0,.6), transparent); z-index: -1; }
+/* states */
+body.waking .bot-inner, body.live .bot-inner { transform: none; filter: none; }
+body.live .bot { animation: float 4.5s ease-in-out 0.4s infinite; }
+@keyframes float { 0%,100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, calc(-50% - 9px)); } }
+.bot-inner.hop { animation: hop .55s cubic-bezier(.3,.7,.3,1); }
+@keyframes hop { 0% { transform: scale(1,1); } 25% { transform: scale(1.06,.9); } 55% { transform: translateY(-16px) scale(.96,1.06); } 100% { transform: none; } }
+body.live .mglow { animation: mpulse 2.6s ease-in-out infinite; }
+@keyframes mpulse { 0%,100% { opacity: .25; } 50% { opacity: .6; } }
+
+/* ---------- start ---------- */
+.start-zone { position: absolute; left: 50%; top: calc(var(--by) + var(--bw) * .71 + 30px); transform: translateX(-50%); z-index: 4;
+  display: flex; flex-direction: column; align-items: center; gap: 16px; transition: opacity .35s ease, transform .35s ease; }
+body.waking .start-zone, body.live .start-zone { opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
+.start { position: relative; width: 104px; height: 104px; border-radius: 50%; border: none; cursor: pointer; color: #062320;
+  font-size: 18px; font-weight: 800; letter-spacing: .2px;
+  background: radial-gradient(circle at 35% 30%, #8ff0dd, #4fc4b0 55%, #2a8f80);
+  box-shadow: 0 0 0 8px rgba(79,196,176,.10), 0 0 0 9px rgba(79,196,176,.35), 0 12px 40px -8px rgba(79,196,176,.6);
+  transition: transform .18s ease, box-shadow .18s ease; }
+.start::before { content: ''; position: absolute; inset: -18px; border-radius: 50%; border: 1.5px solid rgba(79,196,176,.45); animation: ring 2.6s ease-out infinite; }
+@keyframes ring { from { transform: scale(.85); opacity: .9; } to { transform: scale(1.25); opacity: 0; } }
+.start:hover { transform: scale(1.05); } .start:active { transform: scale(.97); }
+.start:focus-visible { outline: 3px solid #bff3e9; outline-offset: 12px; }
+.tagline { white-space: nowrap; font-family: var(--mono); font-size: 11px; letter-spacing: 1.2px; color: var(--dtx3); text-transform: uppercase; }
+
+.status { position: absolute; left: 50%; top: calc(var(--by) + var(--bw) * .71 + 22px); transform: translateX(-50%); z-index: 4;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--signal); opacity: 0; transition: opacity .3s; }
+body.waking .status { opacity: 1; }
+
+/* ---------- caption (what Meddy says) ---------- */
+.caption { position: absolute; left: 50%; top: calc(var(--by) + var(--bw) * .71 + 20px); transform: translateX(-50%); z-index: 4; width: min(560px, 90vw);
+  text-align: center; font-size: 17px; line-height: 1.5; color: var(--dtx); opacity: 0; transition: opacity .4s ease; min-height: 3em; }
+body.live .caption { opacity: 1; }
+.caption b { color: var(--signal); font-weight: 700; }
+.caret { display: inline-block; width: 2px; height: 1em; background: var(--signal); vertical-align: -2px; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+
+/* ---------- section nodes (semicircle) ---------- */
+.nodes { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.node { position: absolute; transform: translate(-50%, -50%) scale(.6); opacity: 0; pointer-events: none; width: 184px; text-align: left;
+  display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: 12px; cursor: pointer; color: var(--dtx);
+  background: linear-gradient(155deg, rgba(26,34,43,.94), rgba(14,19,25,.94)); border: 1px solid var(--dbd);
+  transition: opacity .35s ease, transform .45s cubic-bezier(.3,1.4,.4,1), border-color .15s, box-shadow .15s; }
+.node.in { opacity: 1; transform: translate(-50%, -50%) scale(1); pointer-events: auto; }
+.node:hover, .node:focus-visible { border-color: rgba(79,196,176,.6); box-shadow: 0 0 28px -6px rgba(79,196,176,.45); outline: none; }
+.node small { font-family: var(--mono); font-size: 9.5px; letter-spacing: 1.3px; color: var(--dtx3); }
+.node b { font-size: 14.5px; font-weight: 700; line-height: 1.2; letter-spacing: -.1px; }
+.node span { font-family: var(--mono); font-size: 9.5px; color: var(--dtx3); }
+.node.feature { border-color: rgba(79,196,176,.55); background: linear-gradient(155deg, rgba(30,62,58,.95), rgba(14,26,25,.95)); }
+.node.feature small { color: var(--signal); }
+.node.feature span { color: #9fe0d3; }
+
+/* ---------- section panel (placeholder) ---------- */
+.panel { position: fixed; inset: 0; z-index: 30; display: flex; flex-direction: column; background: rgba(7,9,12,.72); backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity .3s ease; }
+.panel.open { opacity: 1; pointer-events: auto; }
+.sheet { margin: auto; width: min(760px, 92vw); max-height: 86vh; overflow-y: auto; background: #f4f7f9; color: #131820; border-radius: 18px;
+  box-shadow: 0 0 0 1px rgba(79,196,176,.35), 0 30px 90px -20px rgba(79,196,176,.45); transform: translateY(24px) scale(.98);
+  transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+.panel.open .sheet { transform: none; }
+.sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 22px; background: #fff; border-bottom: 1px solid #d6dce2; border-radius: 18px 18px 0 0; }
+.sheet-head small { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; color: #6d7986; }
+.sheet-head b { font-size: 21px; letter-spacing: -.3px; }
+.back { font-family: var(--mono); font-size: 12px; font-weight: 600; color: #3c4652; background: none; border: 1.5px solid #d6dce2; border-radius: 8px; padding: 9px 13px; cursor: pointer; white-space: nowrap; }
+.back:hover { background: #e9edf1; }
+.sheet-body { padding: 22px; }
+.ph { border: 2px dashed #c9d3db; border-radius: 12px; padding: 28px 20px; text-align: center; color: #6d7986; font-family: var(--mono); font-size: 12px; line-height: 1.7; }
+.ph b { display: block; font-family: var(--dsp); font-size: 16px; color: #3c4652; margin-bottom: 4px; }
+.fakeform { display: grid; gap: 10px; margin-top: 16px; text-align: left; }
+.fakeform label { font-size: 12px; font-weight: 600; color: #3c4652; }
+.fakeform input { width: 100%; font: inherit; font-size: 14px; padding: 11px 12px; border: 1px solid #d6dce2; border-radius: 8px; background: #fff; }
+.fakeform button { justify-self: start; font-weight: 700; font-size: 14px; padding: 12px 18px; border-radius: 10px; border: none; background: #2C5951; color: #fff; opacity: .55; cursor: not-allowed; }
+
+/* ---------- mobile ---------- */
+@media (max-width: 760px) {
+  body { overflow-y: auto; }
+  .bar { padding: 12px 16px; }
+  body { --bw: min(170px, 22vh); --by: 30%; }
+  .bg-grid { -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 calc(var(--r) * .55), transparent var(--r)); mask-image: radial-gradient(circle at 50% 30%, #000 calc(var(--r) * .55), transparent var(--r)); }
+  .bg-glow { background: radial-gradient(ellipse 70% 40% at 50% 30%, rgba(79,196,176,.2), transparent 70%); }
+  .caption { font-size: 15.5px; }
+  svg.wires { display: none; }
+  .nodes { position: absolute; left: 0; right: 0; top: calc(var(--by) + var(--bw) * .71 + 100px); bottom: auto; inset-inline: 0; padding: 0 14px 30px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .node { position: relative; left: auto !important; top: auto !important; width: auto; transform: translateY(14px) scale(.96); }
+  .node.in { transform: none; }
+  .node.feature { grid-column: 1 / -1; order: -1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bot-inner, .start::before, body.live .bot, body.live .mglow, .caret { animation: none !important; transition: none !important; }
+  body.live .bg-grid { animation: none; --r: 95%; }
+}
+</style>
+</head>
+<body>
+
+<h1 class="sr">Meddy — an AI companion for clinics</h1>
+<p class="sr">Meddy helps patients find, book and come back to their doctor, and helps doctors run their clinic. Get a free Clinic Spotlight for your clinic.</p>
+
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-glow" aria-hidden="true"></div>
+
+<header class="bar">
+  <div class="brand"><span class="w">Meddy</span><span class="t">AI companion for clinics</span></div>
+  <button class="mute" id="mute" aria-label="Mute sound" title="Sound on"></button>
+</header>
+
+<main class="stage" id="stage">
+  <svg class="wires" id="wires" aria-hidden="true"></svg>
+  <div class="bot" id="bot">
+    <div class="bot-inner" id="botInner">
+      <img class="layer off" id="lOff" src="meddy-off.png" alt="Meddy">
+      <img class="layer on" id="lOn" src="meddy-idle.png" alt="" aria-hidden="true">
+      <img class="layer wave" id="lWave" src="meddy-wave.png" alt="" aria-hidden="true">
+      <span class="mglow" id="mglow"></span>
+      <span class="shadow"></span>
+    </div>
+  </div>
+
+  <div class="start-zone">
+    <button class="start" id="startBtn" aria-label="Start Meddy">Start</button>
+    <div class="tagline">Meddy · AI companion for clinics</div>
+  </div>
+  <div class="status" id="status" aria-live="polite"></div>
+  <div class="caption" id="caption" aria-live="polite"></div>
+  <nav class="nodes" id="nodes" aria-label="Sections"></nav>
+</main>
+
+<div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pTitle">
+  <div class="sheet">
+    <div class="sheet-head"><div><small id="pKick"></small><b id="pTitle"></b></div><button class="back" id="backBtn">← Back to Meddy</button></div>
+    <div class="sheet-body" id="pBody"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  // ======================= CONFIG =======================
+  // Sections are placeholders until the set is final. "feature" marks the one to highlight.
+  var SECTIONS = [
+    { id: "s1", label: "Section 01", sub: "placeholder" },
+    { id: "s2", label: "Section 02", sub: "placeholder" },
+    { id: "spotlight", label: "Get your free Clinic Spotlight", sub: "see how your clinic compares", feature: true },
+    { id: "s4", label: "Section 04", sub: "placeholder" },
+    { id: "s5", label: "Section 05", sub: "placeholder" },
+    { id: "s6", label: "Section 06", sub: "placeholder" }
+  ];
+  var LINE = "Hi, I'm <b>Meddy</b>. Tap what you'd like to know, and I'll take you there.";
+  var BOOT_MS_FIRST = 3000, BOOT_MS_RETURN = 1100;
+  // M glow position per pose (percent of image)
+  var M_POS = { on: [53, 23.9], wave: [63.5, 24] };
+
+  function $(id) { return document.getElementById(id); }
+  var REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function narrow() { return window.innerWidth <= 760; }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  // ======================= SOUND =======================
+  var muted = store("meddy_muted") === "1", ac = null;
+  var ICON_ON = '<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>';
+  var ICON_OFF = '<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+  function paintMute() { $("mute").innerHTML = muted ? ICON_OFF : ICON_ON; $("mute").setAttribute("aria-label", muted ? "Turn sound on" : "Mute sound"); $("mute").title = muted ? "Sound off" : "Sound on"; }
+  paintMute();
+  $("mute").addEventListener("click", function () {
+    muted = !muted; store("meddy_muted", muted ? "1" : "0"); paintMute();
+    if (muted && window.speechSynthesis) speechSynthesis.cancel();
+  });
+  function audio() {
+    if (muted) return null;
+    try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === "suspended") ac.resume(); } catch (e) { return null; }
+    return ac;
+  }
+  function tone(freq, dur, type, vol, when, glideTo) {
+    var c = audio(); if (!c) return;
+    var t = c.currentTime + (when || 0), o = c.createOscillator(), g = c.createGain();
+    o.type = type || "sine"; o.frequency.setValueAtTime(freq, t);
+    if (glideTo) o.frequency.exponentialRampToValueAtTime(glideTo, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.08, t + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + 0.05);
+  }
+  var SFX = {
+    powerUp: function (ms) {
+      var c = audio(); if (!c) return;
+      var d = ms / 1000, t = c.currentTime, o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain();
+      o.type = "sawtooth"; o.frequency.setValueAtTime(55, t); o.frequency.exponentialRampToValueAtTime(420, t + d * 0.8);
+      f.type = "lowpass"; f.frequency.setValueAtTime(200, t); f.frequency.exponentialRampToValueAtTime(2400, t + d * 0.8);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.05, t + 0.25); g.gain.setValueAtTime(0.05, t + d * 0.7); g.gain.exponentialRampToValueAtTime(0.0001, t + d * 0.9);
+      o.connect(f).connect(g).connect(c.destination); o.start(t); o.stop(t + d);
+    },
+    blip: function () { tone(1400, 0.06, "triangle", 0.05); },
+    chime: function () { tone(660, 0.5, "sine", 0.07); tone(990, 0.7, "sine", 0.05, 0.09); },
+    pop: function (i) { tone(700 + i * 90, 0.08, "sine", 0.035); },
+    tap: function () { tone(880, 0.07, "triangle", 0.05); }
+  };
+
+  // ======================= VOICE =======================
+  // Prototype voice: the browser's built-in text-to-speech. Swap for recorded audio later.
+  var voice = null;
+  function pickVoice() {
+    if (!window.speechSynthesis) return;
+    var vs = speechSynthesis.getVoices(); if (!vs.length) return;
+    var prefer = [/en-IN/i, /Google UK English Male/i, /Daniel/i, /en-GB/i, /Google US English/i, /en-US/i, /^en/i];
+    for (var i = 0; i < prefer.length && !voice; i++) voice = vs.filter(function (v) { return prefer[i].test(v.lang) || prefer[i].test(v.name); })[0] || null;
+  }
+  if (window.speechSynthesis) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+  function speak(html) {
+    if (muted || !window.speechSynthesis) return;
+    try {
+      speechSynthesis.cancel();
+      var u = new SpeechSynthesisUtterance(html.replace(/<[^>]+>/g, ""));
+      if (voice) u.voice = voice; u.rate = 1.0; u.pitch = 1.05; u.volume = 1;
+      speechSynthesis.speak(u);
+    } catch (e) {}
+  }
+
+  // ======================= TYPE =======================
+  function typeInto(el, html) {
+    var gen = (el.__gen = (el.__gen || 0) + 1);
+    if (REDUCED) { el.innerHTML = html; return; }
+    var parts = html.split(/(<[^>]+>)/), i = 0, j = 0, out = "";
+    (function tick() {
+      if (el.__gen !== gen) return;
+      if (i >= parts.length) { el.innerHTML = out; return; }
+      var p = parts[i];
+      if (p.charAt(0) === "<") { out += p; i++; j = 0; } else if (j < p.length) { out += p.charAt(j++); } else { i++; j = 0; }
+      el.innerHTML = out + '<span class="caret"></span>';
+      setTimeout(tick, p.charAt(0) === "<" ? 0 : (/[.,]/.test(p.charAt(j - 1)) ? 160 : 26));
+    })();
+  }
+
+  // ======================= POSES =======================
+  function pose(name) {
+    $("lOn").style.opacity = name === "on" ? 1 : 0;
+    $("lWave").style.opacity = name === "wave" ? 1 : 0;
+    $("lOff").style.opacity = name === "wave" ? 0 : 1;
+    var p = M_POS[name] || M_POS.on; $("mglow").style.left = p[0] + "%"; $("mglow").style.top = p[1] + "%";
+  }
+  function m(on, glow) { $("lOn").style.opacity = on ? 1 : 0; $("mglow").style.opacity = glow == null ? (on ? .9 : 0) : glow; }
+
+  // ======================= NODES =======================
+  function layoutNodes() {
+    var nodes = Array.prototype.slice.call($("nodes").children);
+    var wires = $("wires");
+    if (narrow()) { wires.innerHTML = ""; nodes.forEach(function (n) { n.style.left = n.style.top = ""; }); return []; }
+    var br = $("bot").getBoundingClientRect(), gl = $("mglow").getBoundingClientRect();
+    var cx = br.left + br.width / 2, cy = br.top + br.height * 0.42;
+    var W = window.innerWidth, H = window.innerHeight;
+    var rx = Math.min(W * 0.36, 470), ry = Math.min(H * 0.40, 330);
+    var N = nodes.length, a0 = 196, a1 = 344;              // degrees, 270 = straight up: a semicircle over Meddy
+    var ox = gl.left + gl.width / 2, oy = gl.top + gl.height / 2, d = "";
+    var pts = nodes.map(function (n, k) {
+      var a = (a0 + (a1 - a0) * (k / (N - 1))) * Math.PI / 180;
+      var x = cx + rx * Math.cos(a), y = cy + ry * Math.sin(a);
+      x = Math.max(110, Math.min(W - 110, x)); y = Math.max(104, y);
+      n.style.left = x + "px"; n.style.top = y + "px";
+      return [x, y];
+    });
+    wires.innerHTML = pts.map(function (p, k) {
+      var mx = (ox + p[0]) / 2, my = Math.min(oy, p[1]) - 30;
+      return '<path data-k="' + k + '" d="M' + ox + " " + oy + " Q" + mx + " " + my + " " + p[0] + " " + p[1] + '"/>'; }).join("");
+    return pts;
+  }
+  function buildNodes() {
+    $("nodes").innerHTML = SECTIONS.map(function (s, k) {
+      return '<button class="node' + (s.feature ? " feature" : "") + '" data-id="' + s.id + '"><small>0' + (k + 1) + (s.feature ? " · FREE" : "") +
+        "</small><b>" + s.label + "</b><span>" + s.sub + "</span></button>"; }).join("");
+    Array.prototype.forEach.call($("nodes").children, function (b) { b.addEventListener("click", function () { openSection(b.getAttribute("data-id")); }); });
+  }
+  function revealNodes() {
+    layoutNodes();
+    var nodes = $("nodes").children, paths = $("wires").querySelectorAll("path");
+    Array.prototype.forEach.call(nodes, function (n, k) {
+      setTimeout(function () {
+        if (paths[k]) paths[k].classList.add("draw");
+        n.classList.add("in"); SFX.pop(k);
+      }, REDUCED ? 0 : 120 + k * 130);
+    });
+  }
+  window.addEventListener("resize", function () { if (document.body.classList.contains("live")) layoutNodes(); });
+
+  // ======================= BOOT =======================
+  async function boot() {
+    var first = store("meddy_woke") !== "1", ms = REDUCED ? 0 : (first ? BOOT_MS_FIRST : BOOT_MS_RETURN);
+    audio();                                   // unlock audio on this click
+    document.body.classList.add("waking");
+    $("status").textContent = "Waking up…";
+    if (ms) {
+      SFX.powerUp(ms);
+      var k = ms / 3000;                       // scale the whole sequence
+      await wait(450 * k);
+      document.body.classList.add("live");   // background starts lighting up
+      // M flickers on, like a screen struggling to start
+      var seq = [[1, .5, 90], [0, 0, 110], [1, .7, 70], [0, 0, 220], [1, .9, 60], [0, .2, 90], [1, 1, 140]];
+      for (var i = 0; i < seq.length; i++) { m(seq[i][0], seq[i][1]); if (seq[i][0]) SFX.blip(); await wait(seq[i][2] * Math.max(k, .45)); }
+      m(1, .9);
+      $("status").textContent = "Online";
+      await wait(700 * k);
+      var inner = $("botInner"); inner.classList.remove("hop"); void inner.offsetWidth; inner.classList.add("hop");
+      await wait(300 * k);
+    } else { document.body.classList.add("live"); m(1, .6); }
+    store("meddy_woke", "1");
+    document.body.classList.remove("waking");
+    pose("wave"); SFX.chime();
+    typeInto($("caption"), LINE); speak(LINE);
+    revealNodes();
+    setTimeout(function () { pose("on"); }, 2600);
+  }
+  $("startBtn").addEventListener("click", boot);
+  buildNodes();
+
+  // ======================= SECTIONS =======================
+  var lastFocus = null;
+  function openSection(id) {
+    var s = SECTIONS.filter(function (x) { return x.id === id; })[0]; if (!s) return;
+    SFX.tap(); lastFocus = document.activeElement;
+    $("pKick").textContent = s.feature ? "Free · for clinics" : "Placeholder";
+    $("pTitle").textContent = s.label;
+    $("pBody").innerHTML = s.id === "spotlight"
+      ? '<div class="ph"><b>Clinic Spotlight request</b>A short intro and a sample Spotlight go here.</div>' +
+        '<div class="fakeform"><label>Clinic name</label><input disabled placeholder="e.g. Reflect Skin & Hair Clinic"><label>Area and city</label><input disabled placeholder="e.g. Ram Lakshman Nagar, Coimbatore">' +
+        '<label>WhatsApp number</label><input disabled placeholder="+91"><button disabled>Send my Spotlight</button></div>'
+      : '<div class="ph"><b>' + s.label + '</b>Content for this section is being written.<br>This panel shows where it will open.</div>';
+    $("panel").classList.add("open"); $("backBtn").focus();
+    var say = s.feature ? "Great choice. Here's how to get your free Clinic Spotlight." : "Taking you there.";
+    typeInto($("caption"), say);
+  }
+  function closeSection() {
+    $("panel").classList.remove("open"); typeInto($("caption"), LINE);
+    if (lastFocus) lastFocus.focus();
+  }
+  $("backBtn").addEventListener("click", closeSection);
+  $("panel").addEventListener("click", function (e) { if (e.target === $("panel")) closeSection(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && $("panel").classList.contains("open")) closeSection(); });
+})();
+</script>
+</body>
+</html>
