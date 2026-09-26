@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>A few questions · Meddy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root { --ink: #131820; --ink2: #3c4652; --ink3: #6d7986; --rule: #e1e6eb; --teal: #2e9a8a; --tealbg: #e7f6f2; --bg: #f6f8fa; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Plus Jakarta Sans', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+.top { background: #07090c; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; }
+.top img { height: 22px; display: block; } .top span { color: #9fb0bd; font-size: 12.5px; font-weight: 600; }
+.hero { background: radial-gradient(ellipse at 20% 0%, rgba(79,196,176,.25), transparent 60%), #0b1113; color: #eef3f7; padding: 30px 20px 34px; }
+.hero-in, main { max-width: 680px; margin: 0 auto; }
+.hero-in { display: flex; gap: 16px; align-items: center; }
+.hero img { width: 84px; flex: 0 0 auto; filter: drop-shadow(0 10px 20px rgba(79,196,176,.35)); }
+.hero h1 { font-size: clamp(22px, 4.5vw, 28px); font-weight: 800; letter-spacing: -.5px; line-height: 1.15; margin-bottom: 6px; }
+.hero p { color: #b4c2cc; font-size: 14.5px; line-height: 1.5; }
+main { padding: 22px 20px 70px; }
+section { background: #fff; border: 1px solid var(--rule); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+section > h2 { font-size: 12px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; color: var(--teal); margin-bottom: 4px; }
+.q { padding: 14px 0; border-top: 1px solid var(--rule); } .q:first-of-type { border-top: none; padding-top: 8px; }
+.q > b { display: block; font-size: 15.5px; margin-bottom: 10px; line-height: 1.35; } .q > b small { font-weight: 500; color: var(--ink3); font-size: 13px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips label { display: block; } .chips input { position: absolute; opacity: 0; pointer-events: none; }
+.chips span { display: inline-block; padding: 9px 14px; border-radius: 999px; border: 1.5px solid #d6dce2; font-size: 14px; font-weight: 600; color: var(--ink2); background: #fff; cursor: pointer; user-select: none; }
+.chips input:checked + span { border-color: var(--teal); background: var(--tealbg); color: #0d5c52; }
+.chips input:focus-visible + span { box-shadow: 0 0 0 3px rgba(79,196,176,.3); }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+select, textarea { width: 100%; font: inherit; font-size: 15px; padding: 11px 12px; border: 1.5px solid #d6dce2; border-radius: 10px; background: #fff; color: var(--ink); }
+select:focus, textarea:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(79,196,176,.2); }
+textarea { min-height: 96px; resize: vertical; }
+.lbl { font-size: 13px; font-weight: 700; color: var(--ink2); display: block; margin-bottom: 6px; }
+.send { width: 100%; font: inherit; font-weight: 800; font-size: 16px; padding: 15px; border-radius: 999px; border: none; cursor: pointer; color: #062320; background: linear-gradient(135deg, #7fe6d2, #4fc4b0 50%, #2e9a8a); box-shadow: 0 12px 30px -12px rgba(46,154,138,.7); }
+.send:disabled { opacity: .6; cursor: wait; }
+.err { color: #a3321b; font-size: 14px; min-height: 1.2em; margin: 6px 0 10px; text-align: center; }
+.note { text-align: center; font-size: 12.5px; color: var(--ink3); margin-top: 12px; line-height: 1.5; }
+.state { text-align: center; padding: 60px 20px; } .state b { display: block; font-size: 22px; margin-bottom: 8px; } .state p { color: var(--ink2); line-height: 1.55; }
+.done-flag { background: var(--tealbg); border: 1px solid #a6e2d6; color: #0d5c52; border-radius: 12px; padding: 10px 14px; font-size: 14px; margin-bottom: 14px; }
+@media (max-width: 480px) { .row2 { grid-template-columns: 1fr; } .hero img { width: 64px; } }
+</style>
+</head>
+<body>
+<header class="top"><img src="/v2/meddy-logo-light.png" alt="Meddy"><span>Takes about 2 minutes</span></header>
+<div class="hero"><div class="hero-in"><img src="/v2/meddy-up.png" alt=""><div><h1 id="hi">A few quick questions</h1><p>Your answers help us make your Spotlight about your clinic, not clinics in general. Tap what fits. Skip anything you're unsure of.</p></div></div></div>
+<main id="main"><div class="state"><p>Loading…</p></div></main>
+
+<script>
+(function () {
+  var API = "https://meddy-backend-production.up.railway.app";
+  var DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  // keys match the sales console's intake fields
+  var SECTIONS = [
+    { h: "How patients find you", qs: [
+      { k: "find_channel", q: "How do most new patients find you?", sub: "Pick all that apply", multi: true,
+        o: ["Word of mouth", "Doctor referral", "Google search", "Google Maps", "Social media", "Walk-past", "Insurance panel"] }
+    ]},
+    { h: "A typical week", qs: [
+      { k: "appts_per_day", q: "Patients seen on a typical day", o: ["Under 10", "10–25", "25–50", "50–100", "100+"] },
+      { k: "new_per_week", q: "New patients in a week", o: ["Under 5", "5–15", "15–30", "30+"] },
+      { days: true },
+      { k: "no_shows", q: "Booked patients who don't turn up", o: ["Rarely", "1–2 a day", "3–5 a day", "More than 5 a day"] },
+      { k: "wait_time", q: "Average waiting time", o: ["Under 15 min", "15–30 min", "30–60 min", "Over an hour"] },
+      { k: "token_system", q: "Do you use a token system?", o: ["Yes", "No", "Informal"] }
+    ]},
+    { h: "Booking and follow-up", qs: [
+      { k: "appt_tracking", q: "How do you keep track of appointments?", o: ["Paper register", "Excel or sheet", "Software or app", "WhatsApp", "Walk-ins only"] },
+      { k: "review_return", q: "Of patients asked to come back for a review, how many do?", o: ["Almost all (9 of 10)", "Most (7 of 10)", "About half (5 of 10)", "Few (3 of 10)", "Not sure"] },
+      { k: "recovery_followup", q: "After treatment, do you check on patients?", o: ["We call or message every patient", "Only some patients", "Patients come back on their own"] },
+      { k: "challenges", q: "What's the one thing you'd most like to fix at your clinic?", text: true }
+    ]}
+  ];
+  var main = document.getElementById("main");
+  var token = new URLSearchParams(location.search).get("t") || "";
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function state(t, p) { main.innerHTML = '<div class="state"><b>' + t + "</b><p>" + p + "</p></div>"; }
+  function req(method, body) {
+    return fetch(API + "/public/questionnaire/" + encodeURIComponent(token), { method: method, headers: body ? { "Content-Type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.detail || "Something went wrong."); return d; }); });
+  }
+  function chips(q, val) {
+    var type = q.multi ? "checkbox" : "radio", vals = q.multi ? (Array.isArray(val) ? val : []) : [val];
+    return '<div class="chips">' + q.o.map(function (o) {
+      return '<label><input type="' + type + '" name="' + q.k + '" value="' + esc(o) + '"' + (vals.indexOf(o) > -1 ? " checked" : "") + "><span>" + esc(o) + "</span></label>"; }).join("") + "</div>";
+  }
+  function daySel(k, label, val) {
+    return '<div><label class="lbl" for="' + k + '">' + label + '</label><select id="' + k + '" name="' + k + '"><option value="">—</option>' +
+      DAYS.map(function (d) { return "<option" + (d === val ? " selected" : "") + ">" + d + "</option>"; }).join("") + "</select></div>";
+  }
+  function render(d) {
+    var a = d.answers || {}, doc = String(d.doctor_name || "").trim();
+    document.getElementById("hi").textContent = doc ? "Hi Dr. " + doc + ", a few quick questions" : "A few quick questions";
+    main.innerHTML = (d.submitted_at ? '<div class="done-flag">You\'ve already sent your answers. You can change them and send again.</div>' : "") +
+      '<form id="qf" novalidate>' + SECTIONS.map(function (s) {
+        return "<section><h2>" + s.h + "</h2>" + s.qs.map(function (q) {
+          if (q.days) return '<div class="q"><b>Busiest and quietest days</b><div class="row2">' + daySel("day_max", "Busiest", a.day_max) + daySel("day_min", "Quietest", a.day_min) + "</div></div>";
+          return '<div class="q"><b>' + esc(q.q) + (q.sub ? " <small>· " + q.sub + "</small>" : "") + "</b>" +
+            (q.text ? '<textarea name="' + q.k + '" maxlength="1000" placeholder="In your own words">' + esc(a[q.k] || "") + "</textarea>" : chips(q, a[q.k])) + "</div>";
+        }).join("") + "</section>";
+      }).join("") +
+      '<div class="err" id="err" role="alert"></div><button class="send" type="submit">Send my answers</button>' +
+      '<p class="note">' + esc(d.clinic_name || "") + ' · Only the Meddy team sees your answers. <a href="/v2/privacy.html" target="_blank" rel="noopener">Privacy Policy</a></p></form>';
+    document.getElementById("qf").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = e.target, out = {}, btn = f.querySelector(".send");
+      SECTIONS.forEach(function (s) { s.qs.forEach(function (q) {
+        if (q.days) { ["day_max", "day_min"].forEach(function (k) { if (f[k].value) out[k] = f[k].value; }); return; }
+        if (q.text) { var t = f[q.k].value.trim(); if (t) out[q.k] = t; return; }
+        var picked = Array.prototype.filter.call(f.querySelectorAll('[name="' + q.k + '"]'), function (i) { return i.checked; }).map(function (i) { return i.value; });
+        if (q.multi) { if (picked.length) out[q.k] = picked; } else if (picked[0]) out[q.k] = picked[0];
+      }); });
+      if (!Object.keys(out).length) { document.getElementById("err").textContent = "Please answer at least one question."; return; }
+      btn.disabled = true; btn.textContent = "Sending…";
+      req("POST", { answers: out }).then(function () {
+        window.scrollTo(0, 0);
+        state("Thank you" + (doc ? ", Dr. " + esc(doc) : "") + ".", "We've got your answers. We'll use them to prepare your Clinic Spotlight and be in touch on WhatsApp.");
+      }).catch(function (e2) { document.getElementById("err").textContent = e2.message; btn.disabled = false; btn.textContent = "Send my answers"; });
+    });
+  }
+  if (!token) { state("This link is not complete.", "Please use the full link we sent you."); return; }
+  req("GET").then(render).catch(function (e) { state("We couldn't open this link.", esc(e.message) + " If you need help, email <a href=\"mailto:hello@meddy.co.in\">hello@meddy.co.in</a>."); });
+})();
+</script>
+</body>
+</html>

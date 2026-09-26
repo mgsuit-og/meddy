@@ -226,7 +226,9 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 .offer b { font-size: 16px; } .offer p { font-size: 14px; color: var(--dtx2); line-height: 1.45; }
 .offer em { margin-top: auto; font-style: normal; font-size: 12.5px; color: #9fe0d3; }
 .p-end { margin-top: 72px; padding: 36px; border-radius: 20px; text-align: center; background: radial-gradient(ellipse at 50% 0%, rgba(79,196,176,.2), rgba(12,20,22,.9)); border: 1px solid rgba(95,212,190,.35); }
-.founders { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.founders { display: grid; grid-template-columns: minmax(0,1fr) 150px minmax(0,1fr); gap: 0; align-items: stretch; }
+.f-meddy { position: relative; z-index: 3; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+.f-meddy img { width: 250px; max-width: none; margin: 0 -50px; filter: drop-shadow(0 22px 40px rgba(79,196,176,.3)); animation: bob2 5s ease-in-out infinite; }
 .founder { border-radius: 18px; overflow: hidden; border: 1px solid var(--dbd); background: linear-gradient(170deg, rgba(24,34,40,.95), rgba(12,17,21,.95)); display: flex; flex-direction: column; }
 .founder img { width: 100%; aspect-ratio: 4 / 3.4; object-fit: cover; object-position: 50% 22%; display: block; }
 .f-body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 8px; }
@@ -241,6 +243,7 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 }
 @media (max-width: 600px) {
   .stages, .steps4, .founders { grid-template-columns: 1fr; }
+  .f-meddy { height: 170px; } .f-meddy img { width: 136px; margin: 0 0 -14px; }
   .page-in { padding: 36px 18px 64px; } .page-bar { padding: 12px 16px; }
   .p-hero h1 { letter-spacing: -1px; } .p-end { padding: 26px 18px; }
 }
@@ -276,7 +279,8 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 .half { transition: background .3s; }
 /* ---------- hero Meddy ---------- */
 .p-hero.with-bot { position: relative; max-width: none; padding-right: 300px; min-height: 300px; }
-.hero-bot { position: absolute; right: 20px; top: 24px; width: 210px; transform: scaleX(-1); filter: drop-shadow(0 20px 40px rgba(79,196,176,.25)); animation: float 4.5s ease-in-out infinite; }
+.hero-bot { position: absolute; right: 20px; top: 24px; width: 210px; filter: drop-shadow(0 20px 40px rgba(79,196,176,.25)); animation: heroFloat 4.5s ease-in-out infinite; }
+@keyframes heroFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
 /* ---------- spotlight section ---------- */
 .spot-sec { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 34px; align-items: center; padding: 30px; border-radius: 22px;
   background: radial-gradient(ellipse at 0% 0%, rgba(79,196,176,.16), transparent 60%), rgba(12,20,22,.8); border: 1px solid rgba(95,212,190,.35); }
@@ -294,7 +298,8 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 /* ---------- Meddy guide (docked) ---------- */
 .guide { position: fixed; right: 22px; bottom: 20px; z-index: 5; display: flex; align-items: flex-end; gap: 10px; opacity: 0; transform: translateY(20px); transition: opacity .4s, transform .4s; pointer-events: none; }
 .guide.on { opacity: 1; transform: none; }
-.g-bot { width: 76px; border: none; background: none; padding: 0; cursor: pointer; pointer-events: auto; filter: drop-shadow(0 10px 20px rgba(79,196,176,.35)); animation: float 4s ease-in-out infinite; }
+.g-bot { width: 76px; border: none; background: none; padding: 0; cursor: pointer; pointer-events: auto; filter: drop-shadow(0 10px 20px rgba(79,196,176,.35)); animation: bob2 4s ease-in-out infinite; }
+@keyframes bob2 { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
 .g-bot img { width: 100%; display: block; }
 .g-say { max-width: 230px; background: rgba(255,255,255,.97); color: #131820; font-size: 13.5px; line-height: 1.4; font-weight: 600; padding: 10px 13px; border-radius: 14px 14px 4px 14px;
   box-shadow: 0 10px 30px -10px rgba(0,0,0,.6); opacity: 0; transform: translateY(6px) scale(.96); transition: opacity .3s, transform .3s; margin-bottom: 44px; }
@@ -321,9 +326,24 @@ body.home .mini-foot { opacity: 1; }
 .sp-form .consent { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; font-size: 13px; line-height: 1.45; color: #3c4652; }
 .sp-form .consent input { margin-top: 3px; width: 17px; height: 17px; accent-color: #2e9a8a; flex: 0 0 auto; }
 .sp-form .consent a { color: #1f6f63; }
+.sp-form [hidden] { display: none !important; }
+.sp-form .srch { display: flex; gap: 8px; } .sp-form .srch input { flex: 1; min-width: 0; }
+.sp-form .srch button { justify-self: auto; padding: 0 16px; border-radius: 10px; background: #2C5951; color: #fff; font-weight: 700; font-size: 14px; border: none; cursor: pointer; }
+.sp-res { display: grid; gap: 8px; margin-top: 10px; }
+.sp-opt, .sp-picked { text-align: left; display: flex; flex-direction: column; gap: 2px; padding: 11px 13px; border-radius: 12px; border: 1.5px solid #d6dce2; background: #fff; cursor: pointer; font: inherit; color: #131820; }
+.sp-opt:hover, .sp-opt:focus-visible { border-color: #2e9a8a; outline: none; box-shadow: 0 0 0 3px rgba(79,196,176,.18); }
+.sp-opt b, .sp-picked b { font-size: 14.5px; } .sp-opt span, .sp-picked span { font-size: 12.5px; color: #6d7986; } .sp-opt em, .sp-picked em { font-style: normal; font-size: 12.5px; color: #a8660f; font-weight: 700; }
+.sp-picked { flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; cursor: default; border-color: #2e9a8a; background: #eef9f6; }
+.sp-picked div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sp-link { justify-self: start; background: none !important; border: none; padding: 6px 0 0 !important; color: #1f6f63 !important; font-size: 13px !important; font-weight: 700; text-decoration: underline; cursor: pointer; box-shadow: none !important; }
+.sp-note { font-size: 13px; color: #6d7986; }
+.roles { border: none; display: flex; flex-wrap: wrap; gap: 8px; } .roles legend { font-size: 13px; font-weight: 700; color: #3c4652; margin-bottom: 6px; width: 100%; }
+.roles label { display: block; } .roles input { position: absolute; opacity: 0; }
+.roles span { display: inline-block; padding: 8px 14px; border-radius: 999px; border: 1.5px solid #d6dce2; font-size: 13.5px; font-weight: 600; color: #3c4652; background: #fff; cursor: pointer; }
+.roles input:checked + span { border-color: #2e9a8a; background: #e7f6f2; color: #0d5c52; } .roles input:focus-visible + span { box-shadow: 0 0 0 3px rgba(79,196,176,.3); }
 .sp-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
-.sp-form button { justify-self: start; font-weight: 800; font-size: 15px; padding: 13px 20px; border-radius: 999px; border: none; cursor: pointer; color: #062320; background: linear-gradient(135deg, #7fe6d2, #4fc4b0 50%, #2e9a8a); }
-.sp-form button:disabled { opacity: .6; cursor: wait; }
+.sp-form .sp-send { justify-self: start; font-weight: 800; font-size: 15px; padding: 13px 20px; border-radius: 999px; border: none; cursor: pointer; color: #062320; background: linear-gradient(135deg, #7fe6d2, #4fc4b0 50%, #2e9a8a); }
+.sp-form .sp-send:disabled { opacity: .6; cursor: wait; }
 .sp-intro { font-size: 15px; color: #3c4652; line-height: 1.5; margin-bottom: 16px; }
 .sp-err { font-size: 13.5px; color: #a3321b; min-height: 1em; }
 .sp-done { text-align: center; padding: 20px 8px; } .sp-done b { display: block; font-size: 20px; color: #131820; margin-bottom: 6px; } .sp-done p { color: #3c4652; font-size: 15px; line-height: 1.5; }
@@ -536,6 +556,7 @@ body.home .mini-foot { opacity: 1; }
           <a href="https://www.linkedin.com/in/karthikeyan-mg-8b6898180/" target="_blank" rel="noopener">LinkedIn →</a>
         </div>
       </article>
+      <div class="f-meddy" aria-hidden="true"><img src="/v2/meddy-open.png" alt="" loading="lazy"></div>
       <article class="founder">
         <img src="/v2/team-rupa.jpg" alt="Rupa Rajendran" loading="lazy">
         <div class="f-body">
@@ -868,23 +889,70 @@ body.home .mini-foot { opacity: 1; }
 
   // ======================= SPOTLIGHT FORM =======================
   var API = "https://meddy-backend-production.up.railway.app";
+  function escH(x) { return String(x == null ? "" : x).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function openSpotlight() {
+    var picked = null, manual = false;
     sheet("Free · for clinics", "Get your free Clinic Spotlight",
-      '<p class="sp-intro">Tell us where to find you. We\'ll prepare your Spotlight and share it on WhatsApp.</p>' +
+      '<p class="sp-intro">Find your clinic, tell us who you are, and we\'ll share your Spotlight on WhatsApp.</p>' +
       '<form class="sp-form" id="spForm" novalidate>' +
-      '<label>Clinic name<input type="text" name="clinic_name" autocomplete="organization" required maxlength="120"></label>' +
-      '<label>Area and city<input type="text" name="area" placeholder="e.g. Anna Nagar, Chennai" required maxlength="120"></label>' +
-      '<label>WhatsApp number<span class="tel"><b>+91</b><input type="tel" name="whatsapp" inputmode="numeric" autocomplete="tel-national" placeholder="98765 43210" required maxlength="14"></span></label>' +
+      '<div id="spFind"><label>Find your clinic on Google<span class="srch"><input type="text" id="spQ" placeholder="Clinic name and area, e.g. MG Skin Care Salem" maxlength="120"><button type="button" id="spGo">Search</button></span></label>' +
+      '<div class="sp-res" id="spRes" role="listbox"></div>' +
+      '<button type="button" class="sp-link" id="spManual">Can\'t find your clinic? Type it in</button></div>' +
+      '<div class="sp-picked" id="spPicked" hidden></div>' +
+      '<div id="spManualBox" hidden><label>Clinic name<input type="text" name="clinic_name" autocomplete="organization" maxlength="120"></label>' +
+      '<label>Area and city<input type="text" name="area" placeholder="e.g. Anna Nagar, Chennai" maxlength="120"></label>' +
+      '<button type="button" class="sp-link" id="spBack">← Search Google instead</button></div>' +
+      '<label>Your name<input type="text" name="owner_name" autocomplete="name" placeholder="e.g. Dr. Meera Krishnan" maxlength="80"></label>' +
+      '<fieldset class="roles"><legend>You are the clinic\'s</legend>' + ["Owner", "Doctor", "Manager", "Other"].map(function (r, i) {
+        return '<label><input type="radio" name="role" value="' + r + '"' + (i === 0 ? " checked" : "") + '><span>' + r + "</span></label>"; }).join("") + "</fieldset>" +
+      '<label>WhatsApp number<span class="tel"><b>+91</b><input type="tel" name="whatsapp" inputmode="numeric" autocomplete="tel-national" placeholder="98765 43210" maxlength="14"></span></label>' +
       '<input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">' +
-      '<label class="consent"><input type="checkbox" name="consent"><span>I agree that Meddy may use these details to prepare my Clinic Spotlight and contact me about it on WhatsApp. See the <a href="/v2/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>' +
+      '<label class="consent"><input type="checkbox" name="consent"><span>I agree that Meddy may look up my clinic\'s public Google listing and website to prepare my Clinic Spotlight, and contact me about it on WhatsApp. See the <a href="/v2/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>' +
       '<div class="sp-err" id="spErr" role="alert"></div>' +
-      '<button type="submit">Send my request</button></form>');
-    $("spForm").addEventListener("submit", function (e) {
+      '<button type="submit" class="sp-send">Send my request</button></form>');
+    var f = $("spForm"), err = $("spErr");
+    function setManual(on) { manual = on; $("spFind").hidden = on; $("spManualBox").hidden = !on; if (on) { picked = null; $("spPicked").hidden = true; f.clinic_name.focus(); } else $("spQ").focus(); }
+    function showPicked() {
+      $("spFind").hidden = true; var p = $("spPicked"); p.hidden = false;
+      p.innerHTML = '<div><b>' + escH(picked.name) + '</b><span>' + escH(picked.address) + '</span>' +
+        (picked.rating != null ? '<em>★ ' + escH(picked.rating) + (picked.reviews != null ? ' · ' + escH(picked.reviews) + ' reviews' : '') + '</em>' : '') +
+        '</div><button type="button" class="sp-link" id="spChange">Change</button>';
+      $("spChange").addEventListener("click", function () { picked = null; p.hidden = true; $("spFind").hidden = false; $("spQ").focus(); });
+      f.owner_name.focus();
+    }
+    function search() {
+      var q = $("spQ").value.trim(), box = $("spRes");
+      if (q.length < 3) { err.textContent = "Type your clinic's name and area."; return; }
+      err.textContent = ""; box.innerHTML = '<p class="sp-note">Searching…</p>';
+      fetch(API + "/public/places/search?q=" + encodeURIComponent(q))
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (!res.ok) throw new Error(res.d.detail || "Search is unavailable right now.");
+          var list = res.d.results || [];
+          if (!list.length) { box.innerHTML = '<p class="sp-note">No match. Try adding your area, or type your clinic in below.</p>'; return; }
+          box.innerHTML = list.map(function (r, i) {
+            return '<button type="button" class="sp-opt" data-i="' + i + '"><b>' + escH(r.name) + '</b><span>' + escH(r.address) + '</span>' +
+              (r.rating != null ? '<em>★ ' + escH(r.rating) + (r.reviews != null ? ' (' + escH(r.reviews) + ')' : '') + '</em>' : '') + '</button>'; }).join("");
+          Array.prototype.forEach.call(box.querySelectorAll(".sp-opt"), function (b) {
+            b.addEventListener("click", function () { picked = list[+b.getAttribute("data-i")]; box.innerHTML = ""; showPicked(); }); });
+        })
+        .catch(function (e) { box.innerHTML = '<p class="sp-note">' + escH(e.message) + ' You can type your clinic in instead.</p>'; });
+    }
+    $("spGo").addEventListener("click", search);
+    $("spQ").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); search(); } });
+    $("spManual").addEventListener("click", function () { setManual(true); });
+    $("spBack").addEventListener("click", function () { setManual(false); });
+    f.addEventListener("submit", function (e) {
       e.preventDefault();
-      var f = e.target, btn = f.querySelector("button"), err = $("spErr");
-      var body = { clinic_name: f.clinic_name.value.trim(), area: f.area.value.trim(), whatsapp: f.whatsapp.value.trim(), consent: f.consent.checked, company: f.company.value };
-      if (body.clinic_name.length < 2) { err.textContent = "Please enter your clinic's name."; f.clinic_name.focus(); return; }
-      if (body.area.length < 2) { err.textContent = "Please enter your area and city."; f.area.focus(); return; }
+      var btn = f.querySelector(".sp-send");
+      var body = { owner_name: f.owner_name.value.trim(), role: (f.querySelector("[name=role]:checked") || {}).value,
+        whatsapp: f.whatsapp.value.trim(), consent: f.consent.checked, company: f.company.value };
+      if (picked) { body.place_id = picked.place_id; body.clinic_name = picked.name; }
+      else if (manual) { body.clinic_name = f.clinic_name.value.trim(); body.area = f.area.value.trim();
+        if (body.clinic_name.length < 2) { err.textContent = "Please enter your clinic's name."; f.clinic_name.focus(); return; }
+        if (body.area.length < 2) { err.textContent = "Please enter your area and city."; f.area.focus(); return; } }
+      else { err.textContent = "Please find your clinic first, or type it in."; $("spQ").focus(); return; }
+      if (body.owner_name.length < 2) { err.textContent = "Please enter your name."; f.owner_name.focus(); return; }
       if (!/^[6-9]\d{9}$/.test(body.whatsapp.replace(/\D/g, "").replace(/^91(?=\d{10}$)/, ""))) { err.textContent = "Please enter a valid 10-digit mobile number."; f.whatsapp.focus(); return; }
       if (!body.consent) { err.textContent = "Please tick the box so we can contact you."; return; }
       err.textContent = ""; btn.disabled = true; btn.textContent = "Sending…";
@@ -892,11 +960,11 @@ body.home .mini-foot { opacity: 1; }
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
         .then(function (res) {
           if (!res.ok) throw new Error(res.d.detail || "Could not send your request.");
-          $("pBody").innerHTML = '<div class="sp-done"><b>Thank you. Request received.</b><p>We\'ll prepare the Spotlight for <strong>' + body.clinic_name.replace(/[<>&]/g, "") + '</strong> and send it to you on WhatsApp.</p></div>';
+          $("pBody").innerHTML = '<div class="sp-done"><b>Thank you. Request received.</b><p>We\'ll prepare the Spotlight for <strong>' + escH(body.clinic_name) + '</strong> and send it to you on WhatsApp.</p></div>';
         })
         .catch(function (e2) { err.textContent = (e2.message || "Could not send your request.") + " You can also email hello@meddy.co.in."; btn.disabled = false; btn.textContent = "Send my request"; });
     });
-    setTimeout(function () { var i = $("spForm") && $("spForm").clinic_name; if (i) i.focus(); }, 50);
+    setTimeout(function () { if ($("spQ")) $("spQ").focus(); }, 50);
   }
 
   // ======================= MEDDY GUIDE (clinic page) =======================
