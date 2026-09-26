@@ -55,10 +55,11 @@ body.live .brand { opacity: 1; }
 .bot-inner { position: relative; transform-origin: 50% 90%; transition: transform .9s cubic-bezier(.3,1.4,.4,1), filter .9s ease;
   transform: rotate(-5deg) translateY(10px) scale(.97); filter: brightness(.5) saturate(.5); }
 .bot-inner .layer { display: block; width: 100%; height: auto; }
-.bot-inner .layer + .layer { position: absolute; left: 0; top: 0; }
-.bot-inner .off { transition: opacity .25s ease; }
-.bot-inner .on, .bot-inner .up { opacity: 0; transition: opacity .12s linear; }
-.bot-inner .up { transition: opacity .25s ease; }
+.sitwrap { position: relative; transform: scale(.88); transform-origin: 50% 100%; transition: opacity .2s ease; }
+.bot-inner .up { position: absolute; left: 0; top: 0; opacity: 0; transition: opacity .2s ease; }
+/* the M on the seated visor: a light-only image blended onto the dark glass */
+.msit { position: absolute; left: var(--mx); top: var(--my); width: var(--mw); transform: translate(-50%, -50%) rotate(var(--mr)); mix-blend-mode: screen;
+  opacity: 0; transition: opacity .12s linear; pointer-events: none; }
 .mglow { position: absolute; width: 40%; aspect-ratio: 1.6; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; opacity: 0;
   mix-blend-mode: screen; filter: blur(5px); transition: opacity .12s linear;
   background: radial-gradient(closest-side, rgba(170,240,255,.95), rgba(79,196,176,.35) 55%, transparent 100%); }
@@ -72,9 +73,9 @@ body.home .mglow { animation: mpulse 2.6s ease-in-out infinite; }
 @keyframes mpulse { 0%,100% { opacity: .25; } 50% { opacity: .6; } }
 
 /* ---------- the Meddy ball (the button) ---------- */
-.ball { position: absolute; z-index: 6; width: calc(var(--bw) * .42); aspect-ratio: 1; border-radius: 50%; border: none; cursor: pointer; padding: 0;
-  transform: translate(-50%, -50%); color: #eafffb; font-family: Georgia, serif; font-weight: 600; font-size: calc(var(--bw) * .075);
-  background: radial-gradient(circle at 34% 28%, rgba(255,255,255,.85) 0 6%, transparent 7%),
+.ball { position: absolute; z-index: 6; width: calc(var(--bw) * .29); aspect-ratio: 1; border-radius: 50%; border: none; cursor: pointer; padding: 0;
+  transform: translate(-50%, -50%); color: #eafffb; font-family: Georgia, serif; font-weight: 600; font-size: calc(var(--bw) * .056);
+  background: radial-gradient(circle at 34% 26%, rgba(255,255,255,.75), rgba(255,255,255,0) 18%),
               radial-gradient(circle at 40% 35%, #7fe6d2, #2f9c8c 55%, #0f4f47 100%);
   box-shadow: 0 0 0 1px rgba(191,243,233,.35), 0 0 26px rgba(79,196,176,.55), inset 0 -8px 18px rgba(0,0,0,.35);
   animation: ballIdle 2.8s ease-in-out infinite; transition: left .6s ease, top .6s ease; }
@@ -196,8 +197,10 @@ body.home .caption { opacity: 1; }
 <main class="stage" id="stage">
   <div class="bot" id="bot">
     <div class="bot-inner" id="botInner">
-      <img class="layer off" id="lOff" alt="Meddy">
-      <img class="layer on" id="lOn" alt="" aria-hidden="true">
+      <div class="sitwrap" id="sitWrap">
+        <img class="layer off" id="lOff" alt="Meddy">
+        <img class="msit" id="lOn" alt="" aria-hidden="true">
+      </div>
       <img class="layer up" id="lUp" alt="" aria-hidden="true">
       <span class="mglow" id="mglow"></span>
       <span class="shadow"></span>
@@ -243,10 +246,11 @@ body.home .caption { opacity: 1; }
   // Swap these for the new poses when they arrive. Positions are percent of each image.
   //   m    = centre of the M on the visor
   //   ball = where the ball sits in Meddy's hands (only used on the "off" pose)
+  //   sitM = where the M sits on the seated visor [x%, y%, width%, rotation°], in the seated image
+  //   m    = where the M glow sits, as % of Meddy's box (the seated image is drawn at 88% size, bottom-centred)
   var ART = {
-    off: { src: "/v2/meddy-off.png",  m: [53, 23.9], ball: [51, 60] },   // stand-in until the seated, ball-holding pose
-    on:  { src: "/v2/meddy-idle.png", m: [53, 23.9] },
-    up:  { src: "/v2/meddy-wave.png", m: [63.5, 24] }                   // stand-in until the arms-up throw pose
+    off: { src: "/v2/meddy-sit.png", m: [54.4, 34.9], ball: [53, 62], sitM: [55, 26, 43, 20], mSrc: "/v2/meddy-m.png" },
+    up:  { src: "/v2/meddy-up.png",  m: [51.6, 18.2] }
   };
   var BUBBLES = [
     { id: "who",   label: "Who we are",  sub: "the people behind Meddy" },
@@ -263,7 +267,8 @@ body.home .caption { opacity: 1; }
   function narrow() { return window.innerWidth <= 760; }
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
 
-  $("lOff").src = ART.off.src; $("lOn").src = ART.on.src; $("lUp").src = ART.up.src;
+  $("lOff").src = ART.off.src; $("lOn").src = ART.off.mSrc; $("lUp").src = ART.up.src;
+  (function (c) { var st = $("lOn").style; st.setProperty("--mx", c[0] + "%"); st.setProperty("--my", c[1] + "%"); st.setProperty("--mw", c[2] + "%"); st.setProperty("--mr", c[3] + "deg"); })(ART.off.sitM);
 
   // ======================= SOUND =======================
   var muted = store("meddy_muted") === "1", ac = null;
@@ -332,10 +337,9 @@ body.home .caption { opacity: 1; }
   // ======================= POSES =======================
   function glowAt(p) { $("mglow").style.left = p[0] + "%"; $("mglow").style.top = p[1] + "%"; }
   function pose(name) {
-    $("lOn").style.opacity = name === "on" ? 1 : 0;
     $("lUp").style.opacity = name === "up" ? 1 : 0;
-    $("lOff").style.opacity = name === "up" ? 0 : 1;
-    glowAt((ART[name] || ART.on).m);
+    $("sitWrap").style.opacity = name === "up" ? 0 : 1;
+    glowAt((ART[name] || ART.off).m);
   }
   function mOn(on, glow) { $("lOn").style.opacity = on ? 1 : 0; $("mglow").style.opacity = glow == null ? (on ? .9 : 0) : glow; }
   glowAt(ART.off.m);
@@ -428,7 +432,6 @@ body.home .caption { opacity: 1; }
     }
     document.body.classList.add("home");
     typeInto($("caption"), LINE); speak(LINE);
-    setTimeout(function () { pose("on"); }, 2600);
   }
   $("ball").addEventListener("click", wake);
   buildBubbles();
