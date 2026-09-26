@@ -52,6 +52,7 @@ body.live .logo { opacity: 1; }
 .bot-inner img { display: block; width: 100%; height: auto; }
 .sitwrap { position: relative; transform: scale(.88); transform-origin: 50% 100%; transition: opacity .2s ease; }
 .bot-inner .up { position: absolute; left: 0; top: 0; opacity: 0; transition: opacity .2s ease; }
+.bot-inner .reach.flip { transform: scaleX(-1); }
 .msit { position: absolute; left: var(--mx); top: var(--my); width: var(--mw) !important; transform: translate(-50%, -50%) rotate(var(--mr)); mix-blend-mode: screen;
   opacity: 0; transition: opacity .12s linear; pointer-events: none; }
 .mglow { position: absolute; width: 40%; aspect-ratio: 1.6; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; opacity: 0;
@@ -143,7 +144,7 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 .portal.fade { transition: opacity .35s ease; opacity: 0; }
 
 /* ---------- pages (placeholders) ---------- */
-.panel { position: fixed; inset: 0; z-index: 30; display: flex; background: rgba(7,9,12,.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+.panel { position: fixed; inset: 0; z-index: 40; display: flex; background: rgba(7,9,12,.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   opacity: 0; pointer-events: none; transition: opacity .3s ease; }
 .panel.open { opacity: 1; pointer-events: auto; }
 .sheet { margin: auto; width: min(760px, 92vw); max-height: 86vh; overflow-y: auto; background: #f4f7f9; color: #131820; border-radius: 18px;
@@ -180,6 +181,82 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 .split .back { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 2; color: var(--dtx2); border-color: var(--dbd2); background: rgba(7,9,12,.6); }
 .split .back:hover { background: rgba(255,255,255,.06); color: var(--dtx); }
 
+
+/* ---------- full pages (clinics, who we are) ---------- */
+.door { align-self: flex-start; font-size: 15px; font-weight: 700; color: #062320; background: var(--signal); border: none; border-radius: 999px; padding: 12px 20px; cursor: pointer; }
+.door span, .pill span { display: inline-block; transition: transform .2s; } .door:hover span, .pill:hover span { transform: translateX(3px); }
+.soon { align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #9fc4ff; border: 1px solid rgba(159,196,255,.35); border-radius: 999px; padding: 7px 12px; }
+.page { position: fixed; inset: 0; z-index: 32; overflow-y: auto; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(79,196,176,.12), transparent 70%), var(--void);
+  opacity: 0; pointer-events: none; transition: opacity .35s ease; }
+.page.open { opacity: 1; pointer-events: auto; }
+.page-bar { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 14px 26px; background: rgba(7,9,12,.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--dbd); }
+.page-bar .logo { opacity: 1; height: 22px; }
+.back.dark { color: var(--dtx2); border-color: var(--dbd2); background: transparent; }
+.back.dark:hover { color: var(--dtx); background: rgba(255,255,255,.05); }
+.page-in { max-width: 1040px; margin: 0 auto; padding: 56px 26px 80px; }
+.p-hero { max-width: 720px; margin-bottom: 44px; }
+.p-hero small { font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--signal); }
+.p-hero h1 { font-size: clamp(32px, 5vw, 54px); font-weight: 800; letter-spacing: -1.5px; line-height: 1.04; margin: 12px 0 14px; }
+.p-hero p { font-size: 18px; color: var(--dtx2); line-height: 1.5; margin-bottom: 24px; }
+.pill { font-size: 15px; font-weight: 700; color: #062320; background: linear-gradient(135deg, #7fe6d2, #4fc4b0 50%, #2e9a8a); border: none; border-radius: 999px; padding: 14px 22px; cursor: pointer; box-shadow: 0 12px 30px -10px rgba(79,196,176,.7); }
+.stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.stage-card { position: relative; background: linear-gradient(170deg, rgba(24,34,40,.95), rgba(12,17,21,.95)); border: 1px solid var(--dbd); border-radius: 16px; padding: 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+.stage-card::after { content: ''; position: absolute; top: 34px; right: -15px; width: 16px; height: 1px; background: rgba(95,212,190,.45); }
+.stage-card:last-child::after { display: none; }
+.st-no { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--signal); display: flex; align-items: center; gap: 8px; }
+.st-no i { font-style: normal; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: rgba(95,212,190,.14); border: 1px solid rgba(95,212,190,.45); font-size: 11px; }
+.stage-card h3 { font-size: 18px; font-weight: 800; letter-spacing: -.3px; line-height: 1.2; }
+.gaps { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.gaps li { font-size: 13.5px; color: #f3c58a; line-height: 1.35; padding-left: 18px; position: relative; }
+.gaps li::before { content: ''; position: absolute; left: 0; top: 6px; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid #f0a94e; }
+.fix { margin-top: auto; border-top: 1px dashed var(--dbd2); padding-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+.fix span { font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--dtx3); }
+.fix b { font-size: 13.5px; font-weight: 700; color: #bff3e9; line-height: 1.3; padding-left: 18px; position: relative; }
+.fix b::before { content: '✓'; position: absolute; left: 0; color: var(--signal); }
+.p-sec { margin-top: 64px; }
+.p-sec h2, .p-end h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 800; letter-spacing: -.8px; margin-bottom: 20px; }
+.steps4 { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; counter-reset: s; }
+.steps4 li { counter-increment: s; padding: 16px; border-radius: 14px; border: 1px solid var(--dbd); background: rgba(255,255,255,.02); display: flex; flex-direction: column; gap: 6px; }
+.steps4 li::before { content: counter(s); font-size: 28px; font-weight: 800; color: var(--signal); line-height: 1; }
+.steps4 b { font-size: 16px; } .steps4 span { font-size: 14px; color: var(--dtx2); line-height: 1.45; }
+.offers { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.offer { padding: 16px; border-radius: 14px; border: 1px solid var(--dbd); background: rgba(255,255,255,.02); display: flex; flex-direction: column; gap: 6px; }
+.offer.star { border-color: rgba(95,212,190,.55); background: rgba(79,196,176,.08); }
+.offer small { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--dtx3); }
+.offer b { font-size: 16px; } .offer p { font-size: 14px; color: var(--dtx2); line-height: 1.45; }
+.offer em { margin-top: auto; font-style: normal; font-size: 12.5px; color: #9fe0d3; }
+.p-end { margin-top: 72px; padding: 36px; border-radius: 20px; text-align: center; background: radial-gradient(ellipse at 50% 0%, rgba(79,196,176,.2), rgba(12,20,22,.9)); border: 1px solid rgba(95,212,190,.35); }
+.founders { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.founder { border-radius: 18px; overflow: hidden; border: 1px solid var(--dbd); background: linear-gradient(170deg, rgba(24,34,40,.95), rgba(12,17,21,.95)); display: flex; flex-direction: column; }
+.founder img { width: 100%; aspect-ratio: 4 / 3.4; object-fit: cover; object-position: 50% 22%; display: block; }
+.f-body { padding: 18px 20px 22px; display: flex; flex-direction: column; gap: 8px; }
+.f-body small { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--signal); }
+.f-body h3 { font-size: 24px; font-weight: 800; letter-spacing: -.5px; }
+.f-body p { font-size: 15px; color: var(--dtx2); line-height: 1.55; } .f-body p.at { color: var(--dtx); }
+.f-body a { align-self: flex-start; margin-top: 6px; font-size: 14px; font-weight: 700; color: var(--signal); text-decoration: none; }
+.f-body a:hover { text-decoration: underline; }
+.p-note { margin-top: 28px; text-align: center; font-size: 15px; color: var(--dtx2); max-width: 620px; margin-left: auto; margin-right: auto; line-height: 1.55; }
+@media (max-width: 900px) {
+  .stages, .steps4 { grid-template-columns: 1fr 1fr; } .stage-card::after { display: none; }
+}
+@media (max-width: 600px) {
+  .stages, .steps4, .founders { grid-template-columns: 1fr; }
+  .page-in { padding: 36px 18px 64px; } .page-bar { padding: 12px 16px; }
+  .p-hero h1 { letter-spacing: -1px; } .p-end { padding: 26px 18px; }
+}
+
+.why small.kick { display: block; font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--signal); margin-bottom: 10px; }
+.why p { font-size: 17px; color: var(--dtx2); line-height: 1.6; max-width: 720px; margin-bottom: 26px; }
+.why h2 + p { margin-top: -6px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 6px 0 44px; max-width: 720px; }
+.stat { padding: 18px; border-radius: 16px; border: 1px solid rgba(240,169,78,.35); background: rgba(240,169,78,.06); display: flex; flex-direction: column; gap: 6px; }
+.stat b { font-size: 40px; font-weight: 800; letter-spacing: -1.5px; color: #f3c58a; line-height: 1; }
+.stat span { font-size: 14.5px; color: var(--dtx); line-height: 1.4; }
+.stat a { font-size: 12px; color: var(--dtx3); text-decoration: underline; text-underline-offset: 2px; margin-top: 4px; }
+.p-end p { font-size: 16.5px; color: var(--dtx2); line-height: 1.6; max-width: 620px; margin: 0 auto 18px; }
+.p-end .tagline { display: block; font-size: 22px; font-weight: 800; color: #bff3e9; letter-spacing: -.4px; }
+.founders { margin-top: 8px; }
+@media (max-width: 600px) { .stats { grid-template-columns: 1fr; } }
 /* ---------- mobile ---------- */
 @media (max-width: 760px) {
   body { --bw: min(150px, 19vh, 38vw); --by: 56%; }
@@ -220,6 +297,7 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
         <img class="msit" id="lOn" alt="" aria-hidden="true">
       </div>
       <img class="up" id="lUp" alt="" aria-hidden="true">
+      <img class="up reach" id="lReach" alt="" aria-hidden="true">
       <span class="mglow" id="mglow"></span>
       <span class="shadow"></span>
     </div>
@@ -239,16 +317,136 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
   <section class="half clinic">
     <small>What we do · for</small>
     <h2>Clinics &amp; Hospitals</h2>
-    <p>Meddy, your AI companion for clinics. Placeholder: how Meddy helps a clinic get found, get chosen, and keep patients coming back.</p>
+    <p>Your AI companion for clinics. Get found, get chosen, and keep patients coming back.</p>
+    <button class="door" id="clinicOpen">See how Meddy helps <span>→</span></button>
     <button class="spot" id="spotBtn"><i></i><div><b>Get your free Clinic Spotlight</b><span>see how your clinic compares nearby</span></div></button>
-    <div class="ph"><b>More for clinics</b>Products, how setup works, and pricing go here.</div>
   </section>
   <section class="half people">
     <small>What we do · for</small>
     <h2>Patients &amp; Caretakers</h2>
-    <p>Placeholder: what Meddy means for the people being cared for, and the people caring for them.</p>
-    <div class="ph"><b>More for patients and caretakers</b>Content for this side is being written.</div>
+    <p>Care that's easier to find, book and follow through, for you and the people you look after.</p>
+    <div class="soon">Coming soon</div>
   </section>
+</div>
+
+
+<!-- ============ CLINICS & HOSPITALS ============ -->
+<div class="page" id="clinicPage" role="dialog" aria-modal="true" aria-label="Meddy for clinics and hospitals">
+  <div class="page-bar"><button class="back dark" data-back>← Back</button><img class="logo" src="/v2/meddy-logo-light.png" alt="Meddy"></div>
+  <div class="page-in">
+    <header class="p-hero">
+      <small>For clinics &amp; hospitals</small>
+      <h1>Patients can't choose a clinic they can't find.</h1>
+      <p>Clinics lose patients in four quiet places. Meddy shows you where, then closes the gaps.</p>
+      <button class="pill spotOpen">Get your free Clinic Spotlight <span>→</span></button>
+    </header>
+
+    <div class="stages">
+      <article class="stage-card">
+        <div class="st-no"><i>01</i> Found</div>
+        <h3>They search. Another clinic shows up.</h3>
+        <ul class="gaps"><li>Not in Google's top 3 nearby</li><li>Listed under the wrong category</li><li>No website, or one Google can't read</li></ul>
+        <div class="fix"><span>Meddy fixes it with</span><b>Website build or revamp</b><b>Google profile + SEO boost</b></div>
+      </article>
+      <article class="stage-card">
+        <div class="st-no"><i>02</i> Chosen</div>
+        <h3>They compare. You look quieter.</h3>
+        <ul class="gaps"><li>Fewer reviews than clinics nearby</li><li>No doctor profiles or treatment pages</li><li>Old photos, missing hours</li></ul>
+        <div class="fix"><span>Meddy fixes it with</span><b>A website that shows your doctors</b><b>Review requests after every visit</b></div>
+      </article>
+      <article class="stage-card">
+        <div class="st-no"><i>03</i> Contacted</div>
+        <h3>They message at 10 pm. No one replies.</h3>
+        <ul class="gaps"><li>Calls missed during consultations</li><li>No way to book online</li><li>WhatsApp, Instagram and calls all scattered</li></ul>
+        <div class="fix"><span>Meddy fixes it with</span><b>Smart Appointments: 24×7 WhatsApp booking</b><b>Instagram, Facebook and calls in one inbox</b></div>
+      </article>
+      <article class="stage-card">
+        <div class="st-no"><i>04</i> Kept</div>
+        <h3>They get better. They don't come back.</h3>
+        <ul class="gaps"><li>Follow-ups forgotten</li><li>No-shows and late cancellations</li><li>Records on paper, or across five apps</li></ul>
+        <div class="fix"><span>Meddy fixes it with</span><b>Automatic reminders and follow-ups</b><b>Meddy Clinic OS: booking to billing, one place</b></div>
+      </article>
+    </div>
+
+    <section class="p-sec">
+      <h2>How it works</h2>
+      <ol class="steps4">
+        <li><b>Spotlight</b><span>We check your clinic against the ones nearby. Free.</span></li>
+        <li><b>Plan</b><span>Only what closes your gaps. Nothing extra.</span></li>
+        <li><b>Set up</b><span>We build it, move your data and train your team.</span></li>
+        <li><b>Stay</b><span>Monthly reports. A team you can call.</span></li>
+      </ol>
+    </section>
+
+    <section class="p-sec">
+      <h2>What we offer</h2>
+      <div class="offers">
+        <div class="offer"><small>One-time</small><b>Website Building</b><p>A new website, built to be found.</p><em>+ Google profile &amp; SEO boost</em></div>
+        <div class="offer"><small>One-time</small><b>Website Revamp</b><p>Your website, faster and easier to book from.</p><em>+ Google profile &amp; SEO boost</em></div>
+        <div class="offer"><small>Monthly</small><b>SEO Boost</b><p>Steady work to keep you visible, with monthly reports.</p><em>+ Google profile fixes</em></div>
+        <div class="offer"><small>Monthly</small><b>Smart Appointments</b><p>A WhatsApp assistant that books patients, day and night.</p><em>+ Instagram, Facebook &amp; phone · review collection</em></div>
+        <div class="offer star"><small>Monthly</small><b>Meddy Clinic OS</b><p>Your whole clinic, from booking to billing, in one place.</p><em>+ Personal Clinic AI for the owner</em></div>
+      </div>
+    </section>
+
+    <footer class="p-end">
+      <h2>See where your clinic stands.</h2>
+      <button class="pill spotOpen">Get your free Clinic Spotlight <span>→</span></button>
+    </footer>
+  </div>
+</div>
+
+<!-- ============ WHO WE ARE ============ -->
+<div class="page" id="whoPage" role="dialog" aria-modal="true" aria-label="Who we are">
+  <div class="page-bar"><button class="back dark" data-back>← Back to Meddy</button><img class="logo" src="/v2/meddy-logo-light.png" alt="Meddy"></div>
+  <div class="page-in">
+    <header class="p-hero">
+      <small>Who we are</small>
+      <h1>We started on the ground.</h1>
+      <p>We met early in our lives, working at the grassroots with people who needed help. Our passion for making lives better, through intentional presence and effort on the ground, is what brought us together to start Meddy.</p>
+    </header>
+
+    <div class="founders">
+      <article class="founder">
+        <img src="/v2/team-karthik.jpg" alt="Karthik MG" loading="lazy">
+        <div class="f-body">
+          <small>Founder · Product &amp; People Lead</small>
+          <h3>Karthik MG</h3>
+          <p>A facilitator and experiential educator who has spent over a decade designing how people learn, work and look out for one another, from community programmes to corporate teams.</p>
+          <p class="at">At Meddy, he shapes how the product listens to doctors and patients.</p>
+          <a href="https://www.linkedin.com/in/karthikeyan-mg-8b6898180/" target="_blank" rel="noopener">LinkedIn →</a>
+        </div>
+      </article>
+      <article class="founder">
+        <img src="/v2/team-rupa.jpg" alt="Rupa Rajendran" loading="lazy">
+        <div class="f-body">
+          <small>Co-founder · Tech &amp; Engineering Lead</small>
+          <h3>Rupa Rajendran</h3>
+          <p>A software engineer who builds large-scale payment systems that run with zero downtime, and has led privacy work across more than a billion records.</p>
+          <p class="at">At Meddy, she keeps clinic data safe, private and always on.</p>
+          <a href="https://www.linkedin.com/in/rupa-rajendran-27a393214/" target="_blank" rel="noopener">LinkedIn →</a>
+        </div>
+      </article>
+    </div>
+
+    <section class="p-sec why">
+      <small class="kick">Why Meddy</small>
+      <h2>Care in India is split in pieces.</h2>
+      <p>The crisis starts with fragmented custody of care: a patient's story is scattered across hospitals and clinics that don't talk to each other. It deepens as people lose autonomy over their own health: what they know, their history, and the options open to them.</p>
+      <div class="stats">
+        <div class="stat"><b>2 min</b><span>average primary-care consultation in India</span><a href="https://www.fiercehealthcare.com/practices/length-patient-visits-bmj-open-primary-care-doctors" target="_blank" rel="noopener">BMJ Open, 2017</a></div>
+        <div class="stat"><b>78%</b><span>of doctors surveyed reported high burnout in the past year</span><a href="https://medicaldialogues.in/news/health/doctors/burnout-safety-concerns-91-percent-indian-doctors-discourage-children-from-pursuing-medicine-165956" target="_blank" rel="noopener">Survey of 1,208 doctors, 2025</a></div>
+      </div>
+      <h2>Behind every rushed visit is a doctor.</h2>
+      <p>Queue after queue, then calls, paperwork and follow-ups that no one else is set up to handle. The problem isn't the people. It's that clinics and hospitals still run on registers, memory and goodwill, without tools that carry part of the load.</p>
+    </section>
+
+    <footer class="p-end">
+      <h2>So we work at both ends.</h2>
+      <p>For clinics and hospitals, Meddy takes on the running of the practice, so doctors get their time back. For patients and caretakers, it keeps their care, history and options within reach.</p>
+      <b class="tagline">Smart care, made simple.</b>
+    </footer>
+  </div>
 </div>
 
 <div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pTitle">
@@ -263,7 +461,8 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
   // ======================= CONFIG =======================
   var ART = {
     off: { src: "/v2/meddy-sit.png", m: [54.4, 34.9], ball: [53, 62], sitM: [55, 26, 43, 20], mSrc: "/v2/meddy-m.png" },
-    up:  { src: "/v2/meddy-up.png",  m: [51.6, 18.2] }
+    up:  { src: "/v2/meddy-up.png",  m: [51.6, 18.2] },
+    reach: { src: "/v2/meddy-reach.png", m: [62.1, 25.1] }   // arm out to the viewer's left; mirrored for the right
   };
   // order on screen: top, left, right
   var BUBBLES = [
@@ -283,7 +482,7 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   if (/[?&]replay\b/.test(location.search)) { try { localStorage.removeItem(SEEN_KEY); } catch (e) {} }
 
-  $("lOff").src = ART.off.src; $("lOn").src = ART.off.mSrc; $("lUp").src = ART.up.src;
+  $("lOff").src = ART.off.src; $("lOn").src = ART.off.mSrc; $("lUp").src = ART.up.src; $("lReach").src = ART.reach.src;
   (function (c) { var st = $("lOn").style; st.setProperty("--mx", c[0] + "%"); st.setProperty("--my", c[1] + "%"); st.setProperty("--mw", c[2] + "%"); st.setProperty("--mr", c[3] + "deg"); })(ART.off.sitM);
 
   // ======================= ICON GRID =======================
@@ -368,7 +567,14 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 
   // ======================= POSES =======================
   function glowAt(p) { $("mglow").style.left = p[0] + "%"; $("mglow").style.top = p[1] + "%"; }
-  function pose(name) { $("lUp").style.opacity = name === "up" ? 1 : 0; $("sitWrap").style.opacity = name === "up" ? 0 : 1; glowAt(ART[name].m); }
+  function pose(name) {
+    var reach = name === "reach-l" || name === "reach-r";
+    $("lUp").style.opacity = name === "up" ? 1 : 0;
+    $("lReach").style.opacity = reach ? 1 : 0; $("lReach").classList.toggle("flip", name === "reach-r");
+    $("sitWrap").style.opacity = name === "off" ? 1 : 0;
+    var m = reach ? ART.reach.m : ART[name].m;
+    glowAt(name === "reach-r" ? [100 - m[0], m[1]] : m);
+  }
   function mOn(on, glow) { $("lOn").style.opacity = on ? 1 : 0; $("mglow").style.opacity = glow == null ? (on ? .9 : 0) : glow; }
   glowAt(ART.off.m);
 
@@ -494,8 +700,9 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
       el.classList.add("chosen");                                             // glow + spinning ring
       inner.classList.remove("flare"); void inner.offsetWidth; inner.classList.add("flare");
       await wait(300);
-      var cls = idx === 0 ? "sweep-u" : idx === 1 ? "sweep-r" : "sweep-l";   // gesture away from the chosen side
-      inner.classList.remove("sweep-u", "sweep-l", "sweep-r"); void inner.offsetWidth; inner.classList.add(cls);
+      // Meddy reaches towards the chosen bubble (arms up for the top one)
+      if (idx === 1) pose("reach-l"); else if (idx === 2) pose("reach-r");
+      else { inner.classList.remove("sweep-u"); void inner.offsetWidth; inner.classList.add("sweep-u"); }
       $("links").classList.add("off");
       others.forEach(function (b, i) { setTimeout(function () { sparks(b); SFX.poof(); b.classList.add("gone"); }, 120 + i * 110); });
       await wait(620);
@@ -512,6 +719,7 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
     Array.prototype.forEach.call($("bubbles").children, function (b) { b.classList.remove("chosen", "gone"); if (!b.classList.contains("in")) b.classList.add("in"); });
     $("links").classList.remove("off");
     $("portal").className = "portal";
+    pose("up");
     typeInto($("caption"), LINE);
     if (lastFocus) lastFocus.focus();
   }
@@ -523,8 +731,7 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
   }
   function openSection(id) {
     if (id === "what") { $("split").classList.add("open"); $("splitBack").focus(); return; }
-    if (id === "who") sheet("Who we are", "The people behind Meddy",
-      '<div class="ph"><b>Who we are</b>The Meddy story, Karthik and Rupa, and why we are building this in Chennai.<br>Content is being written.</div>');
+    if (id === "who") { openPage("whoPage"); return; }
     if (id === "touch") sheet("Get in touch", "We'd love to hear from you",
       '<div class="ph"><b>Get in touch</b>Doctors, patients, partners, press, or people who want to build with us: all welcome.' +
       '<div class="hello-row"><a href="mailto:' + EMAIL + '">Email ' + EMAIL + "</a></div></div>");
@@ -533,14 +740,20 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
     sheet("Free · for clinics", "Get your free Clinic Spotlight",
       '<div class="ph"><b>Clinic Spotlight request</b>A short intro, a sample Spotlight, and the request form go here.</div>');
   }
+  function openPage(id) { var pg = $(id); pg.scrollTop = 0; pg.classList.add("open"); pg.querySelector("[data-back]").focus(); }
+  // closes the top-most layer; returns to Meddy only when nothing is left open
   function closeAll() {
-    if ($("panel").classList.contains("open")) {
-      $("panel").classList.remove("open");
-      if ($("split").classList.contains("open")) { $("spotBtn").focus(); return; }
-    } else if ($("split").classList.contains("open")) $("split").classList.remove("open");
+    if ($("panel").classList.contains("open")) { $("panel").classList.remove("open"); if (anyOpen()) return; }
+    else if ($("clinicPage").classList.contains("open")) { $("clinicPage").classList.remove("open"); $("clinicOpen").focus(); return; }
+    else if ($("whoPage").classList.contains("open")) $("whoPage").classList.remove("open");
+    else if ($("split").classList.contains("open")) $("split").classList.remove("open");
     else return;
-    restoreHome();
+    if (!anyOpen()) restoreHome();
   }
+  function anyOpen() { return ["split", "clinicPage", "whoPage"].some(function (id) { return $(id).classList.contains("open"); }); }
+  Array.prototype.forEach.call(document.querySelectorAll("[data-back]"), function (b) { b.addEventListener("click", closeAll); });
+  Array.prototype.forEach.call(document.querySelectorAll(".spotOpen"), function (b) { b.addEventListener("click", openSpotlight); });
+  $("clinicOpen").addEventListener("click", function () { openPage("clinicPage"); });
   $("spotBtn").addEventListener("click", openSpotlight);
   $("backBtn").addEventListener("click", closeAll);
   $("splitBack").addEventListener("click", closeAll);
