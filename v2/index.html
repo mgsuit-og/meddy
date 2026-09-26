@@ -4,47 +4,42 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow"><!-- prototype: remove when this becomes the live homepage -->
-<meta name="description" content="Meddy is an AI companion for clinics and hospitals, and for the patients and caretakers they look after.">
-<title>Meddy · AI companion for clinics</title>
+<meta name="description" content="Meddy: connecting lives through simpler care, for clinics, hospitals, patients and caretakers.">
+<title>Meddy · Connecting lives through simpler care</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
   --void: #07090c;
-  --dtx: #eef3f7; --dtx2: #93a2b0; --dtx3: #5f6e7c;
+  --dtx: #eef3f7; --dtx2: #9fb0bd; --dtx3: #66788a;
   --dbd: rgba(150,190,185,.16); --dbd2: rgba(150,190,185,.32);
-  --signal: #4fc4b0; --cyan: #5ad8ff;
-  --dsp: 'Archivo', -apple-system, 'Helvetica Neue', Arial, sans-serif;
-  --mono: 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace;
+  --signal: #5fd4be;
+  --font: 'Plus Jakarta Sans', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
 }
-body { --bw: min(220px, 26vh); --by: 60%; }
+body { --bw: min(210px, 25vh); --by: 60%; --half: calc(var(--bw) * .645); }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body { height: 100%; }
-body { font-family: var(--dsp); background: var(--void); color: var(--dtx); -webkit-font-smoothing: antialiased; overflow: hidden; }
+body { font-family: var(--font); background: var(--void); color: var(--dtx); -webkit-font-smoothing: antialiased; overflow: hidden; }
 button { font-family: inherit; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-/* ---------- background: dark when off, lights up on wake ---------- */
+/* ---------- background: icon grid, dark until Meddy wakes ---------- */
 @property --r { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
-.bg-grid { position: fixed; inset: 0; pointer-events: none; opacity: 0;
-  background-image: linear-gradient(rgba(110,200,185,.11) 1px, transparent 1px), linear-gradient(90deg, rgba(110,200,185,.11) 1px, transparent 1px);
-  background-size: 36px 36px;
-  -webkit-mask-image: radial-gradient(circle at 50% var(--by), #000 calc(var(--r) * .55), transparent var(--r));
-          mask-image: radial-gradient(circle at 50% var(--by), #000 calc(var(--r) * .55), transparent var(--r));
+.bg-grid { position: fixed; inset: 0; pointer-events: none; opacity: 0; background-repeat: repeat; background-position: center;
+  -webkit-mask-image: radial-gradient(circle at 50% var(--by), #000 calc(var(--r) * .5), transparent var(--r));
+          mask-image: radial-gradient(circle at 50% var(--by), #000 calc(var(--r) * .5), transparent var(--r));
   transition: opacity .4s ease; }
 .bg-glow { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity 1.4s ease;
-  background: radial-gradient(ellipse 46% 42% at 50% var(--by), rgba(79,196,176,.20), transparent 70%); }
+  background: radial-gradient(ellipse 46% 42% at 50% var(--by), rgba(79,196,176,.18), transparent 70%); }
 body.live .bg-grid { opacity: 1; animation: gridIn 1.8s cubic-bezier(.3,.6,.2,1) forwards; }
 body.live .bg-glow { opacity: 1; }
-@keyframes gridIn { from { --r: 0%; } to { --r: 95%; } }
+@keyframes gridIn { from { --r: 0%; } to { --r: 100%; } }
 
 /* ---------- top bar ---------- */
-.bar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 16px 26px; }
-.brand { display: flex; align-items: baseline; gap: 10px; opacity: .35; transition: opacity 1s ease; }
-body.live .brand { opacity: 1; }
-.brand .w { font-family: Georgia, serif; font-size: 21px; font-weight: 600; }
-.brand .t { font-family: var(--mono); font-size: 10px; letter-spacing: 1.8px; text-transform: uppercase; color: var(--signal); }
+.bar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 18px 26px; }
+.logo { height: 26px; width: auto; display: block; opacity: .3; transition: opacity 1s ease; }
+body.live .logo { opacity: 1; }
 .mute { width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--dbd2); background: rgba(255,255,255,.03); color: var(--dtx2); display: grid; place-items: center; cursor: pointer; }
 .mute:hover { color: var(--dtx); border-color: var(--signal); }
 .mute svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -54,11 +49,10 @@ body.live .brand { opacity: 1; }
 .bot { position: absolute; left: 50%; top: var(--by); width: var(--bw); transform: translate(-50%, -50%); z-index: 3; }
 .bot-inner { position: relative; transform-origin: 50% 90%; transition: transform .9s cubic-bezier(.3,1.4,.4,1), filter .9s ease;
   transform: rotate(-5deg) translateY(10px) scale(.97); filter: brightness(.5) saturate(.5); }
-.bot-inner .layer { display: block; width: 100%; height: auto; }
+.bot-inner img { display: block; width: 100%; height: auto; }
 .sitwrap { position: relative; transform: scale(.88); transform-origin: 50% 100%; transition: opacity .2s ease; }
 .bot-inner .up { position: absolute; left: 0; top: 0; opacity: 0; transition: opacity .2s ease; }
-/* the M on the seated visor: a light-only image blended onto the dark glass */
-.msit { position: absolute; left: var(--mx); top: var(--my); width: var(--mw); transform: translate(-50%, -50%) rotate(var(--mr)); mix-blend-mode: screen;
+.msit { position: absolute; left: var(--mx); top: var(--my); width: var(--mw) !important; transform: translate(-50%, -50%) rotate(var(--mr)); mix-blend-mode: screen;
   opacity: 0; transition: opacity .12s linear; pointer-events: none; }
 .mglow { position: absolute; width: 40%; aspect-ratio: 1.6; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; opacity: 0;
   mix-blend-mode: screen; filter: blur(5px); transition: opacity .12s linear;
@@ -69,12 +63,19 @@ body.home .bot { animation: float 4.5s ease-in-out .4s infinite; }
 @keyframes float { 0%,100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, calc(-50% - 9px)); } }
 .bot-inner.hop { animation: hop .55s cubic-bezier(.3,.7,.3,1); }
 @keyframes hop { 0% { transform: scale(1,1); } 30% { transform: scale(1.07,.88); } 60% { transform: translateY(-18px) scale(.95,1.07); } 100% { transform: none; } }
+/* gesture while clearing the other bubbles (stand-in until the gesturing pose) */
+.bot-inner.sweep-l { animation: sweepL .6s ease-in-out; } .bot-inner.sweep-r { animation: sweepR .6s ease-in-out; } .bot-inner.sweep-u { animation: sweepU .6s ease-in-out; }
+@keyframes sweepL { 0%,100% { transform: none; } 40% { transform: rotate(-9deg) translateX(-8px); } }
+@keyframes sweepR { 0%,100% { transform: none; } 40% { transform: rotate(9deg) translateX(8px); } }
+@keyframes sweepU { 0%,100% { transform: none; } 40% { transform: translateY(-14px) scale(1.04); } }
 body.home .mglow { animation: mpulse 2.6s ease-in-out infinite; }
 @keyframes mpulse { 0%,100% { opacity: .25; } 50% { opacity: .6; } }
+.bot-inner.flare .mglow { animation: flare .6s ease-out; }
+@keyframes flare { 0% { opacity: .4; } 40% { opacity: 1; transform: translate(-50%,-50%) scale(1.8); } 100% { opacity: .5; } }
 
-/* ---------- the Meddy ball (the button) ---------- */
+/* ---------- the Meddy ball ---------- */
 .ball { position: absolute; z-index: 6; width: calc(var(--bw) * .29); aspect-ratio: 1; border-radius: 50%; border: none; cursor: pointer; padding: 0;
-  transform: translate(-50%, -50%); color: #eafffb; font-family: Georgia, serif; font-weight: 600; font-size: calc(var(--bw) * .056);
+  transform: translate(-50%, -50%); color: #eafffb; font-weight: 800; font-size: calc(var(--bw) * .052); letter-spacing: -.2px;
   background: radial-gradient(circle at 34% 26%, rgba(255,255,255,.75), rgba(255,255,255,0) 18%),
               radial-gradient(circle at 40% 35%, #7fe6d2, #2f9c8c 55%, #0f4f47 100%);
   box-shadow: 0 0 0 1px rgba(191,243,233,.35), 0 0 26px rgba(79,196,176,.55), inset 0 -8px 18px rgba(0,0,0,.35);
@@ -89,69 +90,85 @@ body.waking .ball { animation: ballWake .5s ease-in-out infinite; cursor: defaul
 .ball.fly { transition: left .65s cubic-bezier(.2,.8,.3,1), top .65s cubic-bezier(.2,.8,.3,1), transform .65s ease; animation: none; filter: brightness(1.4); }
 .ball.burst { transition: transform .28s ease-out, opacity .28s ease-out; transform: translate(-50%, -50%) scale(1.6); opacity: 0; pointer-events: none; }
 
-.hint { position: absolute; left: 50%; top: calc(var(--by) + var(--bw) * .71 + 26px); transform: translateX(-50%); z-index: 4; text-align: center;
-  display: flex; flex-direction: column; gap: 10px; align-items: center; transition: opacity .35s ease; }
-.hint .tap { font-family: var(--mono); font-size: 12px; letter-spacing: 1.4px; text-transform: uppercase; color: var(--signal); opacity: 0; animation: hintIn .8s ease 2s forwards; }
-.hint .tag { font-family: var(--mono); font-size: 10.5px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--dtx3); white-space: nowrap; }
+.hint { position: absolute; left: 50%; top: calc(var(--by) + var(--half) + 26px); transform: translateX(-50%); z-index: 4; text-align: center;
+  display: flex; flex-direction: column; gap: 10px; align-items: center; transition: opacity .35s ease; width: 90vw; }
+.hint .tap { font-size: 13px; font-weight: 700; letter-spacing: .4px; color: var(--signal); opacity: 0; animation: hintIn .8s ease 2s forwards; }
+.hint .tag { font-size: 14px; font-weight: 500; color: var(--dtx2); }
 @keyframes hintIn { to { opacity: 1; } }
 body.waking .hint, body.live .hint { opacity: 0; pointer-events: none; }
-.status { position: absolute; left: 50%; top: calc(var(--by) + var(--bw) * .71 + 22px); transform: translateX(-50%); z-index: 4;
-  font-family: var(--mono); font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--signal); opacity: 0; transition: opacity .3s; }
+.status { position: absolute; left: 50%; top: calc(var(--by) + var(--half) + 22px); transform: translateX(-50%); z-index: 4;
+  font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--signal); opacity: 0; transition: opacity .3s; }
 body.waking .status { opacity: 1; }
 
-/* ---------- caption (what Meddy says) ---------- */
-.caption { position: absolute; left: 50%; top: calc(var(--by) + var(--bw) * .71 + 20px); transform: translateX(-50%); z-index: 4; width: min(560px, 90vw);
-  text-align: center; font-size: 17px; line-height: 1.5; opacity: 0; transition: opacity .4s ease; min-height: 3em; }
+.caption { position: absolute; left: 50%; top: calc(var(--by) + var(--half) + 22px); transform: translateX(-50%); z-index: 4; width: min(560px, 90vw);
+  text-align: center; font-size: 17px; font-weight: 500; line-height: 1.5; opacity: 0; transition: opacity .4s ease; min-height: 3em; }
 body.home .caption { opacity: 1; }
 .caption b { color: var(--signal); font-weight: 700; }
 .caret { display: inline-block; width: 2px; height: 1em; background: var(--signal); vertical-align: -2px; margin-left: 2px; animation: blink 1s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 
-/* ---------- the three bubbles ---------- */
+/* ---------- bubbles + connecting lines ---------- */
+svg.links { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; overflow: visible; }
+svg.links .ln { fill: none; stroke: rgba(95,212,190,.45); stroke-width: 1.4; stroke-dasharray: var(--len); stroke-dashoffset: var(--len); transition: stroke-dashoffset .7s ease, opacity .3s; }
+svg.links.on .ln { stroke-dashoffset: 0; }
+svg.links .glint { fill: none; stroke: #c8fff4; stroke-width: 2.2; stroke-linecap: round; stroke-dasharray: 10 var(--len); stroke-dashoffset: var(--len); opacity: 0; filter: drop-shadow(0 0 4px #5fd4be); }
+svg.links.on .glint { opacity: .9; animation: glint 3.4s linear 1s infinite; }
+@keyframes glint { from { stroke-dashoffset: var(--len); } to { stroke-dashoffset: -10; } }
+svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; }
+
 .bubble { position: absolute; z-index: 5; width: var(--d); height: var(--d); border-radius: 50%; cursor: pointer; color: var(--dtx);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; text-align: center; padding: 14px;
-  background: radial-gradient(circle at 35% 28%, rgba(143,240,221,.22), transparent 45%), radial-gradient(circle at 50% 60%, rgba(22,40,44,.96), rgba(10,16,20,.96));
-  border: 1px solid rgba(79,196,176,.45); box-shadow: 0 0 34px -8px rgba(79,196,176,.5), inset 0 0 22px rgba(79,196,176,.12);
+  background: radial-gradient(circle at 35% 28%, rgba(143,240,221,.22), transparent 45%), radial-gradient(circle at 50% 60%, rgba(22,40,44,.97), rgba(10,16,20,.97));
+  border: 1px solid rgba(95,212,190,.5); box-shadow: 0 0 34px -8px rgba(79,196,176,.5), inset 0 0 22px rgba(79,196,176,.12);
   transform: translate(-50%, -50%) translate(var(--fx, 0px), var(--fy, 0px)) scale(.2); opacity: 0; pointer-events: none;
   transition: transform .75s cubic-bezier(.25,1.35,.4,1), opacity .25s ease, box-shadow .2s, border-color .2s; }
 .bubble.in { transform: translate(-50%, -50%) scale(1); opacity: 1; pointer-events: auto; animation: bob 5s ease-in-out .9s infinite; }
-.bubble:nth-of-type(2).in { animation-delay: 1.5s; } .bubble:nth-of-type(3).in { animation-delay: 2.1s; }
+.bubble[data-i="1"].in { animation-delay: 1.5s; } .bubble[data-i="2"].in { animation-delay: 2.1s; }
 @keyframes bob { 0%,100% { margin-top: 0; } 50% { margin-top: -7px; } }
-.bubble:hover, .bubble:focus-visible { border-color: rgba(143,240,221,.9); box-shadow: 0 0 48px -6px rgba(79,196,176,.8), inset 0 0 26px rgba(79,196,176,.2); outline: none; }
-.bubble b { font-size: calc(var(--d) * .115); font-weight: 800; letter-spacing: -.2px; line-height: 1.1; }
-.bubble span { font-family: var(--mono); font-size: 10px; letter-spacing: .6px; color: var(--dtx2); line-height: 1.4; max-width: 80%; }
-.bubble.main { border-color: rgba(143,240,221,.7); }
-.bubble.main b { color: #bff3e9; }
+.bubble:hover, .bubble:focus-visible { border-color: rgba(191,243,233,.9); box-shadow: 0 0 48px -6px rgba(79,196,176,.85), inset 0 0 26px rgba(79,196,176,.2); outline: none; }
+.bubble b { font-size: calc(var(--d) * .115); font-weight: 800; letter-spacing: -.3px; line-height: 1.15; }
+.bubble span { font-size: calc(var(--d) * .068); font-weight: 500; color: var(--dtx2); line-height: 1.35; max-width: 78%; }
+/* selected: glow + spinning ring of light */
+.bubble.chosen { animation: none; border-color: #bff3e9; box-shadow: 0 0 70px -4px rgba(95,212,190,.95), inset 0 0 30px rgba(95,212,190,.3); pointer-events: none; }
+.bubble.chosen::before { content: ''; position: absolute; inset: -9px; border-radius: 50%; padding: 3px;
+  background: conic-gradient(from 0deg, transparent 0 55%, rgba(95,212,190,.2) 65%, #c8fff4 88%, #fff 92%, transparent 94%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+  animation: spin .7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.bubble.gone { transition: transform .45s cubic-bezier(.5,0,.7,.4), opacity .4s ease; transform: translate(-50%, -50%) scale(.1); opacity: 0; pointer-events: none; animation: none; }
+.spark { position: absolute; z-index: 6; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: #c8fff4; box-shadow: 0 0 8px #5fd4be; pointer-events: none; }
+.portal { position: fixed; inset: 0; z-index: 25; pointer-events: none; background: radial-gradient(circle at var(--px) var(--py), #174a44, #0a1715 60%);
+  clip-path: circle(0px at var(--px) var(--py)); opacity: 1; }
+.portal.grow { transition: clip-path .55s cubic-bezier(.6,0,.3,1); clip-path: circle(150vmax at var(--px) var(--py)); }
+.portal.fade { transition: opacity .35s ease; opacity: 0; }
 
-/* ---------- panels (placeholders) ---------- */
-.panel { position: fixed; inset: 0; z-index: 30; display: flex; background: rgba(7,9,12,.74); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+/* ---------- pages (placeholders) ---------- */
+.panel { position: fixed; inset: 0; z-index: 30; display: flex; background: rgba(7,9,12,.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   opacity: 0; pointer-events: none; transition: opacity .3s ease; }
 .panel.open { opacity: 1; pointer-events: auto; }
 .sheet { margin: auto; width: min(760px, 92vw); max-height: 86vh; overflow-y: auto; background: #f4f7f9; color: #131820; border-radius: 18px;
   box-shadow: 0 0 0 1px rgba(79,196,176,.35), 0 30px 90px -20px rgba(79,196,176,.45); transform: translateY(24px) scale(.98); transition: transform .4s cubic-bezier(.2,.8,.2,1); }
 .panel.open .sheet { transform: none; }
 .sheet-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 22px; background: #fff; border-bottom: 1px solid #d6dce2; border-radius: 18px 18px 0 0; }
-.sheet-head small { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: 1.3px; text-transform: uppercase; color: #6d7986; }
+.sheet-head small { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #6d7986; }
 .sheet-head b { font-size: 21px; letter-spacing: -.3px; }
-.back { font-family: var(--mono); font-size: 12px; font-weight: 600; color: #3c4652; background: none; border: 1.5px solid #d6dce2; border-radius: 8px; padding: 9px 13px; cursor: pointer; white-space: nowrap; }
+.back { font-size: 13px; font-weight: 700; color: #3c4652; background: none; border: 1.5px solid #d6dce2; border-radius: 10px; padding: 9px 13px; cursor: pointer; white-space: nowrap; }
 .back:hover { background: #e9edf1; }
 .sheet-body { padding: 22px; }
-.ph { border: 2px dashed #c9d3db; border-radius: 12px; padding: 24px 20px; text-align: center; color: #6d7986; font-family: var(--mono); font-size: 12px; line-height: 1.7; }
-.ph b { display: block; font-family: var(--dsp); font-size: 16px; color: #3c4652; margin-bottom: 4px; }
+.ph { border: 2px dashed #c9d3db; border-radius: 12px; padding: 24px 20px; text-align: center; color: #6d7986; font-size: 14px; line-height: 1.6; }
+.ph b { display: block; font-size: 16px; color: #3c4652; margin-bottom: 4px; }
 .hello-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; justify-content: center; }
 .hello-row a { font-weight: 700; font-size: 14px; padding: 12px 16px; border-radius: 10px; background: #2C5951; color: #fff; text-decoration: none; }
 
-/* split: Clinics & Hospitals | Patients & Caretakers */
 .split { position: fixed; inset: 0; z-index: 30; display: grid; grid-template-columns: 1fr 1fr; opacity: 0; pointer-events: none; transition: opacity .35s ease; background: var(--void); }
 .split.open { opacity: 1; pointer-events: auto; }
-.half { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 60px 6vw; gap: 16px; overflow: hidden;
-  transition: flex-basis .4s ease, background .3s ease; border-right: 1px solid var(--dbd); }
+.half { position: relative; display: flex; flex-direction: column; justify-content: center; padding: 70px 6vw; gap: 16px; overflow: hidden; border-right: 1px solid var(--dbd); }
 .half:last-child { border-right: none; }
 .half.clinic { background: linear-gradient(160deg, #0f2724, #07100f); }
 .half.people { background: linear-gradient(200deg, #121c2a, #080b10); }
-.half small { font-family: var(--mono); font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: var(--signal); }
+.half small { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--signal); }
 .half.people small { color: #9fc4ff; }
-.half h2 { font-size: clamp(28px, 3.6vw, 44px); font-weight: 800; letter-spacing: -.8px; line-height: 1.05; }
+.half h2 { font-size: clamp(28px, 3.6vw, 44px); font-weight: 800; letter-spacing: -1px; line-height: 1.05; }
 .half p { color: var(--dtx2); font-size: 15px; line-height: 1.6; max-width: 420px; }
 .half .ph { border-color: rgba(150,190,185,.3); color: var(--dtx3); max-width: 420px; text-align: left; }
 .half .ph b { color: var(--dtx); }
@@ -159,68 +176,70 @@ body.home .caption { opacity: 1; }
   background: rgba(79,196,176,.12); border: 1px solid rgba(79,196,176,.55); }
 .spot:hover { background: rgba(79,196,176,.2); }
 .spot i { flex: 0 0 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle at 40% 35%, #7fe6d2, #2f9c8c 60%, #0f4f47); }
-.spot b { display: block; font-size: 15px; } .spot span { font-family: var(--mono); font-size: 11px; color: #9fe0d3; }
+.spot b { display: block; font-size: 15px; } .spot span { font-size: 12.5px; color: #9fe0d3; }
 .split .back { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 2; color: var(--dtx2); border-color: var(--dbd2); background: rgba(7,9,12,.6); }
 .split .back:hover { background: rgba(255,255,255,.06); color: var(--dtx); }
 
 /* ---------- mobile ---------- */
 @media (max-width: 760px) {
-  body { --bw: min(160px, 20vh); --by: 55%; }
-  .bar { padding: 12px 16px; }
-  .brand .t { display: none; }
+  body { --bw: min(150px, 19vh, 38vw); --by: 56%; }
+  .bar { padding: 14px 16px; }
+  .logo { height: 22px; }
   .caption { font-size: 15.5px; }
-  .bubble span { display: none; }
-  .split { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; overflow-y: auto; }
+  .hint .tag { font-size: 13px; }
+  .split { grid-template-columns: 1fr; grid-template-rows: auto auto; overflow-y: auto; }
   .half { padding: 76px 22px 28px; border-right: none; border-bottom: 1px solid var(--dbd); }
   .half.people { padding-top: 28px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .bot-inner, body.home .bot, body.home .mglow, .caret, .ball, .bubble.in, .hint .tap { animation: none !important; transition: none !important; }
+  .bot-inner, body.home .bot, body.home .mglow, .caret, .ball, .bubble.in, .hint .tap, .bubble.chosen::before, svg.links.on .glint { animation: none !important; transition: none !important; }
   .hint .tap { opacity: 1; }
-  body.live .bg-grid { animation: none; --r: 95%; }
+  body.live .bg-grid { animation: none; --r: 100%; }
 }
 </style>
 </head>
 <body>
 
-<h1 class="sr">Meddy — an AI companion for clinics, hospitals, patients and caretakers</h1>
-<p class="sr">What we do: Meddy for clinics and hospitals, including a free Clinic Spotlight, and Meddy for patients and caretakers. Who we are. Say hello.</p>
+<h1 class="sr">Meddy — connecting lives through simpler care</h1>
+<p class="sr">What we do: Meddy for clinics and hospitals, including a free Clinic Spotlight, and Meddy for patients and caretakers. Who we are. Get in touch.</p>
 
-<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-grid" id="bgGrid" aria-hidden="true"></div>
 <div class="bg-glow" aria-hidden="true"></div>
 
 <header class="bar">
-  <div class="brand"><span class="w">Meddy</span><span class="t">AI companion for clinics</span></div>
+  <img class="logo" src="/v2/meddy-logo-light.png" alt="Meddy">
   <button class="mute" id="mute"></button>
 </header>
 
 <main class="stage" id="stage">
+  <svg class="links" id="links" aria-hidden="true"></svg>
   <div class="bot" id="bot">
     <div class="bot-inner" id="botInner">
       <div class="sitwrap" id="sitWrap">
-        <img class="layer off" id="lOff" alt="Meddy">
+        <img id="lOff" alt="Meddy">
         <img class="msit" id="lOn" alt="" aria-hidden="true">
       </div>
-      <img class="layer up" id="lUp" alt="" aria-hidden="true">
+      <img class="up" id="lUp" alt="" aria-hidden="true">
       <span class="mglow" id="mglow"></span>
       <span class="shadow"></span>
     </div>
   </div>
-  <button class="ball" id="ball" aria-label="Wake Meddy up"><span>Meddy</span></button>
+  <button class="ball" id="ball" aria-label="Wake Meddy up"><span>meddy</span></button>
 
-  <div class="hint"><div class="tap">Tap to wake Meddy</div><div class="tag">Meddy · AI companion for clinics</div></div>
+  <div class="hint"><div class="tap">Tap to wake Meddy</div><div class="tag">Connecting lives through simpler care</div></div>
   <div class="status" id="status" aria-live="polite"></div>
   <div class="caption" id="caption" aria-live="polite"></div>
   <nav id="bubbles" aria-label="Sections"></nav>
 </main>
 
-<!-- What we do: two doors -->
+<div class="portal" id="portal" aria-hidden="true"></div>
+
 <div class="split" id="split" role="dialog" aria-modal="true" aria-label="What we do">
   <button class="back" id="splitBack">← Back to Meddy</button>
   <section class="half clinic">
     <small>What we do · for</small>
     <h2>Clinics &amp; Hospitals</h2>
-    <p>Placeholder: how Meddy helps a clinic get found, get chosen, and keep patients coming back.</p>
+    <p>Meddy, your AI companion for clinics. Placeholder: how Meddy helps a clinic get found, get chosen, and keep patients coming back.</p>
     <button class="spot" id="spotBtn"><i></i><div><b>Get your free Clinic Spotlight</b><span>see how your clinic compares nearby</span></div></button>
     <div class="ph"><b>More for clinics</b>Products, how setup works, and pricing go here.</div>
   </section>
@@ -232,7 +251,6 @@ body.home .caption { opacity: 1; }
   </section>
 </div>
 
-<!-- Generic panel (Who we are, Say hello, Spotlight) -->
 <div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pTitle">
   <div class="sheet">
     <div class="sheet-head"><div><small id="pKick"></small><b id="pTitle"></b></div><button class="back" id="backBtn">← Back</button></div>
@@ -243,22 +261,19 @@ body.home .caption { opacity: 1; }
 <script>
 (function () {
   // ======================= CONFIG =======================
-  // Swap these for the new poses when they arrive. Positions are percent of each image.
-  //   m    = centre of the M on the visor
-  //   ball = where the ball sits in Meddy's hands (only used on the "off" pose)
-  //   sitM = where the M sits on the seated visor [x%, y%, width%, rotation°], in the seated image
-  //   m    = where the M glow sits, as % of Meddy's box (the seated image is drawn at 88% size, bottom-centred)
   var ART = {
     off: { src: "/v2/meddy-sit.png", m: [54.4, 34.9], ball: [53, 62], sitM: [55, 26, 43, 20], mSrc: "/v2/meddy-m.png" },
     up:  { src: "/v2/meddy-up.png",  m: [51.6, 18.2] }
   };
+  // order on screen: top, left, right
   var BUBBLES = [
-    { id: "who",   label: "Who we are",  sub: "the people behind Meddy" },
-    { id: "what",  label: "What we do",  sub: "for clinics · for patients", main: true },
-    { id: "hello", label: "Say hello",   sub: "we'd love to hear from you" }
+    { id: "what",  label: "What we do",   sub: "for clinics and for patients" },
+    { id: "who",   label: "Who we are",   sub: "the people behind Meddy" },
+    { id: "touch", label: "Get in touch", sub: "we'd love to hear from you" }
   ];
   var LINE = "Hi, I'm <b>Meddy</b>. Tap what you'd like to know, and I'll take you there.";
-  var WAKE_MS_FIRST = 3000, WAKE_MS_RETURN = 1000;
+  var WAKE_MS_FIRST = 3000, WAKE_MS_RETURN = 1500;
+  var SEEN_KEY = "meddy_seen_v3";
   var EMAIL = "hello@meddy.co.in";
 
   function $(id) { return document.getElementById(id); }
@@ -266,9 +281,38 @@ body.home .caption { opacity: 1; }
   function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
   function narrow() { return window.innerWidth <= 760; }
   function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  if (/[?&]replay\b/.test(location.search)) { try { localStorage.removeItem(SEEN_KEY); } catch (e) {} }
 
   $("lOff").src = ART.off.src; $("lOn").src = ART.off.mSrc; $("lUp").src = ART.up.src;
   (function (c) { var st = $("lOn").style; st.setProperty("--mx", c[0] + "%"); st.setProperty("--my", c[1] + "%"); st.setProperty("--mw", c[2] + "%"); st.setProperty("--mr", c[3] + "deg"); })(ART.off.sitM);
+
+  // ======================= ICON GRID =======================
+  (function () {
+    var I = [
+      '<path d="M2 12h4l2-5 4 10 2-5h8"/>',                                                        // heartbeat
+      '<path d="M6 3v5a4 4 0 0 0 8 0V3M10 12v3a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="11" r="2"/>', // stethoscope
+      '<path d="M8.5 15.5l7-7a3.5 3.5 0 0 0-5-5l-7 7a3.5 3.5 0 0 0 5 5zM7 7l5 5"/>',                // capsule
+      '<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/>',                                                  // cross
+      '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',          // calendar
+      '<rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/>',                       // phone
+      '<path d="M7 3C5 3 3 5 3.5 8c.5 3 1.5 5 2 9 .3 2.5 2.5 3 3-1l1-4h1l1 4c.5 4 2.7 3.5 3 1 .5-4 1.5-6 2-9 .5-3-1.5-5-3.5-5-2 0-3 1-4.5 1S9 3 7 3z" transform="translate(1.5 0)"/>', // tooth
+      '<path d="M7 2c0 5 10 5 10 10S7 17 7 22M17 2c0 5-10 5-10 10s10 5 10 10M8.5 6h7M8.5 18h7"/>',  // DNA
+      '<rect x="5" y="4" width="14" height="18" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/>', // clipboard
+      '<path d="M4 21V7h16v14M2 21h20M10 21v-4h4v4M12 9v4M10 11h4"/>',                             // hospital
+      '<path d="M12 20s-7-4.5-9-9a4.5 4.5 0 0 1 9-3 4.5 4.5 0 0 1 9 3c-2 4.5-9 9-9 9z"/>',          // heart
+      '<path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0z"/>'                                    // thermometer
+    ];
+    var C = 72, cols = 4, rows = 3, W = C * cols, H = C * rows, s = 22, out = "";
+    for (var k = 0; k < cols * rows; k++) {
+      var x = (k % cols) * C + (C - s) / 2, y = Math.floor(k / cols) * C + (C - s) / 2;
+      out += '<g transform="translate(' + x + " " + y + ") scale(" + (s / 24) + ')">' + I[(k * 5) % I.length] + "</g>";
+    }
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + " " + H + '">' +
+      '<path d="' + Array.from({ length: cols }, function (_, i) { return "M" + (i * C + .5) + " 0V" + H; }).join("") +
+      Array.from({ length: rows }, function (_, i) { return "M0 " + (i * C + .5) + "H" + W; }).join("") + '" stroke="rgba(110,200,185,.10)" stroke-width="1"/>' +
+      '<g fill="none" stroke="rgba(110,200,185,.16)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">' + out + "</g></svg>";
+    $("bgGrid").style.backgroundImage = 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
+  })();
 
   // ======================= SOUND =======================
   var muted = store("meddy_muted") === "1", ac = null;
@@ -276,7 +320,7 @@ body.home .caption { opacity: 1; }
   var ICON_OFF = '<svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
   function paintMute() { $("mute").innerHTML = muted ? ICON_OFF : ICON_ON; $("mute").setAttribute("aria-label", muted ? "Turn sound on" : "Mute sound"); $("mute").title = muted ? "Sound off" : "Sound on"; }
   paintMute();
-  $("mute").addEventListener("click", function () { muted = !muted; store("meddy_muted", muted ? "1" : "0"); paintMute(); if (muted && window.speechSynthesis) speechSynthesis.cancel(); });
+  $("mute").addEventListener("click", function () { muted = !muted; store("meddy_muted", muted ? "1" : "0"); paintMute(); });
   function audio() {
     if (muted) return null;
     try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === "suspended") ac.resume(); } catch (e) { return null; }
@@ -303,22 +347,10 @@ body.home .caption { opacity: 1; }
     whoosh: function () { tone(300, 0.45, "sine", 0.06, 0, 1200); },
     burst: function () { tone(520, 0.18, "triangle", 0.06); tone(780, 0.22, "sine", 0.05, 0.05); tone(1040, 0.3, "sine", 0.04, 0.1); },
     pop: function (i) { tone(700 + i * 110, 0.09, "sine", 0.04); },
-    tap: function () { tone(880, 0.07, "triangle", 0.05); }
+    select: function () { tone(660, 0.12, "sine", 0.06); tone(990, 0.5, "sine", 0.04, 0.08, 1320); },
+    poof: function () { tone(900, 0.25, "triangle", 0.035, 0, 300); },
+    enter: function () { tone(220, 0.5, "sine", 0.06, 0, 880); }
   };
-
-  // ======================= VOICE (browser text-to-speech for now) =======================
-  var voice = null;
-  function pickVoice() {
-    if (!window.speechSynthesis) return;
-    var vs = speechSynthesis.getVoices(); if (!vs.length) return;
-    var prefer = [/en-IN/i, /Google UK English Male/i, /Daniel/i, /en-GB/i, /Google US English/i, /en-US/i, /^en/i];
-    for (var i = 0; i < prefer.length && !voice; i++) voice = vs.filter(function (v) { return prefer[i].test(v.lang) || prefer[i].test(v.name); })[0] || null;
-  }
-  if (window.speechSynthesis) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
-  function speak(html) {
-    if (muted || !window.speechSynthesis) return;
-    try { speechSynthesis.cancel(); var u = new SpeechSynthesisUtterance(html.replace(/<[^>]+>/g, "")); if (voice) u.voice = voice; u.pitch = 1.05; speechSynthesis.speak(u); } catch (e) {}
-  }
 
   function typeInto(el, html) {
     var gen = (el.__gen = (el.__gen || 0) + 1);
@@ -336,11 +368,7 @@ body.home .caption { opacity: 1; }
 
   // ======================= POSES =======================
   function glowAt(p) { $("mglow").style.left = p[0] + "%"; $("mglow").style.top = p[1] + "%"; }
-  function pose(name) {
-    $("lUp").style.opacity = name === "up" ? 1 : 0;
-    $("sitWrap").style.opacity = name === "up" ? 0 : 1;
-    glowAt((ART[name] || ART.off).m);
-  }
+  function pose(name) { $("lUp").style.opacity = name === "up" ? 1 : 0; $("sitWrap").style.opacity = name === "up" ? 0 : 1; glowAt(ART[name].m); }
   function mOn(on, glow) { $("lOn").style.opacity = on ? 1 : 0; $("mglow").style.opacity = glow == null ? (on ? .9 : 0) : glow; }
   glowAt(ART.off.m);
 
@@ -353,44 +381,55 @@ body.home .caption { opacity: 1; }
     $("ball").style.left = p[0] + "px"; $("ball").style.top = p[1] + "px";
   }
   $("lOff").addEventListener("load", placeBall);
-  window.addEventListener("resize", function () { placeBall(); if (document.body.classList.contains("home")) placeBubbles(true); });
   requestAnimationFrame(placeBall);
 
-  // ======================= BUBBLES =======================
-  function targets() {
-    var W = window.innerWidth, br = $("bot").getBoundingClientRect(), top = br.top;
-    var small = narrow();
-    var dMain = small ? 124 : Math.min(176, window.innerHeight * .22), d = small ? 104 : Math.min(150, window.innerHeight * .19);
-    var spread = small ? W * 0.31 : Math.min(W * 0.26, 330);
-    var cy = Math.max(70 + dMain / 2, top - (small ? 96 : 96));
-    return {
-      apex: [W / 2, Math.max(90, top - (small ? 110 : 150))],
-      pos: [[W / 2 - spread, cy + (small ? 56 : 92), d], [W / 2, cy, dMain], [W / 2 + spread, cy + (small ? 56 : 92), d]]
-    };
+  // ======================= BUBBLES: triangle around Meddy =======================
+  function layout() {
+    var W = window.innerWidth, H = window.innerHeight, br = $("bot").getBoundingClientRect();
+    var small = narrow(), d = small ? Math.min(100, W * 0.26) : Math.min(156, H * 0.2);
+    var cx = W / 2, top = br.top, mid = br.top + br.height * (small ? 0.68 : 0.42);
+    var side = small ? Math.min(W / 2 - d / 2 - 8, br.width / 2 + d / 2 + 6) : Math.min(W * 0.27, 340);
+    var topY = Math.max(64 + d / 2, top - (small ? 18 : 30) - d / 2);
+    return { d: d, apex: [cx, Math.max(80, top - (small ? 70 : 110))],
+      pos: [[cx, topY], [cx - side, mid], [cx + side, mid]] };
   }
   function buildBubbles() {
-    $("bubbles").innerHTML = BUBBLES.map(function (b) {
-      return '<button class="bubble' + (b.main ? " main" : "") + '" data-id="' + b.id + '"><b>' + b.label + "</b><span>" + b.sub + "</span></button>"; }).join("");
-    Array.prototype.forEach.call($("bubbles").children, function (el) { el.addEventListener("click", function () { openSection(el.getAttribute("data-id")); }); });
+    $("bubbles").innerHTML = BUBBLES.map(function (b, i) {
+      return '<button class="bubble" data-i="' + i + '" data-id="' + b.id + '"><b>' + b.label + "</b><span>" + b.sub + "</span></button>"; }).join("");
+    Array.prototype.forEach.call($("bubbles").children, function (el) { el.addEventListener("click", function () { choose(el); }); });
   }
-  function placeBubbles(settled, from) {
-    var t = targets(), els = $("bubbles").children;
+  function placeBubbles(from) {
+    var L = layout(), els = $("bubbles").children;
     Array.prototype.forEach.call(els, function (el, k) {
-      var p = t.pos[k]; el.style.left = p[0] + "px"; el.style.top = p[1] + "px"; el.style.setProperty("--d", p[2] + "px");
+      var p = L.pos[k]; el.style.left = p[0] + "px"; el.style.top = p[1] + "px"; el.style.setProperty("--d", L.d + "px");
       if (from) {
         el.style.transition = "none";
         el.style.setProperty("--fx", (from[0] - p[0]) + "px"); el.style.setProperty("--fy", (from[1] - p[1]) + "px");
         void el.offsetWidth; el.style.transition = "";
       }
     });
-    return t;
+    drawLinks(L);
+    return L;
   }
+  function drawLinks(L) {
+    var r = L.d / 2 + 4, a = L.pos[0], svg = $("links");
+    function seg(b) {
+      var dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy), ux = dx / len, uy = dy / len;
+      var x1 = a[0] + ux * r, y1 = a[1] + uy * r, x2 = b[0] - ux * r, y2 = b[1] - uy * r, l = Math.hypot(x2 - x1, y2 - y1);
+      var d = "M" + x1 + " " + y1 + " L" + x2 + " " + y2;
+      return '<path class="ln" d="' + d + '" style="--len:' + l + '"/><path class="glint" d="' + d + '" style="--len:' + l + '"/>';
+    }
+    var on = svg.classList.contains("on");
+    svg.innerHTML = seg(L.pos[1]) + seg(L.pos[2]);
+    if (on) svg.classList.add("on");
+  }
+  window.addEventListener("resize", function () { placeBall(); if (document.body.classList.contains("home")) placeBubbles(); });
 
   // ======================= WAKE → THROW → HOME =======================
   var started = false;
   async function wake() {
     if (started) return; started = true;
-    var first = store("meddy_woke") !== "1", ms = REDUCED ? 0 : (first ? WAKE_MS_FIRST : WAKE_MS_RETURN), k = ms / 3000;
+    var first = store(SEEN_KEY) !== "1", ms = REDUCED ? 0 : (first ? WAKE_MS_FIRST : WAKE_MS_RETURN), k = ms / 3000;
     audio();
     document.body.classList.add("waking");
     $("status").textContent = "Waking up…";
@@ -399,61 +438,98 @@ body.home .caption { opacity: 1; }
       await wait(450 * k);
       document.body.classList.add("live");
       var seq = [[1, .5, 90], [0, 0, 110], [1, .7, 70], [0, 0, 220], [1, .9, 60], [0, .2, 90], [1, 1, 140]];
-      for (var i = 0; i < seq.length; i++) { mOn(seq[i][0], seq[i][1]); if (seq[i][0]) SFX.blip(); await wait(seq[i][2] * Math.max(k, .45)); }
+      for (var i = 0; i < seq.length; i++) { mOn(seq[i][0], seq[i][1]); if (seq[i][0]) SFX.blip(); await wait(seq[i][2] * Math.max(k, .5)); }
       mOn(1, .9); $("status").textContent = "Online";
       await wait(700 * k);
     } else { document.body.classList.add("live"); mOn(1, .6); }
-    store("meddy_woke", "1");
+    store(SEEN_KEY, "1");
     await throwBall();
   }
   async function throwBall() {
     var inner = $("botInner"), ball = $("ball");
     document.body.classList.remove("waking");
-    // throw
     pose("up"); inner.classList.remove("hop"); void inner.offsetWidth; inner.classList.add("hop");
-    var t = targets();
+    var L = layout();
     ballHeld = false; ball.disabled = true; ball.setAttribute("aria-hidden", "true");
     if (!REDUCED) {
       SFX.whoosh();
-      ball.classList.add("fly");
-      ball.style.left = t.apex[0] + "px"; ball.style.top = t.apex[1] + "px";
+      ball.classList.add("fly"); ball.style.left = L.apex[0] + "px"; ball.style.top = L.apex[1] + "px";
       await wait(620);
-      // split into three
       SFX.burst();
-      placeBubbles(false, t.apex);
+      placeBubbles(L.apex);
       ball.classList.add("burst");
-      Array.prototype.forEach.call($("bubbles").children, function (el, i) {
-        setTimeout(function () { el.classList.add("in"); SFX.pop(i); }, 40 + i * 90);
-      });
-      await wait(450);
+      Array.prototype.forEach.call($("bubbles").children, function (el, i) { setTimeout(function () { el.classList.add("in"); SFX.pop(i); }, 40 + i * 90); });
+      await wait(650);
+      $("links").classList.add("on");
     } else {
-      ball.style.display = "none";
+      ball.style.display = "none"; placeBubbles();
       Array.prototype.forEach.call($("bubbles").children, function (el) { el.classList.add("in"); });
+      $("links").classList.add("on");
     }
     document.body.classList.add("home");
-    typeInto($("caption"), LINE); speak(LINE);
+    typeInto($("caption"), LINE);
   }
   $("ball").addEventListener("click", wake);
   buildBubbles();
 
-  // ======================= SECTIONS =======================
-  var lastFocus = null;
+  // ======================= SELECT: "let me take you there" =======================
+  var busy = false, lastFocus = null;
+  function sparks(el) {
+    var r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    for (var i = 0; i < 14; i++) {
+      var s = document.createElement("span"); s.className = "spark"; s.style.left = cx + "px"; s.style.top = cy + "px";
+      document.body.appendChild(s);
+      var a = Math.random() * Math.PI * 2, dist = r.width * (.35 + Math.random() * .5);
+      s.animate([{ transform: "translate(0,0) scale(1)", opacity: 1 }, { transform: "translate(" + Math.cos(a) * dist + "px," + Math.sin(a) * dist + "px) scale(.2)", opacity: 0 }],
+        { duration: 500 + Math.random() * 250, easing: "cubic-bezier(.2,.7,.3,1)", fill: "forwards" }).onfinish = (function (n) { return function () { n.remove(); }; })(s);
+    }
+  }
+  async function choose(el) {
+    if (busy) return; busy = true; lastFocus = el;
+    var id = el.getAttribute("data-id"), idx = +el.getAttribute("data-i"), inner = $("botInner");
+    var others = Array.prototype.filter.call($("bubbles").children, function (b) { return b !== el; });
+    SFX.select();
+    typeInto($("caption"), "Let me take you there.");
+    if (!REDUCED) {
+      el.classList.add("chosen");                                             // glow + spinning ring
+      inner.classList.remove("flare"); void inner.offsetWidth; inner.classList.add("flare");
+      await wait(300);
+      var cls = idx === 0 ? "sweep-u" : idx === 1 ? "sweep-r" : "sweep-l";   // gesture away from the chosen side
+      inner.classList.remove("sweep-u", "sweep-l", "sweep-r"); void inner.offsetWidth; inner.classList.add(cls);
+      $("links").classList.add("off");
+      others.forEach(function (b, i) { setTimeout(function () { sparks(b); SFX.poof(); b.classList.add("gone"); }, 120 + i * 110); });
+      await wait(620);
+      var r = el.getBoundingClientRect(), portal = $("portal");
+      portal.style.setProperty("--px", (r.left + r.width / 2) + "px"); portal.style.setProperty("--py", (r.top + r.height / 2) + "px");
+      portal.className = "portal"; void portal.offsetWidth; portal.classList.add("grow"); SFX.enter();
+      await wait(560);
+    }
+    openSection(id);
+    if (!REDUCED) { await wait(60); $("portal").classList.add("fade"); }
+    busy = false;
+  }
+  function restoreHome() {
+    Array.prototype.forEach.call($("bubbles").children, function (b) { b.classList.remove("chosen", "gone"); if (!b.classList.contains("in")) b.classList.add("in"); });
+    $("links").classList.remove("off");
+    $("portal").className = "portal";
+    typeInto($("caption"), LINE);
+    if (lastFocus) lastFocus.focus();
+  }
+
+  // ======================= PAGES (placeholders) =======================
   function sheet(kick, title, body) {
     $("pKick").textContent = kick; $("pTitle").textContent = title; $("pBody").innerHTML = body;
     $("panel").classList.add("open"); $("backBtn").focus();
   }
   function openSection(id) {
-    SFX.tap(); lastFocus = document.activeElement;
-    if (id === "what") { $("split").classList.add("open"); $("splitBack").focus(); typeInto($("caption"), "Pick the side that fits you."); return; }
+    if (id === "what") { $("split").classList.add("open"); $("splitBack").focus(); return; }
     if (id === "who") sheet("Who we are", "The people behind Meddy",
       '<div class="ph"><b>Who we are</b>The Meddy story, Karthik and Rupa, and why we are building this in Chennai.<br>Content is being written.</div>');
-    if (id === "hello") sheet("Say hello", "We'd love to hear from you",
-      '<div class="ph"><b>Say hello</b>Doctors, patients, partners, press, or people who want to build with us: all welcome.' +
+    if (id === "touch") sheet("Get in touch", "We'd love to hear from you",
+      '<div class="ph"><b>Get in touch</b>Doctors, patients, partners, press, or people who want to build with us: all welcome.' +
       '<div class="hello-row"><a href="mailto:' + EMAIL + '">Email ' + EMAIL + "</a></div></div>");
-    typeInto($("caption"), "Taking you there.");
   }
   function openSpotlight() {
-    SFX.tap();
     sheet("Free · for clinics", "Get your free Clinic Spotlight",
       '<div class="ph"><b>Clinic Spotlight request</b>A short intro, a sample Spotlight, and the request form go here.</div>');
   }
@@ -461,9 +537,9 @@ body.home .caption { opacity: 1; }
     if ($("panel").classList.contains("open")) {
       $("panel").classList.remove("open");
       if ($("split").classList.contains("open")) { $("spotBtn").focus(); return; }
-    } else $("split").classList.remove("open");
-    typeInto($("caption"), LINE);
-    if (lastFocus) lastFocus.focus();
+    } else if ($("split").classList.contains("open")) $("split").classList.remove("open");
+    else return;
+    restoreHome();
   }
   $("spotBtn").addEventListener("click", openSpotlight);
   $("backBtn").addEventListener("click", closeAll);
