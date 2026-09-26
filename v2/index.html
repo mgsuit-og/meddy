@@ -257,6 +257,87 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 .p-end .tagline { display: block; font-size: 22px; font-weight: 800; color: #bff3e9; letter-spacing: -.4px; }
 .founders { margin-top: 8px; }
 @media (max-width: 600px) { .stats { grid-template-columns: 1fr; } }
+
+/* ---------- icons ---------- */
+.ico { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+.h-ico { width: 64px; height: 64px; border-radius: 18px; display: grid; place-items: center; color: var(--signal); background: rgba(95,212,190,.1); border: 1px solid rgba(95,212,190,.35); margin-bottom: 4px; }
+.half.people .h-ico { color: #9fc4ff; background: rgba(159,196,255,.08); border-color: rgba(159,196,255,.3); }
+.h-ico .ico { width: 34px; height: 34px; stroke-width: 1.5; }
+.st-ico { margin-left: auto; color: var(--dtx3); display: flex; transition: color .25s; }
+.steps4 li .ico, .offer .ico { color: var(--signal); width: 24px; height: 24px; margin-bottom: 4px; }
+.steps4 li::before { display: none; }
+/* ---------- card highlight ---------- */
+.stage-card, .offer, .steps4 li { transition: transform .25s cubic-bezier(.2,.8,.2,1), border-color .25s, box-shadow .25s, background .25s; }
+.stage-card .fix { transition: opacity .25s; opacity: .8; }
+.stage-card:hover, .stage-card.lit { transform: translateY(-4px); border-color: rgba(95,212,190,.6); box-shadow: 0 18px 40px -18px rgba(79,196,176,.55), 0 0 0 1px rgba(95,212,190,.2); }
+.stage-card:hover .fix, .stage-card.lit .fix { opacity: 1; }
+.stage-card:hover .st-ico, .stage-card.lit .st-ico { color: var(--signal); }
+.offer:hover, .steps4 li:hover { transform: translateY(-3px); border-color: rgba(95,212,190,.55); box-shadow: 0 14px 30px -16px rgba(79,196,176,.5); }
+.half { transition: background .3s; }
+/* ---------- hero Meddy ---------- */
+.p-hero.with-bot { position: relative; max-width: none; padding-right: 300px; min-height: 300px; }
+.hero-bot { position: absolute; right: 20px; top: 24px; width: 210px; transform: scaleX(-1); filter: drop-shadow(0 20px 40px rgba(79,196,176,.25)); animation: float 4.5s ease-in-out infinite; }
+/* ---------- spotlight section ---------- */
+.spot-sec { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 34px; align-items: center; padding: 30px; border-radius: 22px;
+  background: radial-gradient(ellipse at 0% 0%, rgba(79,196,176,.16), transparent 60%), rgba(12,20,22,.8); border: 1px solid rgba(95,212,190,.35); }
+.spot-copy small.kick { display: block; font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--signal); margin-bottom: 10px; }
+.spot-copy h2 { margin-bottom: 10px !important; }
+.spot-copy .lede { font-size: 17px; color: var(--dtx2); line-height: 1.5; margin-bottom: 18px; }
+.gets { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+.gets li { display: flex; gap: 12px; align-items: flex-start; font-size: 15px; line-height: 1.45; }
+.gets .ico { color: var(--signal); margin-top: 1px; }
+.why-line { font-size: 15px; color: var(--dtx); margin-bottom: 4px; } .why-line b { color: var(--signal); }
+.free { font-size: 14px; color: var(--dtx2); margin-bottom: 18px; }
+.spot-sample { margin: 0; }
+.spot-sample img { width: 100%; display: block; border-radius: 14px; border: 1px solid var(--dbd2); box-shadow: 0 24px 60px -24px rgba(79,196,176,.5); }
+.spot-sample figcaption { font-size: 12.5px; color: var(--dtx3); margin-top: 8px; text-align: center; }
+/* ---------- Meddy guide (docked) ---------- */
+.guide { position: fixed; right: 22px; bottom: 20px; z-index: 5; display: flex; align-items: flex-end; gap: 10px; opacity: 0; transform: translateY(20px); transition: opacity .4s, transform .4s; pointer-events: none; }
+.guide.on { opacity: 1; transform: none; }
+.g-bot { width: 76px; border: none; background: none; padding: 0; cursor: pointer; pointer-events: auto; filter: drop-shadow(0 10px 20px rgba(79,196,176,.35)); animation: float 4s ease-in-out infinite; }
+.g-bot img { width: 100%; display: block; }
+.g-say { max-width: 230px; background: rgba(255,255,255,.97); color: #131820; font-size: 13.5px; line-height: 1.4; font-weight: 600; padding: 10px 13px; border-radius: 14px 14px 4px 14px;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,.6); opacity: 0; transform: translateY(6px) scale(.96); transition: opacity .3s, transform .3s; margin-bottom: 44px; }
+.g-say.show { opacity: 1; transform: none; }
+/* ---------- footer ---------- */
+.site-foot { margin-top: 70px; border-top: 1px solid var(--dbd); padding-top: 36px; }
+.sf-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr 1fr; gap: 26px; }
+.sf-grid h4 { font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--dtx3); margin-bottom: 12px; }
+.sf-grid a, .sf-grid span { display: block; font-size: 14px; color: var(--dtx2); text-decoration: none; margin-bottom: 9px; }
+.sf-grid a:hover { color: var(--signal); }
+.sf-brand img { height: 26px; margin-bottom: 10px; } .sf-brand p { font-size: 15px; font-weight: 700; color: var(--dtx); margin-bottom: 6px; }
+.sf-note { margin-top: 26px; font-size: 13px; color: var(--dtx3); }
+.sf-bar { margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--dbd); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--dtx3); }
+.mini-foot { position: fixed; left: 0; right: 0; bottom: 10px; z-index: 6; display: flex; justify-content: center; gap: 16px; font-size: 12px; color: var(--dtx3); opacity: 0; transition: opacity .6s; }
+body.home .mini-foot { opacity: 1; }
+.mini-foot a { color: var(--dtx3); text-decoration: none; } .mini-foot a:hover { color: var(--signal); }
+/* ---------- spotlight form ---------- */
+.sp-form { display: grid; gap: 12px; }
+.sp-form label { font-size: 13px; font-weight: 700; color: #3c4652; display: grid; gap: 6px; }
+.sp-form input[type=text], .sp-form input[type=tel] { font: inherit; font-size: 15px; padding: 12px 13px; border: 1.5px solid #d6dce2; border-radius: 10px; background: #fff; color: #131820; }
+.sp-form input:focus { outline: none; border-color: #2e9a8a; box-shadow: 0 0 0 3px rgba(79,196,176,.2); }
+.sp-form .tel { display: flex; } .sp-form .tel b { display: grid; place-items: center; padding: 0 12px; border: 1.5px solid #d6dce2; border-right: none; border-radius: 10px 0 0 10px; background: #f2f5f8; font-size: 15px; color: #3c4652; }
+.sp-form .tel input { border-radius: 0 10px 10px 0; flex: 1; min-width: 0; }
+.sp-form .consent { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; font-size: 13px; line-height: 1.45; color: #3c4652; }
+.sp-form .consent input { margin-top: 3px; width: 17px; height: 17px; accent-color: #2e9a8a; flex: 0 0 auto; }
+.sp-form .consent a { color: #1f6f63; }
+.sp-form .hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.sp-form button { justify-self: start; font-weight: 800; font-size: 15px; padding: 13px 20px; border-radius: 999px; border: none; cursor: pointer; color: #062320; background: linear-gradient(135deg, #7fe6d2, #4fc4b0 50%, #2e9a8a); }
+.sp-form button:disabled { opacity: .6; cursor: wait; }
+.sp-intro { font-size: 15px; color: #3c4652; line-height: 1.5; margin-bottom: 16px; }
+.sp-err { font-size: 13.5px; color: #a3321b; min-height: 1em; }
+.sp-done { text-align: center; padding: 20px 8px; } .sp-done b { display: block; font-size: 20px; color: #131820; margin-bottom: 6px; } .sp-done p { color: #3c4652; font-size: 15px; line-height: 1.5; }
+@media (max-width: 900px) {
+  .p-hero.with-bot { padding-right: 0; min-height: 0; } .hero-bot { display: none; }
+  .spot-sec { grid-template-columns: 1fr; padding: 22px; }
+  .sf-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+  .guide { right: 10px; bottom: 10px; } .g-bot { width: 58px; } .g-say { max-width: 200px; font-size: 12.5px; margin-bottom: 34px; }
+  .sf-grid { grid-template-columns: 1fr; }
+  .mini-foot { bottom: 6px; }
+}
+@media (prefers-reduced-motion: reduce) { .hero-bot, .g-bot { animation: none; } .stage-card, .offer, .steps4 li { transition: none; } }
 /* ---------- mobile ---------- */
 @media (max-width: 760px) {
   body { --bw: min(150px, 19vh, 38vw); --by: 56%; }
@@ -288,6 +369,7 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
   <button class="mute" id="mute"></button>
 </header>
 
+<nav class="mini-foot" aria-label="Legal"><a href="/v2/privacy.html">Privacy</a><a href="/v2/terms.html">Terms</a><span>© 2026 Viyuha Technologies</span></nav>
 <main class="stage" id="stage">
   <svg class="links" id="links" aria-hidden="true"></svg>
   <div class="bot" id="bot">
@@ -315,6 +397,7 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 <div class="split" id="split" role="dialog" aria-modal="true" aria-label="What we do">
   <button class="back" id="splitBack">← Back to Meddy</button>
   <section class="half clinic">
+    <div class="h-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V8l7-4 7 4v13"/><path d="M12 9v6M9 12h6"/><path d="M10 21v-3h4v3"/></svg></div>
     <small>What we do · for</small>
     <h2>Clinics &amp; Hospitals</h2>
     <p>Your AI companion for clinics. Get found, get chosen, and keep patients coming back.</p>
@@ -322,6 +405,7 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
     <button class="spot" id="spotBtn"><i></i><div><b>Get your free Clinic Spotlight</b><span>see how your clinic compares nearby</span></div></button>
   </section>
   <section class="half people">
+    <div class="h-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12.5s-3.2-2-3.2-4.2A1.9 1.9 0 0 1 12 7.2a1.9 1.9 0 0 1 3.2 1.1c0 2.2-3.2 4.2-3.2 4.2z"/><path d="M2 14l3.5-2 5 2.5c.8.4.9 1.5.1 2l-.6.3M2 20l4-1.5 6 1.5 8.5-5c.9-.5.6-1.9-.4-2l-5.4 1.5"/></svg></div>
     <small>What we do · for</small>
     <h2>Patients &amp; Caretakers</h2>
     <p>Care that's easier to find, book and follow through, for you and the people you look after.</p>
@@ -334,7 +418,8 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 <div class="page" id="clinicPage" role="dialog" aria-modal="true" aria-label="Meddy for clinics and hospitals">
   <div class="page-bar"><button class="back dark" data-back>← Back</button><img class="logo" src="/v2/meddy-logo-light.png" alt="Meddy"></div>
   <div class="page-in">
-    <header class="p-hero">
+    <header class="p-hero with-bot">
+      <img class="hero-bot" src="/v2/meddy-reach.png" alt="" aria-hidden="true">
       <small>For clinics &amp; hospitals</small>
       <h1>Patients can't choose a clinic they can't find.</h1>
       <p>Clinics lose patients in four quiet places. Meddy shows you where, then closes the gaps.</p>
@@ -342,50 +427,70 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
     </header>
 
     <div class="stages">
-      <article class="stage-card">
-        <div class="st-no"><i>01</i> Found</div>
+      <article class="stage-card" data-guide>
+        <div class="st-no"><i>01</i> Found <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg></span></div>
         <h3>They search. Another clinic shows up.</h3>
         <ul class="gaps"><li>Not in Google's top 3 nearby</li><li>Listed under the wrong category</li><li>No website, or one Google can't read</li></ul>
         <div class="fix"><span>Meddy fixes it with</span><b>Website build or revamp</b><b>Google profile + SEO boost</b></div>
       </article>
-      <article class="stage-card">
-        <div class="st-no"><i>02</i> Chosen</div>
+      <article class="stage-card" data-guide>
+        <div class="st-no"><i>02</i> Chosen <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span></div>
         <h3>They compare. You look quieter.</h3>
         <ul class="gaps"><li>Fewer reviews than clinics nearby</li><li>No doctor profiles or treatment pages</li><li>Old photos, missing hours</li></ul>
         <div class="fix"><span>Meddy fixes it with</span><b>A website that shows your doctors</b><b>Review requests after every visit</b></div>
       </article>
-      <article class="stage-card">
-        <div class="st-no"><i>03</i> Contacted</div>
+      <article class="stage-card" data-guide>
+        <div class="st-no"><i>03</i> Contacted <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg></span></div>
         <h3>They message at 10 pm. No one replies.</h3>
         <ul class="gaps"><li>Calls missed during consultations</li><li>No way to book online</li><li>WhatsApp, Instagram and calls all scattered</li></ul>
         <div class="fix"><span>Meddy fixes it with</span><b>Smart Appointments: 24×7 WhatsApp booking</b><b>Instagram, Facebook and calls in one inbox</b></div>
       </article>
-      <article class="stage-card">
-        <div class="st-no"><i>04</i> Kept</div>
+      <article class="stage-card" data-guide>
+        <div class="st-no"><i>04</i> Kept <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3l3 3-3 3"/><path d="M4 11V9a3 3 0 0 1 3-3h13M7 21l-3-3 3-3"/><path d="M20 13v2a3 3 0 0 1-3 3H4"/></svg></span></div>
         <h3>They get better. They don't come back.</h3>
         <ul class="gaps"><li>Follow-ups forgotten</li><li>No-shows and late cancellations</li><li>Records on paper, or across five apps</li></ul>
         <div class="fix"><span>Meddy fixes it with</span><b>Automatic reminders and follow-ups</b><b>Meddy Clinic OS: booking to billing, one place</b></div>
       </article>
     </div>
 
+    <section class="p-sec spot-sec" id="spotlight" data-guide>
+      <div class="spot-copy">
+        <small class="kick">Free · Clinic Spotlight</small>
+        <h2>See your clinic the way patients do.</h2>
+        <p class="lede">A spotlight on your clinic, reading into how visible and easy to find you are.</p>
+        <ul class="gets">
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg><span>Where you rank when patients search nearby</span></li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg><span>How your reviews, rating and website compare with clinics around you</span></li>
+          <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></svg><span>Where you lose patients across the four stages, and what fixes each gap</span></li>
+        </ul>
+        <p class="why-line"><b>Why?</b> You can't fix what you can't see.</p>
+        <p class="free">Free. No obligation.</p>
+        <button class="pill spotOpen">Get my free Spotlight <span>→</span></button>
+      </div>
+      <figure class="spot-sample">
+        <img src="/v2/spotlight-sample.jpg" alt="A sample Clinic Spotlight: Meddy walks the doctor through where the clinic stands today" loading="lazy">
+        <figcaption>A real Spotlight, with the clinic's name removed.</figcaption>
+      </figure>
+    </section>
+
     <section class="p-sec">
       <h2>How it works</h2>
       <ol class="steps4">
-        <li><b>Spotlight</b><span>We check your clinic against the ones nearby. Free.</span></li>
-        <li><b>Plan</b><span>Only what closes your gaps. Nothing extra.</span></li>
-        <li><b>Set up</b><span>We build it, move your data and train your team.</span></li>
-        <li><b>Stay</b><span>Monthly reports. A team you can call.</span></li>
+        <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="7.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22"/></svg><b>Spotlight</b><span>We check your clinic against the ones nearby. Free.</span></li>
+        <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h6M9 14h6M9 18h3"/></svg><b>Plan</b><span>Only what closes your gaps. Nothing extra.</span></li>
+        <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg><b>Set up</b><span>We build it, move your data and train your team.</span></li>
+        <li><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 17l5-5 4 4 8-8"/><path d="M15 8h5v5"/></svg><b>Stay</b><span>Monthly reports. A team you can call.</span></li>
       </ol>
     </section>
 
     <section class="p-sec">
       <h2>What we offer</h2>
       <div class="offers">
-        <div class="offer"><small>One-time</small><b>Website Building</b><p>A new website, built to be found.</p><em>+ Google profile &amp; SEO boost</em></div>
-        <div class="offer"><small>One-time</small><b>Website Revamp</b><p>Your website, faster and easier to book from.</p><em>+ Google profile &amp; SEO boost</em></div>
-        <div class="offer"><small>Monthly</small><b>SEO Boost</b><p>Steady work to keep you visible, with monthly reports.</p><em>+ Google profile fixes</em></div>
-        <div class="offer"><small>Monthly</small><b>Smart Appointments</b><p>A WhatsApp assistant that books patients, day and night.</p><em>+ Instagram, Facebook &amp; phone · review collection</em></div>
-        <div class="offer star"><small>Monthly</small><b>Meddy Clinic OS</b><p>Your whole clinic, from booking to billing, in one place.</p><em>+ Personal Clinic AI for the owner</em></div>
+        <div class="offer"><small>One-time</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg><b>Website Building</b><p>A new website, built to be found.</p><em>+ Google profile &amp; SEO boost</em></div>
+        <div class="offer"><small>One-time</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11A8 8 0 0 0 6.3 6.3L4 8.5M4 4v4.5h4.5M4 13a8 8 0 0 0 13.7 4.7L20 15.5M20 20v-4.5h-4.5"/></svg><b>Website Revamp</b><p>Your website, faster and easier to book from.</p><em>+ Google profile &amp; SEO boost</em></div>
+        <div class="offer"><small>Monthly</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V14M10 20V9M16 20v-5M22 20H2"/><path d="M4 9l6-5 6 4 5-4"/></svg><b>SEO Boost</b><p>Steady work to keep you visible, with monthly reports.</p><em>+ Google profile fixes</em></div>
+        <div class="offer"><small>Monthly</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9 9.5c0 2.5 2.5 5 5 5l1.2-1.2-2-1-.8.8c-.9-.4-1.6-1.1-2-2l.8-.8-1-2z"/></svg><b>Smart Appointments</b><p>A WhatsApp assistant that books patients, day and night.</p><em>+ Instagram, Facebook &amp; phone · review collection</em></div>
+        <div class="offer star"><small>Monthly</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg><b>Meddy Clinic OS</b><p>Your whole clinic, from booking to billing, in one place.</p><em>+ Personal Clinic AI for the owner</em></div>
       </div>
     </section>
 
@@ -393,6 +498,20 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
       <h2>See where your clinic stands.</h2>
       <button class="pill spotOpen">Get your free Clinic Spotlight <span>→</span></button>
     </footer>
+    <footer class="site-foot">
+      <div class="sf-grid">
+        <div class="sf-brand"><img src="/v2/meddy-logo-light.png" alt="Meddy"><p>Smart care, made simple.</p><span>Built in Chennai</span></div>
+        <div><h4>Explore</h4><a href="#" data-nav="clinics">For clinics &amp; hospitals</a><a href="#" data-nav="spotlight">Clinic Spotlight</a><a href="#" data-nav="who">Who we are</a><a href="#" data-nav="touch">Get in touch</a></div>
+        <div><h4>Contact</h4><a href="mailto:hello@meddy.co.in">hello@meddy.co.in</a><span>Chennai, Tamil Nadu</span></div>
+        <div><h4>Legal</h4><a href="/v2/privacy.html">Privacy Policy</a><a href="/v2/terms.html">Terms of Use</a><a href="/v2/terms.html#medical">Medical disclaimer</a><a href="/v2/privacy.html#grievance">Grievance officer</a></div>
+      </div>
+      <p class="sf-note">Meddy does not give medical advice or diagnosis. In an emergency, call 108 or 112.</p>
+      <div class="sf-bar"><span>© 2026 Viyuha Technologies. All rights reserved.</span><span>Meddy is a product of Viyuha Technologies, Chennai.</span></div>
+    </footer>
+  </div>
+  <div class="guide" id="guide" aria-hidden="true">
+    <div class="g-say" id="gSay"></div>
+    <button class="g-bot" id="gBot" tabindex="-1" title="Get your free Clinic Spotlight"><img src="/v2/meddy-up.png" alt=""></button>
   </div>
 </div>
 
@@ -445,6 +564,16 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
       <h2>So we work at both ends.</h2>
       <p>For clinics and hospitals, Meddy takes on the running of the practice, so doctors get their time back. For patients and caretakers, it keeps their care, history and options within reach.</p>
       <b class="tagline">Smart care, made simple.</b>
+    </footer>
+    <footer class="site-foot">
+      <div class="sf-grid">
+        <div class="sf-brand"><img src="/v2/meddy-logo-light.png" alt="Meddy"><p>Smart care, made simple.</p><span>Built in Chennai</span></div>
+        <div><h4>Explore</h4><a href="#" data-nav="clinics">For clinics &amp; hospitals</a><a href="#" data-nav="spotlight">Clinic Spotlight</a><a href="#" data-nav="who">Who we are</a><a href="#" data-nav="touch">Get in touch</a></div>
+        <div><h4>Contact</h4><a href="mailto:hello@meddy.co.in">hello@meddy.co.in</a><span>Chennai, Tamil Nadu</span></div>
+        <div><h4>Legal</h4><a href="/v2/privacy.html">Privacy Policy</a><a href="/v2/terms.html">Terms of Use</a><a href="/v2/terms.html#medical">Medical disclaimer</a><a href="/v2/privacy.html#grievance">Grievance officer</a></div>
+      </div>
+      <p class="sf-note">Meddy does not give medical advice or diagnosis. In an emergency, call 108 or 112.</p>
+      <div class="sf-bar"><span>© 2026 Viyuha Technologies. All rights reserved.</span><span>Meddy is a product of Viyuha Technologies, Chennai.</span></div>
     </footer>
   </div>
 </div>
@@ -736,11 +865,83 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
       '<div class="ph"><b>Get in touch</b>Doctors, patients, partners, press, or people who want to build with us: all welcome.' +
       '<div class="hello-row"><a href="mailto:' + EMAIL + '">Email ' + EMAIL + "</a></div></div>");
   }
+
+  // ======================= SPOTLIGHT FORM =======================
+  var API = "https://meddy-backend-production.up.railway.app";
   function openSpotlight() {
     sheet("Free · for clinics", "Get your free Clinic Spotlight",
-      '<div class="ph"><b>Clinic Spotlight request</b>A short intro, a sample Spotlight, and the request form go here.</div>');
+      '<p class="sp-intro">Tell us where to find you. We\'ll prepare your Spotlight and share it on WhatsApp.</p>' +
+      '<form class="sp-form" id="spForm" novalidate>' +
+      '<label>Clinic name<input type="text" name="clinic_name" autocomplete="organization" required maxlength="120"></label>' +
+      '<label>Area and city<input type="text" name="area" placeholder="e.g. Anna Nagar, Chennai" required maxlength="120"></label>' +
+      '<label>WhatsApp number<span class="tel"><b>+91</b><input type="tel" name="whatsapp" inputmode="numeric" autocomplete="tel-national" placeholder="98765 43210" required maxlength="14"></span></label>' +
+      '<input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">' +
+      '<label class="consent"><input type="checkbox" name="consent"><span>I agree that Meddy may use these details to prepare my Clinic Spotlight and contact me about it on WhatsApp. See the <a href="/v2/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>' +
+      '<div class="sp-err" id="spErr" role="alert"></div>' +
+      '<button type="submit">Send my request</button></form>');
+    $("spForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = e.target, btn = f.querySelector("button"), err = $("spErr");
+      var body = { clinic_name: f.clinic_name.value.trim(), area: f.area.value.trim(), whatsapp: f.whatsapp.value.trim(), consent: f.consent.checked, company: f.company.value };
+      if (body.clinic_name.length < 2) { err.textContent = "Please enter your clinic's name."; f.clinic_name.focus(); return; }
+      if (body.area.length < 2) { err.textContent = "Please enter your area and city."; f.area.focus(); return; }
+      if (!/^[6-9]\d{9}$/.test(body.whatsapp.replace(/\D/g, "").replace(/^91(?=\d{10}$)/, ""))) { err.textContent = "Please enter a valid 10-digit mobile number."; f.whatsapp.focus(); return; }
+      if (!body.consent) { err.textContent = "Please tick the box so we can contact you."; return; }
+      err.textContent = ""; btn.disabled = true; btn.textContent = "Sending…";
+      fetch(API + "/public/spotlight-request", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (!res.ok) throw new Error(res.d.detail || "Could not send your request.");
+          $("pBody").innerHTML = '<div class="sp-done"><b>Thank you. Request received.</b><p>We\'ll prepare the Spotlight for <strong>' + body.clinic_name.replace(/[<>&]/g, "") + '</strong> and send it to you on WhatsApp.</p></div>';
+        })
+        .catch(function (e2) { err.textContent = (e2.message || "Could not send your request.") + " You can also email hello@meddy.co.in."; btn.disabled = false; btn.textContent = "Send my request"; });
+    });
+    setTimeout(function () { var i = $("spForm") && $("spForm").clinic_name; if (i) i.focus(); }, 50);
   }
-  function openPage(id) { var pg = $(id); pg.scrollTop = 0; pg.classList.add("open"); pg.querySelector("[data-back]").focus(); }
+
+  // ======================= MEDDY GUIDE (clinic page) =======================
+  var GUIDE = [
+    "Most clinics lose patients right here: they're never found.",
+    "Patients compare before they call. Reviews tip the scale.",
+    "A message at 10 pm deserves a reply at 10 pm.",
+    "A patient who comes back is worth more than a new one.",
+    "Tap me for a free Spotlight on your clinic."
+  ];
+  var guideTimer = null, guideSeen = {};
+  function guideSay(text) {
+    var b = $("gSay"); clearTimeout(guideTimer);
+    b.textContent = text; b.classList.add("show");
+    guideTimer = setTimeout(function () { b.classList.remove("show"); }, 4200);
+  }
+  (function () {
+    var pg = $("clinicPage"), guide = $("guide"), targets = pg.querySelectorAll("[data-guide]");
+    if (!("IntersectionObserver" in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        var i = Array.prototype.indexOf.call(targets, en.target);
+        if (en.isIntersecting && en.target.classList.contains("stage-card")) {
+          if (window.matchMedia("(hover: none)").matches) { en.target.classList.add("lit"); setTimeout(function () { en.target.classList.remove("lit"); }, 1400); }
+        }
+        if (en.isIntersecting && !guideSeen[i] && guide.classList.contains("on")) { guideSeen[i] = 1; guideSay(GUIDE[Math.min(i, GUIDE.length - 1)]); }
+      });
+    }, { root: pg, threshold: 0.6 });
+    Array.prototype.forEach.call(targets, function (t) { io.observe(t); });
+    pg.addEventListener("scroll", function () { guide.classList.toggle("on", pg.scrollTop > 260); }, { passive: true });
+    $("gBot").addEventListener("click", function () { openSpotlight(); });
+  })();
+
+  // footer links
+  Array.prototype.forEach.call(document.querySelectorAll("[data-nav]"), function (a) {
+    a.addEventListener("click", function (e) {
+      e.preventDefault(); var t = a.getAttribute("data-nav");
+      if (t === "clinics") { $("whoPage").classList.remove("open"); openPage("clinicPage"); }
+      else if (t === "spotlight") { if (!$("clinicPage").classList.contains("open")) { $("whoPage").classList.remove("open"); openPage("clinicPage"); } setTimeout(function () { $("spotlight").scrollIntoView({ behavior: "smooth" }); }, 80); }
+      else if (t === "who") { $("clinicPage").classList.remove("open"); openPage("whoPage"); }
+      else if (t === "touch") openSection("touch");
+    });
+  });
+  function openPage(id) { var pg = $(id); pg.scrollTop = 0; pg.classList.add("open"); pg.querySelector("[data-back]").focus();
+    if (id === "clinicPage") { guideSeen = {}; $("guide").classList.remove("on"); } }
   // closes the top-most layer; returns to Meddy only when nothing is left open
   function closeAll() {
     if ($("panel").classList.contains("open")) { $("panel").classList.remove("open"); if (anyOpen()) return; }
