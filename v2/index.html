@@ -358,6 +358,70 @@ body.home .mini-foot { opacity: 1; }
   .mini-foot { bottom: 6px; }
 }
 @media (prefers-reduced-motion: reduce) { .hero-bot, .g-bot { animation: none; } .stage-card, .offer, .steps4 li { transition: none; } }
+
+/* ---------- patients page ---------- */
+.pt { --pt: #9fc4ff; --pt2: #6f9fe8; background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(111,159,232,.14), transparent 70%), var(--void); }
+.pt .p-hero small, .pt .kick, .pt .st-no { color: var(--pt); }
+.pt .st-no i { background: rgba(159,196,255,.12); border-color: rgba(159,196,255,.45); }
+.door.blue, .pill.blue { background: linear-gradient(135deg, #cfe0ff, #9fc4ff 50%, #6f9fe8); color: #0b1830; box-shadow: 0 12px 30px -10px rgba(111,159,232,.6); }
+.pt-bot { transform: none; width: 220px; top: 0; }
+.pt-q { position: relative; text-align: center; padding: 50px 0 20px; }
+.pt-q blockquote { font-size: clamp(24px, 3.4vw, 36px); font-weight: 800; letter-spacing: -.8px; line-height: 1.15; max-width: 720px; margin: 0 auto 14px; position: relative; z-index: 1; }
+.pt-q p { font-size: 17px; color: var(--dtx2); max-width: 620px; margin: 0 auto; line-height: 1.6; position: relative; z-index: 1; }
+.frag { position: absolute; display: flex; align-items: center; gap: 7px; padding: 8px 12px; border-radius: 12px; font-size: 12.5px; font-weight: 700; color: var(--dtx);
+  background: rgba(20,28,40,.9); border: 1px solid rgba(159,196,255,.35); box-shadow: 0 10px 24px -12px rgba(0,0,0,.7); white-space: nowrap; }
+.frag svg { width: 18px; height: 18px; fill: none; stroke: var(--pt); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.frag em { font-style: normal; }
+.scatter { position: absolute; inset: 0; pointer-events: none; }
+.scatter .frag { opacity: .55; animation: drift 7s ease-in-out infinite; }
+.scatter .f-rx { left: 0; top: 6px; } .scatter .f-lab { right: 2%; top: 0; animation-delay: -2s; } .scatter .f-pill { left: 6%; bottom: -30px; animation-delay: -4s; }
+.scatter .f-chat { right: 0; bottom: -24px; animation-delay: -1s; } .scatter .f-card { left: 42%; top: -34px; animation-delay: -3s; }
+@keyframes drift { 0%,100% { transform: translate(0,0) rotate(-2deg); } 50% { transform: translate(6px,-8px) rotate(2deg); } }
+.stages.three { grid-template-columns: repeat(3, 1fr); }
+.pt-card p { font-size: 14.5px; color: var(--dtx2); line-height: 1.55; } .pt-card p b { color: var(--dtx); }
+.pt-card .src { margin-top: auto; font-size: 12px; color: var(--dtx3); }
+.pt .stage-card:hover, .pt .stage-card.lit { border-color: rgba(159,196,255,.6); box-shadow: 0 18px 40px -18px rgba(111,159,232,.55); }
+.pt-join { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 30px; align-items: center; margin-top: 80px; }
+.join-copy h2 { font-size: clamp(28px, 3.8vw, 42px) !important; letter-spacing: -1.2px !important; line-height: 1.08; }
+.join-copy p { font-size: 17px; color: var(--dtx2); line-height: 1.6; }
+.assemble { position: relative; height: 380px; }
+.as-bot { position: absolute; left: 50%; bottom: 0; width: 170px; transform: translateX(-50%); border: none; background: none; padding: 0; cursor: pointer; filter: drop-shadow(0 16px 30px rgba(111,159,232,.35)); }
+.as-bot img { width: 100%; display: block; }
+.as-cap { position: absolute; left: 0; right: 0; bottom: -34px; text-align: center; font-size: 14px; font-weight: 700; color: var(--pt); opacity: 0; transition: opacity .5s .9s; }
+.gather .frag { left: 50%; top: 22%; --x: 0px; --y: 0px; --r: 0deg; transform: translate(-50%,-50%) translate(var(--x), var(--y)) rotate(var(--r)); transition: transform .9s cubic-bezier(.6,0,.2,1), opacity .5s ease .5s; }
+.gather .f-rx { --x: -170px; --y: -60px; --r: -8deg; } .gather .f-lab { --x: 160px; --y: -80px; --r: 6deg; } .gather .f-pill { --x: -190px; --y: 70px; --r: 5deg; }
+.gather .f-chat { --x: 180px; --y: 60px; --r: -6deg; } .gather .f-card { --x: 0px; --y: -130px; --r: 3deg; }
+.whole { position: absolute; left: 50%; top: 22%; transform: translate(-50%,-50%) scale(.6); opacity: 0; width: 210px; padding: 14px 16px; border-radius: 16px; display: flex; flex-direction: column; gap: 6px;
+  background: linear-gradient(160deg, rgba(40,62,98,.97), rgba(18,28,46,.97)); border: 1px solid rgba(159,196,255,.7); box-shadow: 0 0 50px -6px rgba(111,159,232,.8);
+  transition: transform .5s cubic-bezier(.3,1.4,.4,1) .75s, opacity .3s ease .75s; }
+.whole b { font-size: 15px; margin-bottom: 2px; } .whole span { font-size: 13px; color: #cfe0ff; padding-left: 18px; position: relative; }
+.whole span::before { content: '✓'; position: absolute; left: 0; color: var(--pt); }
+.assemble.done .gather .frag { --x: 0px !important; --y: 0px !important; --r: 0deg !important; opacity: 0; }
+.assemble.done .whole { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+.assemble.done .as-cap { opacity: 1; }
+.pt-wait { display: grid; grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); gap: 34px; align-items: start; margin-top: 90px; padding: 30px; border-radius: 22px;
+  background: radial-gradient(ellipse at 0% 0%, rgba(111,159,232,.16), transparent 60%), rgba(14,20,30,.85); border: 1px solid rgba(159,196,255,.35); }
+.pt-wait h2 { margin-bottom: 10px !important; } .pt-wait p { font-size: 16px; color: var(--dtx2); line-height: 1.55; } .pt-wait p.small { font-size: 13px; color: var(--dtx3); margin-top: 12px; }
+.wl-form { display: grid; gap: 12px; background: #f4f7fb; border-radius: 16px; padding: 20px; color: #131820; }
+.wl-form label { font-size: 13px; font-weight: 700; color: #3c4652; display: grid; gap: 6px; }
+.wl-form input[type=text], .wl-form input[type=tel] { font: inherit; font-size: 15px; padding: 12px 13px; border: 1.5px solid #d6dce2; border-radius: 10px; background: #fff; color: #131820; }
+.wl-form input:focus { outline: none; border-color: #6f9fe8; box-shadow: 0 0 0 3px rgba(111,159,232,.25); }
+.wl-form .tel { display: flex; } .wl-form .tel b { display: grid; place-items: center; padding: 0 12px; border: 1.5px solid #d6dce2; border-right: none; border-radius: 10px 0 0 10px; background: #eef2f7; font-size: 15px; color: #3c4652; }
+.wl-form .tel input { border-radius: 0 10px 10px 0; flex: 1; min-width: 0; }
+.wl-form .consent { display: flex; gap: 10px; align-items: flex-start; font-weight: 500; line-height: 1.45; }
+.wl-form .consent input { margin-top: 3px; width: 17px; height: 17px; accent-color: #6f9fe8; flex: 0 0 auto; }
+.wl-form .consent a { color: #2f5fae; } .wl-form .hp { position: absolute; left: -9999px; opacity: 0; }
+.wl-form .pill { justify-self: start; } .wl-form .pill:disabled { opacity: .6; cursor: wait; }
+.wl-done { padding: 24px 6px; text-align: center; } .wl-done b { display: block; font-size: 20px; margin-bottom: 6px; } .wl-done p { color: #3c4652; }
+.pt-end { background: radial-gradient(ellipse at 50% 0%, rgba(111,159,232,.2), rgba(14,20,30,.9)); border-color: rgba(159,196,255,.35); }
+.pt-end p { font-size: 16px; color: var(--dtx2); margin-bottom: 14px; }
+.end-links { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; } .end-links a { color: var(--pt); font-weight: 700; text-decoration: none; }
+@media (max-width: 900px) {
+  .stages.three { grid-template-columns: 1fr; } .pt-join, .pt-wait { grid-template-columns: 1fr; } .pt-wait { padding: 20px; }
+  .pt-q { padding-top: 60px; } .scatter .frag { font-size: 11px; padding: 6px 9px; } .scatter .f-card { left: 30%; }
+  .gather .f-rx { --x: -110px; } .gather .f-lab { --x: 100px; } .gather .f-pill { --x: -120px; } .gather .f-chat { --x: 110px; }
+}
+@media (prefers-reduced-motion: reduce) { .scatter .frag { animation: none; } .gather .frag, .whole, .as-cap { transition: none; } }
 /* ---------- mobile ---------- */
 @media (max-width: 760px) {
   body { --bw: min(150px, 19vh, 38vw); --by: 56%; }
@@ -428,8 +492,8 @@ body.home .mini-foot { opacity: 1; }
     <div class="h-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12.5s-3.2-2-3.2-4.2A1.9 1.9 0 0 1 12 7.2a1.9 1.9 0 0 1 3.2 1.1c0 2.2-3.2 4.2-3.2 4.2z"/><path d="M2 14l3.5-2 5 2.5c.8.4.9 1.5.1 2l-.6.3M2 20l4-1.5 6 1.5 8.5-5c.9-.5.6-1.9-.4-2l-5.4 1.5"/></svg></div>
     <small>What we do · for</small>
     <h2>Patients &amp; Caretakers</h2>
-    <p>Care that's easier to find, book and follow through, for you and the people you look after.</p>
-    <div class="soon">Coming soon</div>
+    <p>Understand your care and walk into every appointment prepared, for you and the people you look after.</p>
+    <button class="door blue" id="patientOpen">See how Meddy helps <span>→</span></button>
   </section>
 </div>
 
@@ -521,7 +585,7 @@ body.home .mini-foot { opacity: 1; }
     <footer class="site-foot">
       <div class="sf-grid">
         <div class="sf-brand"><img src="/v2/meddy-logo-light.png" alt="Meddy"><p>Smart care, made simple.</p><span>Built in Chennai</span></div>
-        <div><h4>Explore</h4><a href="#" data-nav="clinics">For clinics &amp; hospitals</a><a href="#" data-nav="spotlight">Clinic Spotlight</a><a href="#" data-nav="who">Who we are</a><a href="#" data-nav="touch">Get in touch</a></div>
+        <div><h4>Explore</h4><a href="#" data-nav="clinics">For clinics &amp; hospitals</a><a href="#" data-nav="patients">For patients &amp; caretakers</a><a href="#" data-nav="spotlight">Clinic Spotlight</a><a href="#" data-nav="who">Who we are</a><a href="#" data-nav="touch">Get in touch</a></div>
         <div><h4>Contact</h4><a href="mailto:hello@meddy.co.in">hello@meddy.co.in</a><span>Chennai, Tamil Nadu</span></div>
         <div><h4>Legal</h4><a href="/v2/privacy.html">Privacy Policy</a><a href="/v2/terms.html">Terms of Use</a><a href="/v2/terms.html#medical">Medical disclaimer</a><a href="/v2/privacy.html#grievance">Grievance officer</a></div>
       </div>
@@ -532,6 +596,94 @@ body.home .mini-foot { opacity: 1; }
   <div class="guide" id="guide" aria-hidden="true">
     <div class="g-say" id="gSay"></div>
     <button class="g-bot" id="gBot" tabindex="-1" title="Get your free Clinic Spotlight"><img src="/v2/meddy-up.png" alt=""></button>
+  </div>
+</div>
+
+
+<!-- ============ PATIENTS & CARETAKERS ============ -->
+<div class="page pt" id="patientPage" role="dialog" aria-modal="true" aria-label="Meddy for patients and caretakers">
+  <div class="page-bar"><button class="back dark" data-back>← Back</button><img class="logo" src="/v2/meddy-logo-light.png" alt="Meddy"></div>
+  <div class="page-in">
+    <header class="p-hero with-bot pt-hero">
+      <img class="hero-bot pt-bot" src="/v2/meddy-open.png" alt="" aria-hidden="true">
+      <small>For patients &amp; caretakers</small>
+      <h1>Own your health story.</h1>
+      <p>Understand your care, keep your records in one place, and walk into every appointment prepared. For yourself, and for the people you look after.</p>
+      <button class="pill blue" data-go="waitlist">Join the waitlist <span>→</span></button>
+    </header>
+
+    <section class="p-sec pt-q">
+      <div class="scatter" aria-hidden="true"><span class="frag f-rx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h2.5a1.5 1.5 0 0 1 0 3H9V8m2 4l3 4M14 12l-3 4"/></svg><em>Prescription</em></span><span class="frag f-lab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 16l2-3 2 2 2-4"/><path d="M9 7h6"/></svg><em>Lab report</em></span><span class="frag f-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="10" rx="5"/><path d="M12 7v10"/><circle cx="7.5" cy="12" r=".6"/></svg><em>Medicines</em></span><span class="frag f-chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9 10h6M9 13h4"/></svg><em>WhatsApp chats</em></span><span class="frag f-card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h4M7 14h6M16 9v4M14 11h4"/></svg><em>Hospital card</em></span></div>
+      <blockquote>When did you last see your own complete medical record?</blockquote>
+      <p>For most of us, the answer is never. It's spread across hospitals, clinics, pharmacies and WhatsApp chats, and the job of joining it up falls on you.</p>
+    </section>
+
+    <section class="p-sec">
+      <div class="stages three">
+        <article class="stage-card pt-card">
+          <div class="st-no"><i>01</i> Understanding</div>
+          <h3>You nodded. But did you understand?</h3>
+          <p>"Adenotonsillar hypertrophy." "Reflux oesophagitis." Medical words are hard for anyone to follow in a two-minute consultation. When the diagnosis or prescription isn't clear, it's harder to follow the treatment, and easier to make a mistake.</p>
+        </article>
+        <article class="stage-card pt-card">
+          <div class="st-no"><i>02</i> Scattered records</div>
+          <h3>Five hospitals. Twelve doctors. No single record.</h3>
+          <p>Every new doctor starts from scratch. Old prescriptions get lost, and medicines are remembered by colour or shape instead of name. Carrying your history becomes your job.</p>
+        </article>
+        <article class="stage-card pt-card">
+          <div class="st-no"><i>03</i> Preventable errors</div>
+          <h3>Most errors start with missing information.</h3>
+          <p>A medicine you forgot to mention. An allergy that isn't on file. In one Indian teaching-hospital study, <b>1 in 3 patients</b> had at least one prescribing error, and <b>two in three of those errors</b> involved medicines interacting with each other.</p>
+          <a class="src" href="https://scielo.isciii.es/scielo.php?script=sci_arttext&amp;pid=S1885-642X2007000100003" target="_blank" rel="noopener">Source: Medication prescribing errors in a public teaching hospital in India, 2007</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="p-sec pt-join" id="ptJoin">
+      <div class="join-copy">
+        <h2>That's not a doctor problem. That's an information problem.</h2>
+        <p>Doctors can only work with what's in front of them. Meddy's job is to make sure the whole picture is.</p>
+      </div>
+      <div class="assemble" id="assemble">
+        <div class="gather" aria-hidden="true"><span class="frag f-rx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h2.5a1.5 1.5 0 0 1 0 3H9V8m2 4l3 4M14 12l-3 4"/></svg><em>Prescription</em></span><span class="frag f-lab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 16l2-3 2 2 2-4"/><path d="M9 7h6"/></svg><em>Lab report</em></span><span class="frag f-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="10" rx="5"/><path d="M12 7v10"/><circle cx="7.5" cy="12" r=".6"/></svg><em>Medicines</em></span><span class="frag f-chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9 10h6M9 13h4"/></svg><em>WhatsApp chats</em></span><span class="frag f-card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h4M7 14h6M16 9v4M14 11h4"/></svg><em>Hospital card</em></span></div>
+        <div class="whole" aria-hidden="true"><b>Your health story</b><span>Prescriptions</span><span>Reports</span><span>Medicines</span><span>Allergies</span><span>Past visits</span></div>
+        <button class="as-bot" id="asBot" title="Put the pieces together again"><img src="/v2/meddy-up.png" alt="Meddy. Tap to replay"></button>
+        <p class="as-cap">The whole picture, in one place.</p>
+      </div>
+    </section>
+
+    <section class="p-sec pt-wait" id="waitlist">
+      <div>
+        <h2>Be the first to try Meddy.</h2>
+        <p>Meddy is rolling out through partner clinics. Join the waitlist and we'll tell you when it reaches your city.</p>
+        <p class="small">No age, gender or health details are asked for. We only collect what we need.</p>
+      </div>
+      <form class="wl-form" id="wlForm" novalidate>
+        <label>Your name<input type="text" name="name" autocomplete="name" maxlength="80"></label>
+        <label>Mobile number<span class="tel"><b>+91</b><input type="tel" name="mobile" inputmode="numeric" autocomplete="tel-national" placeholder="98765 43210" maxlength="14"></span></label>
+        <label>City<input type="text" name="city" autocomplete="address-level2" placeholder="e.g. Chennai" maxlength="60"></label>
+        <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="consent"><input type="checkbox" name="consent"><span>I agree that Meddy may use these details to tell me when Meddy is available in my city. See the <a href="/v2/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>
+        <div class="sp-err" id="wlErr" role="alert"></div>
+        <button type="submit" class="pill blue">Join the waitlist</button>
+      </form>
+    </section>
+
+    <footer class="p-end pt-end">
+      <h2>Smart care, made simple.</h2>
+      <p>For clinics and hospitals, and for the people they care for.</p>
+      <div class="end-links"><a href="#" data-nav="clinics">For clinics &amp; hospitals →</a><a href="#" data-nav="who">Who we are →</a></div>
+    </footer>
+    <footer class="site-foot">
+      <div class="sf-grid">
+        <div class="sf-brand"><img src="/v2/meddy-logo-light.png" alt="Meddy"><p>Smart care, made simple.</p><span>Built in Chennai</span></div>
+        <div><h4>Explore</h4><a href="#" data-nav="clinics">For clinics &amp; hospitals</a><a href="#" data-nav="patients">For patients &amp; caretakers</a><a href="#" data-nav="spotlight">Clinic Spotlight</a><a href="#" data-nav="who">Who we are</a><a href="#" data-nav="touch">Get in touch</a></div>
+        <div><h4>Contact</h4><a href="mailto:hello@meddy.co.in">hello@meddy.co.in</a><span>Chennai, Tamil Nadu</span></div>
+        <div><h4>Legal</h4><a href="/v2/privacy.html">Privacy Policy</a><a href="/v2/terms.html">Terms of Use</a><a href="/v2/terms.html#medical">Medical disclaimer</a><a href="/v2/privacy.html#grievance">Grievance officer</a></div>
+      </div>
+      <p class="sf-note">Meddy does not give medical advice or diagnosis. In an emergency, call 108 or 112.</p>
+      <div class="sf-bar"><span>© 2026 Viyuha Technologies. All rights reserved.</span><span>Meddy is a product of Viyuha Technologies, Chennai.</span></div>
+    </footer>
   </div>
 </div>
 
@@ -589,7 +741,7 @@ body.home .mini-foot { opacity: 1; }
     <footer class="site-foot">
       <div class="sf-grid">
         <div class="sf-brand"><img src="/v2/meddy-logo-light.png" alt="Meddy"><p>Smart care, made simple.</p><span>Built in Chennai</span></div>
-        <div><h4>Explore</h4><a href="#" data-nav="clinics">For clinics &amp; hospitals</a><a href="#" data-nav="spotlight">Clinic Spotlight</a><a href="#" data-nav="who">Who we are</a><a href="#" data-nav="touch">Get in touch</a></div>
+        <div><h4>Explore</h4><a href="#" data-nav="clinics">For clinics &amp; hospitals</a><a href="#" data-nav="patients">For patients &amp; caretakers</a><a href="#" data-nav="spotlight">Clinic Spotlight</a><a href="#" data-nav="who">Who we are</a><a href="#" data-nav="touch">Get in touch</a></div>
         <div><h4>Contact</h4><a href="mailto:hello@meddy.co.in">hello@meddy.co.in</a><span>Chennai, Tamil Nadu</span></div>
         <div><h4>Legal</h4><a href="/v2/privacy.html">Privacy Policy</a><a href="/v2/terms.html">Terms of Use</a><a href="/v2/terms.html#medical">Medical disclaimer</a><a href="/v2/privacy.html#grievance">Grievance officer</a></div>
       </div>
@@ -1002,24 +1154,60 @@ body.home .mini-foot { opacity: 1; }
   Array.prototype.forEach.call(document.querySelectorAll("[data-nav]"), function (a) {
     a.addEventListener("click", function (e) {
       e.preventDefault(); var t = a.getAttribute("data-nav");
-      if (t === "clinics") { $("whoPage").classList.remove("open"); openPage("clinicPage"); }
+      ["clinicPage", "whoPage", "patientPage"].forEach(function (id) { if (id !== { clinics: "clinicPage", who: "whoPage", patients: "patientPage" }[t]) $(id).classList.remove("open"); });
+      if (t === "clinics") openPage("clinicPage");
+      else if (t === "patients") openPage("patientPage");
       else if (t === "spotlight") { if (!$("clinicPage").classList.contains("open")) { $("whoPage").classList.remove("open"); openPage("clinicPage"); } setTimeout(function () { $("spotlight").scrollIntoView({ behavior: "smooth" }); }, 80); }
       else if (t === "who") { $("clinicPage").classList.remove("open"); openPage("whoPage"); }
       else if (t === "touch") openSection("touch");
     });
   });
+
+  // ======================= PATIENTS PAGE =======================
+  (function () {
+    var pg = $("patientPage"), as = $("assemble");
+    function assemble() { as.classList.remove("done"); void as.offsetWidth; requestAnimationFrame(function () { as.classList.add("done"); }); }
+    if ("IntersectionObserver" in window) {
+      var seen = false;
+      new IntersectionObserver(function (en) { en.forEach(function (e) { if (e.isIntersecting && !seen) { seen = true; setTimeout(assemble, REDUCED ? 0 : 250); } }); }, { root: pg, threshold: 0.55 }).observe(as);
+      var cards = pg.querySelectorAll(".pt-card");
+      var io2 = new IntersectionObserver(function (en) { en.forEach(function (e) { if (e.isIntersecting && window.matchMedia("(hover: none)").matches) { e.target.classList.add("lit"); setTimeout(function () { e.target.classList.remove("lit"); }, 1400); } }); }, { root: pg, threshold: 0.6 });
+      Array.prototype.forEach.call(cards, function (c) { io2.observe(c); });
+    } else as.classList.add("done");
+    $("asBot").addEventListener("click", function () { SFX.tap(); assemble(); });
+    Array.prototype.forEach.call(pg.querySelectorAll('[data-go="waitlist"]'), function (b) { b.addEventListener("click", function () { $("waitlist").scrollIntoView({ behavior: "smooth" }); setTimeout(function () { $("wlForm").name.focus({ preventScroll: true }); }, 500); }); });
+    $("wlForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = e.target, err = $("wlErr"), btn = f.querySelector(".pill");
+      var body = { name: f.name.value.trim(), mobile: f.mobile.value.trim(), city: f.city.value.trim(), consent: f.consent.checked, company: f.company.value };
+      if (body.name.length < 2) { err.textContent = "Please enter your name."; f.name.focus(); return; }
+      if (!/^[6-9]\d{9}$/.test(body.mobile.replace(/\D/g, "").replace(/^91(?=\d{10}$)/, ""))) { err.textContent = "Please enter a valid 10-digit mobile number."; f.mobile.focus(); return; }
+      if (body.city.length < 2) { err.textContent = "Please enter your city."; f.city.focus(); return; }
+      if (!body.consent) { err.textContent = "Please tick the box so we can let you know."; return; }
+      err.textContent = ""; btn.disabled = true; btn.textContent = "Joining…";
+      fetch(API + "/public/waitlist", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (!res.ok) throw new Error(res.d.detail || "Could not add you to the list.");
+          f.innerHTML = '<div class="wl-done"><b>You\'re on the list.</b><p>We\'ll message you when Meddy reaches ' + escH(body.city) + ".</p></div>";
+        })
+        .catch(function (e2) { err.textContent = e2.message + " You can also email hello@meddy.co.in."; btn.disabled = false; btn.textContent = "Join the waitlist"; });
+    });
+    $("patientOpen").addEventListener("click", function () { openPage("patientPage"); });
+  })();
   function openPage(id) { var pg = $(id); pg.scrollTop = 0; pg.classList.add("open"); pg.querySelector("[data-back]").focus();
     if (id === "clinicPage") { guideSeen = {}; $("guide").classList.remove("on"); } }
   // closes the top-most layer; returns to Meddy only when nothing is left open
   function closeAll() {
     if ($("panel").classList.contains("open")) { $("panel").classList.remove("open"); if (anyOpen()) return; }
     else if ($("clinicPage").classList.contains("open")) { $("clinicPage").classList.remove("open"); $("clinicOpen").focus(); return; }
+    else if ($("patientPage").classList.contains("open")) { $("patientPage").classList.remove("open"); if ($("split").classList.contains("open")) { $("patientOpen").focus(); return; } }
     else if ($("whoPage").classList.contains("open")) $("whoPage").classList.remove("open");
     else if ($("split").classList.contains("open")) $("split").classList.remove("open");
     else return;
     if (!anyOpen()) restoreHome();
   }
-  function anyOpen() { return ["split", "clinicPage", "whoPage"].some(function (id) { return $(id).classList.contains("open"); }); }
+  function anyOpen() { return ["split", "clinicPage", "whoPage", "patientPage"].some(function (id) { return $(id).classList.contains("open"); }); }
   Array.prototype.forEach.call(document.querySelectorAll("[data-back]"), function (b) { b.addEventListener("click", closeAll); });
   Array.prototype.forEach.call(document.querySelectorAll(".spotOpen"), function (b) { b.addEventListener("click", openSpotlight); });
   $("clinicOpen").addEventListener("click", function () { openPage("clinicPage"); });
