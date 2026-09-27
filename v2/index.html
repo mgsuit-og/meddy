@@ -549,6 +549,33 @@ body.home .mini-foot { opacity: 1; }
   .door { font-size: 13px; padding: 10px 14px; line-height: 1.3; }
   .split .back { top: 20px; }
 }
+/* ---------- split: Meddy waits up top, hops to the chosen side ---------- */
+.split:focus, .page:focus { outline: none; }
+.sp-bot { position: absolute; left: 50%; top: 68px; z-index: 3; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; pointer-events: none; }
+.sb-move { position: relative; width: clamp(92px, 14vh, 132px); transform-origin: 50% 100%; }
+.sb-move img { width: 100%; display: block; filter: drop-shadow(0 16px 26px rgba(79,196,176,.3)); }
+.sb-idle { animation: bob2 4s ease-in-out infinite; }
+.sb-hop { position: absolute; left: 0; top: 0; opacity: 0; }
+.sp-bot.hopping .sb-idle { opacity: 0; animation: none; } .sp-bot.hopping .sb-hop { opacity: 1; }
+.sb-say { font-size: 13px; font-weight: 700; color: var(--dtx2); letter-spacing: .2px; transition: opacity .2s; }
+.split.picking .sb-say { opacity: 0; }
+.split .half { padding-top: calc(68px + clamp(92px, 14vh, 132px) * 1.25 + 70px); justify-content: flex-start; cursor: pointer; }
+.h-head { display: flex; flex-direction: column; gap: 10px; }
+.half::before { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .35s ease; }
+.half.clinic::before { background: radial-gradient(ellipse 80% 60% at 30% 55%, rgba(79,196,176,.22), transparent 70%); box-shadow: inset 0 0 0 2px rgba(95,212,190,.55); }
+.half.people::before { background: radial-gradient(ellipse 80% 60% at 30% 55%, rgba(111,159,232,.22), transparent 70%); box-shadow: inset 0 0 0 2px rgba(159,196,255,.55); }
+@media (hover: hover) { .split:not(.picking) .half:hover::before { opacity: .5; } }
+.half.chosen::before { opacity: 1; }
+.half.chosen .door { transform: scale(1.06); box-shadow: 0 0 30px -4px rgba(95,212,190,.8); }
+.half.people.chosen .door { box-shadow: 0 0 30px -4px rgba(159,196,255,.8); }
+.half.dim > * { opacity: .3; transition: opacity .3s ease; }
+.door { transition: transform .25s ease, box-shadow .25s ease; }
+@media (max-width: 760px) {
+  .split .half { padding: calc(64px + clamp(92px, 14vh, 132px) * 1.25 + 44px) 14px 36px !important; justify-content: center; gap: clamp(18px, 4.2vh, 40px) !important; }
+  .split .half p { min-height: 7.5em; }
+  .sp-bot { top: 66px; }
+  .door { align-self: stretch; text-align: center; font-size: 15px; padding: 12px 14px; }
+}
 </style>
 </head>
 <body>
@@ -590,22 +617,23 @@ body.home .mini-foot { opacity: 1; }
 
 <div class="portal" id="portal" aria-hidden="true"></div>
 
-<div class="split" id="split" role="dialog" aria-modal="true" aria-label="What we do">
+<div class="split" id="split" role="dialog" aria-modal="true" aria-label="What we do" tabindex="-1">
   <button class="back" id="splitBack">← Back to Meddy</button>
-  <section class="half clinic">
+  <div class="sp-bot" id="spBot" aria-hidden="true"><div class="sb-move" id="sbMove"><img class="sb-idle" src="/v2/meddy-open.png" alt=""><img class="sb-hop" src="/v2/meddy-up.png" alt=""></div><span class="sb-say">Where to?</span></div>
+  <section class="half clinic" id="halfClinic">
     <div class="h-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V8l7-4 7 4v13"/><path d="M12 9v6M9 12h6"/><path d="M10 21v-3h4v3"/></svg></div>
-    <small>What we do · for</small>
-    <h2>Clinics &amp; Hospitals</h2>
+    <div class="h-head"><small>What we do · for</small>
+    <h2>Clinics &amp; Hospitals</h2></div>
     <p>Your AI companion for clinics. Get found, get chosen, and keep patients coming back.</p>
-    <button class="door" id="clinicOpen">See how Meddy helps <span>→</span></button>
+    <button class="door" id="clinicOpen">Explore <span>→</span></button>
     <button class="spot" id="spotBtn"><i></i><div><b>Get your free Clinic Spotlight</b><span>see how your clinic compares nearby</span></div></button>
   </section>
-  <section class="half people">
+  <section class="half people" id="halfPeople">
     <div class="h-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12.5s-3.2-2-3.2-4.2A1.9 1.9 0 0 1 12 7.2a1.9 1.9 0 0 1 3.2 1.1c0 2.2-3.2 4.2-3.2 4.2z"/><path d="M2 14l3.5-2 5 2.5c.8.4.9 1.5.1 2l-.6.3M2 20l4-1.5 6 1.5 8.5-5c.9-.5.6-1.9-.4-2l-5.4 1.5"/></svg></div>
-    <small>What we do · for</small>
-    <h2>Patients &amp; Caretakers</h2>
+    <div class="h-head"><small>What we do · for</small>
+    <h2>Patients &amp; Caretakers</h2></div>
     <p>Understand your care and walk into every appointment prepared, for you and the people you look after.</p>
-    <button class="door blue" id="patientOpen">See how Meddy helps <span>→</span></button>
+    <button class="door blue" id="patientOpen">Explore <span>→</span></button>
   </section>
 </div>
 
@@ -1175,7 +1203,7 @@ body.home .mini-foot { opacity: 1; }
     $("panel").classList.add("open"); $("backBtn").focus();
   }
   function openSection(id) {
-    if (id === "what") { $("split").classList.add("open"); $("splitBack").focus(); return; }
+    if (id === "what") { $("split").classList.add("open"); $("split").focus({ preventScroll: true }); return; }
     if (id === "who") { openPage("whoPage"); return; }
     if (id === "touch") sheet("Get in touch", "We'd love to hear from you",
       '<div class="ph"><b>Get in touch</b>Doctors, patients, partners, press, or people who want to build with us: all welcome.' +
@@ -1391,9 +1419,36 @@ body.home .mini-foot { opacity: 1; }
         })
         .catch(function (e2) { err.textContent = e2.message + " You can also email hello@meddy.co.in."; btn.disabled = false; btn.textContent = "Join the waitlist"; });
     });
-    $("patientOpen").addEventListener("click", function () { openPage("patientPage"); });
+    $("patientOpen").addEventListener("click", function () { pickSide("people"); });
   })();
-  function openPage(id) { var pg = $(id); pg.scrollTop = 0; pg.classList.add("open"); pg.querySelector("[data-back]").focus();
+  // Meddy hops over to the chosen side, then the page opens
+  var picking = false;
+  function pickSide(which) {
+    if (picking) return; picking = true;
+    var split = $("split"), half = which === "clinic" ? $("halfClinic") : $("halfPeople"), other = which === "clinic" ? $("halfPeople") : $("halfClinic");
+    var page = which === "clinic" ? "clinicPage" : "patientPage", bot = $("spBot"), mv = $("sbMove");
+    split.classList.add("picking"); half.classList.add("chosen"); other.classList.add("dim");
+    if (typeof SFX !== "undefined" && SFX.tap) SFX.tap();
+    function done() {
+      openPage(page);
+      setTimeout(function () { split.classList.remove("picking"); half.classList.remove("chosen"); other.classList.remove("dim"); bot.classList.remove("hopping");
+        if (mv.getAnimations) mv.getAnimations().forEach(function (a) { a.cancel(); }); picking = false; }, 450);
+    }
+    if (REDUCED || !mv.animate) { setTimeout(done, 250); return; }
+    var br = mv.getBoundingClientRect(), ico = half.querySelector(".h-ico").getBoundingClientRect(), hr = half.getBoundingClientRect();
+    var tx = Math.max(hr.left + br.width / 2 + 6, Math.min(hr.right - br.width / 2 - 6, ico.left + ico.width / 2));
+    var dx = tx - (br.left + br.width / 2), dy = (ico.top - 6) - br.bottom;
+    bot.classList.add("hopping");
+    var anim = mv.animate([
+      { transform: "translate(0,0) scale(1,1)" },
+      { transform: "translate(0,6px) scale(1.08,.9)", offset: .12 },
+      { transform: "translate(" + dx * .5 + "px," + (Math.min(dy, 0) - 46) + "px) scale(.95,1.06) rotate(" + (dx < 0 ? -8 : 8) + "deg)", offset: .5 },
+      { transform: "translate(" + dx + "px," + dy + "px) scale(1.1,.88)", offset: .85 },
+      { transform: "translate(" + dx + "px," + dy + "px) scale(1,1)" }
+    ], { duration: 720, easing: "cubic-bezier(.35,.1,.3,1)", fill: "forwards" });
+    anim.onfinish = function () { setTimeout(done, 180); };
+  }
+  function openPage(id) { var pg = $(id); pg.scrollTop = 0; pg.classList.add("open"); if (!pg.hasAttribute("tabindex")) pg.setAttribute("tabindex", "-1"); pg.focus({ preventScroll: true });
     if (id === "clinicPage") { guideSeen = {}; $("guide").classList.remove("on"); } }
   // closes the top-most layer; returns to Meddy only when nothing is left open
   function closeAll() {
@@ -1408,7 +1463,10 @@ body.home .mini-foot { opacity: 1; }
   function anyOpen() { return ["split", "clinicPage", "whoPage", "patientPage"].some(function (id) { return $(id).classList.contains("open"); }); }
   Array.prototype.forEach.call(document.querySelectorAll("[data-back]"), function (b) { b.addEventListener("click", closeAll); });
   Array.prototype.forEach.call(document.querySelectorAll(".spotOpen"), function (b) { b.addEventListener("click", openSpotlight); });
-  $("clinicOpen").addEventListener("click", function () { openPage("clinicPage"); });
+  $("clinicOpen").addEventListener("click", function () { pickSide("clinic"); });
+  // whole half is tappable, not just the button
+  $("halfClinic").addEventListener("click", function (e) { if (!e.target.closest("button")) pickSide("clinic"); });
+  $("halfPeople").addEventListener("click", function (e) { if (!e.target.closest("button")) pickSide("people"); });
   $("spotBtn").addEventListener("click", openSpotlight);
   $("backBtn").addEventListener("click", closeAll);
   $("splitBack").addEventListener("click", closeAll);
