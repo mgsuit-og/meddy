@@ -185,6 +185,10 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 .sheet-head b { font-size: 21px; letter-spacing: -.3px; }
 .back { font-size: 13px; font-weight: 700; color: #3c4652; background: none; border: 1.5px solid #d6dce2; border-radius: 10px; padding: 9px 13px; cursor: pointer; white-space: nowrap; }
 .back:hover { background: #e9edf1; }
+.sheet-x { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border: 1.5px solid #d6dce2; border-radius: 50%; background: #fff; color: #3c4652; cursor: pointer; transition: background .2s, transform .2s; }
+.sheet-x svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
+.sheet-x:hover { background: #e9edf1; transform: rotate(90deg); }
+.sheet-x:focus { outline: none; } .sheet-x:focus-visible { border-color: var(--signal); box-shadow: 0 0 0 2px rgba(95,212,190,.35); }
 .sheet-body { padding: 22px; }
 .ph { border: 2px dashed #c9d3db; border-radius: 12px; padding: 24px 20px; text-align: center; color: #6d7986; font-size: 14px; line-height: 1.6; }
 .ph b { display: block; font-size: 16px; color: #3c4652; margin-bottom: 4px; }
@@ -279,10 +283,11 @@ svg.links.off .ln, svg.links.off .glint { opacity: 0; transition: opacity .25s; 
 }
 
 .why small.kick { display: block; font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--signal); margin-bottom: 10px; }
-.why p { font-size: 17px; color: var(--dtx2); line-height: 1.6; max-width: 720px; margin-bottom: 26px; }
+.why { text-align: center; }
+.why p { font-size: 17px; color: var(--dtx2); line-height: 1.6; max-width: none; margin: 0 auto 26px; }
 .why h2 + p { margin-top: -6px; }
-.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 6px 0 44px; max-width: 720px; }
-.stat { padding: 18px; border-radius: 16px; border: 1px solid rgba(240,169,78,.35); background: rgba(240,169,78,.06); display: flex; flex-direction: column; gap: 6px; }
+.stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 6px auto 44px; max-width: 760px; }
+.stat { padding: 22px 18px; border-radius: 16px; border: 1px solid rgba(240,169,78,.35); background: rgba(240,169,78,.06); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 6px; }
 .stat b { font-size: 40px; font-weight: 800; letter-spacing: -1.5px; color: #f3c58a; line-height: 1; }
 .stat span { font-size: 14.5px; color: var(--dtx); line-height: 1.4; }
 .stat a { font-size: 12px; color: var(--dtx3); text-decoration: underline; text-underline-offset: 2px; margin-top: 4px; }
@@ -653,25 +658,25 @@ body.home .mini-foot { opacity: 1; }
     <div class="stages swipe">
       <article class="stage-card" data-guide>
         <div class="st-no"><i>01</i> Found <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.3-4.3"/></svg></span></div>
-        <h3>They search. Another clinic shows up.</h3>
+        <h3>Patients search nearby and find another clinic first.</h3>
         <ul class="gaps"><li>Not in Google's top 3 nearby</li><li>Listed under the wrong category</li><li>No website, or one Google can't read</li></ul>
         <div class="fix"><span>Meddy fixes it with</span><b>Website build or revamp</b><b>Google profile + SEO boost</b></div>
       </article>
       <article class="stage-card" data-guide>
         <div class="st-no"><i>02</i> Chosen <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></span></div>
-        <h3>They compare. You look quieter.</h3>
+        <h3>Patients choose the clinic that looks more trusted online.</h3>
         <ul class="gaps"><li>Fewer reviews than clinics nearby</li><li>No doctor profiles or treatment pages</li><li>Old photos, missing hours</li></ul>
         <div class="fix"><span>Meddy fixes it with</span><b>A website that shows your doctors</b><b>Review requests after every visit</b></div>
       </article>
       <article class="stage-card" data-guide>
         <div class="st-no"><i>03</i> Contacted <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg></span></div>
-        <h3>They message at 10 pm. No one replies.</h3>
+        <h3>A patient messages at 10 pm and waits till morning for a reply.</h3>
         <ul class="gaps"><li>Calls missed during consultations</li><li>No way to book online</li><li>WhatsApp, Instagram and calls all scattered</li></ul>
         <div class="fix"><span>Meddy fixes it with</span><b>Smart Appointments: 24×7 WhatsApp booking</b><b>Instagram, Facebook and calls in one inbox</b></div>
       </article>
       <article class="stage-card" data-guide>
         <div class="st-no"><i>04</i> Followed up <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3l3 3-3 3"/><path d="M4 11V9a3 3 0 0 1 3-3h13M7 21l-3-3 3-3"/><path d="M20 13v2a3 3 0 0 1-3 3H4"/></svg></span></div>
-        <h3>They feel better. They skip the review.</h3>
+        <h3>Patients feel better, skip the review visit, and drift away.</h3>
         <ul class="gaps"><li>Review visits missed</li><li>No-shows and late cancellations</li><li>Records on paper, or across five apps</li></ul>
         <div class="fix"><span>Meddy fixes it with</span><b>Automatic reminders and follow-ups</b><b>Meddy Clinic OS: booking to billing, one place</b></div>
       </article>
@@ -762,12 +767,12 @@ body.home .mini-foot { opacity: 1; }
       <div class="stages three swipe">
         <article class="stage-card pt-card">
           <div class="st-no"><i>01</i> Understanding</div>
-          <h3>You nodded. But did you understand?</h3>
+          <h3>Medical terms are hard to follow in a two-minute visit.</h3>
           <p>"Adenotonsillar hypertrophy." "Reflux oesophagitis." Medical words are hard for anyone to follow in a two-minute consultation. When the diagnosis or prescription isn't clear, it's harder to follow the treatment, and easier to make a mistake.</p>
         </article>
         <article class="stage-card pt-card">
           <div class="st-no"><i>02</i> Scattered records</div>
-          <h3>Five hospitals. Twelve doctors. No single record.</h3>
+          <h3>Your records sit across hospitals, clinics and WhatsApp chats.</h3>
           <p>Every new doctor starts from scratch. Old prescriptions get lost, and medicines are remembered by colour or shape instead of name. Carrying your history becomes your job.</p>
         </article>
         <article class="stage-card pt-card">
@@ -781,8 +786,8 @@ body.home .mini-foot { opacity: 1; }
 
     <section class="p-sec pt-join" id="ptJoin">
       <div class="join-copy">
-        <h2>That's not a doctor problem. That's an information problem.</h2>
-        <p>Doctors can only work with what's in front of them. Meddy's job is to make sure the whole picture is.</p>
+        <h2>Better care starts with the full picture.</h2>
+        <p>Doctors can only work with what's in front of them. Meddy puts your whole history there.</p>
       </div>
       <div class="assemble" id="assemble">
         <div class="gather" aria-hidden="true"><span class="frag f-rx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l3 3v15H6z"/><path d="M9 9h2.5a1.5 1.5 0 0 1 0 3H9V8m2 4l3 4M14 12l-3 4"/></svg><em>Prescription</em></span><span class="frag f-lab"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18H6z"/><path d="M9 16l2-3 2 2 2-4"/><path d="M9 7h6"/></svg><em>Lab report</em></span><span class="frag f-pill"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="10" rx="5"/><path d="M12 7v10"/><circle cx="7.5" cy="12" r=".6"/></svg><em>Medicines</em></span><span class="frag f-chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9 10h6M9 13h4"/></svg><em>WhatsApp chats</em></span><span class="frag f-card"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M7 10h4M7 14h6M16 9v4M14 11h4"/></svg><em>Hospital card</em></span></div>
@@ -916,7 +921,7 @@ body.home .mini-foot { opacity: 1; }
 
 <div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="pTitle">
   <div class="sheet">
-    <div class="sheet-head"><div><small id="pKick"></small><b id="pTitle"></b></div><button class="back" id="backBtn">← Back</button></div>
+    <div class="sheet-head"><div><small id="pKick"></small><b id="pTitle"></b></div><button class="sheet-x" id="backBtn" aria-label="Close and go to the home page" title="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
     <div class="sheet-body" id="pBody"></div>
   </div>
 </div>
@@ -1205,6 +1210,7 @@ body.home .mini-foot { opacity: 1; }
   function openSection(id) {
     if (id === "what") { $("split").classList.add("open"); $("split").focus({ preventScroll: true }); return; }
     if (id === "who") { openPage("whoPage"); return; }
+    if (id === "touch") panelKind = "touch";
     if (id === "touch") sheet("Get in touch", "We'd love to hear from you",
       '<div class="ph"><b>Get in touch</b>Doctors, patients, partners, press, or people who want to build with us: all welcome.' +
       '<div class="hello-row"><a href="mailto:' + EMAIL + '">Email ' + EMAIL + "</a></div></div>");
@@ -1215,6 +1221,7 @@ body.home .mini-foot { opacity: 1; }
   function escH(x) { return String(x == null ? "" : x).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function openSpotlight() {
     var picked = null, manual = false;
+    panelKind = "spotlight";
     sheet("Free · for clinics", "Get your free Clinic Spotlight",
       '<p class="sp-intro">Find your clinic, tell us who you are, and we\'ll share your Spotlight on WhatsApp.</p>' +
       '<form class="sp-form" id="spForm" novalidate>' +
@@ -1298,11 +1305,14 @@ body.home .mini-foot { opacity: 1; }
     "A missed review visit can slow healing. Reminders fix that.",
     "Tap me for a free Spotlight on your clinic."
   ];
+  // The banner never hides: section lines show for a few seconds, then it settles back on
+  // what tapping Meddy does.
+  var GUIDE_REST = GUIDE[GUIDE.length - 1];
   var guideTimer = null, guideSeen = {};
   function guideSay(text) {
     var b = $("gSay"); clearTimeout(guideTimer);
     b.textContent = text; b.classList.add("show");
-    guideTimer = setTimeout(function () { b.classList.remove("show"); }, 4200);
+    if (text !== GUIDE_REST) guideTimer = setTimeout(function () { b.textContent = GUIDE_REST; }, 5000);
   }
   (function () {
     var pg = $("clinicPage"), guide = $("guide"), targets = pg.querySelectorAll("[data-guide]");
@@ -1317,7 +1327,11 @@ body.home .mini-foot { opacity: 1; }
       });
     }, { root: pg, threshold: 0.6 });
     Array.prototype.forEach.call(targets, function (t) { io.observe(t); });
-    pg.addEventListener("scroll", function () { guide.classList.toggle("on", pg.scrollTop > 260); }, { passive: true });
+    pg.addEventListener("scroll", function () {
+      var on = pg.scrollTop > 260;
+      guide.classList.toggle("on", on);
+      if (on && !$("gSay").classList.contains("show")) guideSay(GUIDE_REST);
+    }, { passive: true });
     $("gBot").addEventListener("click", function () { openSpotlight(); });
   })();
 
@@ -1449,7 +1463,7 @@ body.home .mini-foot { opacity: 1; }
     anim.onfinish = function () { setTimeout(done, 180); };
   }
   function openPage(id) { var pg = $(id); pg.scrollTop = 0; pg.classList.add("open"); if (!pg.hasAttribute("tabindex")) pg.setAttribute("tabindex", "-1"); pg.focus({ preventScroll: true });
-    if (id === "clinicPage") { guideSeen = {}; $("guide").classList.remove("on"); } }
+    if (id === "clinicPage") { guideSeen = {}; $("guide").classList.remove("on"); $("gSay").classList.remove("show"); } }
   // closes the top-most layer; returns to Meddy only when nothing is left open
   function closeAll() {
     if ($("panel").classList.contains("open")) { $("panel").classList.remove("open"); if (anyOpen()) return; }
@@ -1468,7 +1482,14 @@ body.home .mini-foot { opacity: 1; }
   $("halfClinic").addEventListener("click", function (e) { if (!e.target.closest("button")) pickSide("clinic"); });
   $("halfPeople").addEventListener("click", function (e) { if (!e.target.closest("button")) pickSide("people"); });
   $("spotBtn").addEventListener("click", openSpotlight);
-  $("backBtn").addEventListener("click", closeAll);
+  // The panel's X: Get in touch closes everything and lands on the home page; the Spotlight
+  // form (opened from a page) closes back to that page.
+  var panelKind = "";
+  $("backBtn").addEventListener("click", function () {
+    if (panelKind !== "touch") { closeAll(); return; }
+    ["panel", "split", "clinicPage", "patientPage", "whoPage"].forEach(function (id) { $(id).classList.remove("open"); });
+    restoreHome();
+  });
   $("splitBack").addEventListener("click", closeAll);
   $("panel").addEventListener("click", function (e) { if (e.target === $("panel")) closeAll(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeAll(); });
