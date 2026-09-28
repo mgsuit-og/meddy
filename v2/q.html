@@ -116,12 +116,17 @@ textarea { min-height: 96px; resize: vertical; }
     return '<div class="chips">' + q.o.map(function (o) {
       return '<label><input type="' + type + '" name="' + q.k + '" value="' + esc(o) + '"' + (vals.indexOf(o) > -1 ? " checked" : "") + "><span>" + esc(o) + "</span></label>"; }).join("") + "</div>";
   }
+  // "Dr." only when the contact is a doctor. Owners and managers are greeted by name.
+  function greetName(name, role) {
+    var n = String(name || "").replace(/^\s*dr\.?\s*/i, "").trim();
+    return n ? (/\bDoctor\b/.test(String(role || "")) ? "Dr. " + n : n) : "";
+  }
   function whyBtn(q, i) {
     return '<button type="button" class="why" aria-expanded="false" aria-controls="why' + i + '" aria-label="Why we ask this" title="Why we ask"><img src="/v2/meddy-head.png" alt=""></button>';
   }
   function render(d) {
-    var a = d.answers || {}, doc = String(d.doctor_name || "").trim();
-    document.getElementById("hi").textContent = doc ? "Hi Dr. " + doc + ", a few quick questions" : "A few quick questions";
+    var a = d.answers || {}, doc = greetName(d.doctor_name, d.contact_role);
+    document.getElementById("hi").textContent = doc ? "Hi " + doc + ", a few quick questions" : "A few quick questions";
     main.innerHTML = (d.submitted_at ? '<div class="done-flag">You\'ve already sent your answers. You can change them and send again.</div>' : "") +
       '<form id="qf" novalidate>' + SECTIONS.map(function (s) {
         return "<section><h2>" + s.h + "</h2>" + s.qs.map(function (q) {
@@ -154,7 +159,7 @@ textarea { min-height: 96px; resize: vertical; }
       btn.disabled = true; btn.textContent = "Sending…";
       req("POST", { answers: out }).then(function () {
         window.scrollTo(0, 0);
-        state("Thank you" + (doc ? ", Dr. " + esc(doc) : "") + ".", "We've got your answers. We'll use them to prepare your Clinic Spotlight and be in touch on WhatsApp.", true);
+        state("Thank you" + (doc ? ", " + esc(doc) : "") + ".", "We've got your answers. We'll use them to prepare your Clinic Spotlight and be in touch on WhatsApp.", true);
       }).catch(function (e2) { document.getElementById("err").textContent = e2.message; btn.disabled = false; btn.textContent = "Send my answers"; });
     });
   }

@@ -372,7 +372,7 @@ body.home .mini-foot { opacity: 1; }
 .sp-picked div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .sp-link { justify-self: start; background: none !important; border: none; padding: 6px 0 0 !important; color: #1f6f63 !important; font-size: 13px !important; font-weight: 700; text-decoration: underline; cursor: pointer; box-shadow: none !important; }
 .sp-note { font-size: 13px; color: #6d7986; }
-.roles { border: none; display: flex; flex-wrap: wrap; gap: 8px; } .roles legend { font-size: 13px; font-weight: 700; color: #3c4652; margin-bottom: 6px; width: 100%; }
+.roles { border: none; display: flex; flex-wrap: wrap; gap: 8px; } .roles legend { font-size: 13px; font-weight: 700; color: #3c4652; margin-bottom: 6px; width: 100%; } .roles legend small { font-weight: 500; color: #6d7986; }
 .roles label { display: block; } .roles input { position: absolute; opacity: 0; }
 .roles span { display: inline-block; padding: 8px 14px; border-radius: 999px; border: 1.5px solid #d6dce2; font-size: 13.5px; font-weight: 600; color: #3c4652; background: #fff; cursor: pointer; }
 .roles input:checked + span { border-color: #2e9a8a; background: #e7f6f2; color: #0d5c52; } .roles input:focus-visible + span { box-shadow: 0 0 0 3px rgba(79,196,176,.3); }
@@ -1233,8 +1233,8 @@ body.home .mini-foot { opacity: 1; }
       '<label>Area and city<input type="text" name="area" placeholder="e.g. Anna Nagar, Chennai" maxlength="120"></label>' +
       '<button type="button" class="sp-link" id="spBack">← Search Google instead</button></div>' +
       '<label>Your name<input type="text" name="owner_name" autocomplete="name" placeholder="e.g. Dr. Meera Krishnan" maxlength="80"></label>' +
-      '<fieldset class="roles"><legend>You are the clinic\'s</legend>' + ["Owner", "Doctor", "Manager", "Other"].map(function (r, i) {
-        return '<label><input type="radio" name="role" value="' + r + '"' + (i === 0 ? " checked" : "") + '><span>' + r + "</span></label>"; }).join("") + "</fieldset>" +
+      '<fieldset class="roles"><legend>You are the clinic\'s <small>· pick all that apply</small></legend>' + ["Owner", "Doctor", "Manager", "Other"].map(function (r, i) {
+        return '<label><input type="checkbox" name="role" value="' + r + '"' + (i === 0 ? " checked" : "") + '><span>' + r + "</span></label>"; }).join("") + "</fieldset>" +
       '<label>WhatsApp number<span class="tel"><b>+91</b><input type="tel" name="whatsapp" inputmode="numeric" autocomplete="tel-national" placeholder="98765 43210" maxlength="14"></span></label>' +
       '<input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">' +
       '<label class="consent"><input type="checkbox" name="consent"><span>I agree that Meddy may look up my clinic\'s public Google listing and website to prepare my Clinic Spotlight, and contact me about it on WhatsApp. See the <a href="/v2/privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</span></label>' +
@@ -1275,7 +1275,7 @@ body.home .mini-foot { opacity: 1; }
     f.addEventListener("submit", function (e) {
       e.preventDefault();
       var btn = f.querySelector(".sp-send");
-      var body = { owner_name: f.owner_name.value.trim(), role: (f.querySelector("[name=role]:checked") || {}).value,
+      var body = { owner_name: f.owner_name.value.trim(), role: Array.prototype.map.call(f.querySelectorAll("[name=role]:checked"), function (x) { return x.value; }).join(", "),
         whatsapp: f.whatsapp.value.trim(), consent: f.consent.checked, company: f.company.value };
       if (picked) { body.place_id = picked.place_id; body.clinic_name = picked.name; }
       else if (manual) { body.clinic_name = f.clinic_name.value.trim(); body.area = f.area.value.trim();
