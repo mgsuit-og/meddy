@@ -126,13 +126,16 @@ textarea { min-height: 96px; resize: vertical; }
   }
   function render(d) {
     var a = d.answers || {}, doc = greetName(d.doctor_name, d.contact_role);
+    // Hospitals read "hospital" wherever the questions say "clinic" ("Clinic Spotlight" stays).
+    var kw = function (t) { return d.facility_kind === "hospital" ? String(t || "").replace(/\bclinic(s?)\b/g, "hospital$1") : t; };
+    var heroP = document.querySelector(".hero p"); heroP.textContent = kw(heroP.textContent);
     document.getElementById("hi").textContent = doc ? "Hi " + doc + ", a few quick questions" : "A few quick questions";
     main.innerHTML = (d.submitted_at ? '<div class="done-flag">You\'ve already sent your answers. You can change them and send again.</div>' : "") +
       '<form id="qf" novalidate>' + SECTIONS.map(function (s) {
         return "<section><h2>" + s.h + "</h2>" + s.qs.map(function (q) {
           var i = q.k;
-          return '<div class="q"><b><span class="qt">' + esc(q.q) + (q.sub ? " <small>· " + q.sub + "</small>" : "") + "</span>" + whyBtn(q, i) + "</b>" +
-            '<div class="say" id="why' + i + '" role="note"><b>Why I ask:</b> ' + esc(q.why) + "</div>" +
+          return '<div class="q"><b><span class="qt">' + esc(kw(q.q)) + (q.sub ? " <small>· " + q.sub + "</small>" : "") + "</span>" + whyBtn(q, i) + "</b>" +
+            '<div class="say" id="why' + i + '" role="note"><b>Why I ask:</b> ' + esc(kw(q.why)) + "</div>" +
             (q.text ? '<textarea name="' + q.k + '" maxlength="1000" placeholder="In your own words">' + esc(a[q.k] || "") + "</textarea>" : chips(q, a[q.k])) + "</div>";
         }).join("") + "</section>";
       }).join("") +
