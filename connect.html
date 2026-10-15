@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Connect WhatsApp · Meddy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* connect.html — a clinic owner connects the clinic's own WhatsApp number to Meddy.
+   Lives at the site root ON PURPOSE: Meta's Embedded Signup settings point here, so it must not move with v2.
+   Opened from an invite link: https://meddy.co.in/connect.html?t=<invite token> */
+:root{--ink:#131820;--ink2:#3c4652;--ink3:#6d7986;--rule:#e1e6eb;--teal:#0d7a6c;--teal2:#e7f3f1;--bg:#f6f8fa;--red:#a33a2c;--redbg:#fbefed}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh}
+.top{background:#0f1a1f;padding:14px 16px}
+.top .in{max-width:620px;margin:0 auto;display:flex;align-items:center;gap:10px}
+.top .mw{color:#fff;font-weight:800;font-size:20px;letter-spacing:-.5px}
+.top .tag{color:#9fb0bd;font-size:12.5px;font-weight:600}
+main{max-width:620px;margin:0 auto;padding:28px 16px 48px}
+h1{font-size:clamp(26px,6vw,34px);font-weight:800;letter-spacing:-.8px;line-height:1.15;margin-bottom:8px}
+.lead{font-size:15.5px;color:var(--ink2);margin-bottom:22px}
+.card{background:#fff;border:1px solid var(--rule);border-radius:14px;padding:18px 18px;margin-bottom:16px}
+.card h2{font-size:15px;font-weight:800;margin-bottom:10px}
+ol,ul{padding-left:20px}
+li{font-size:14.5px;color:var(--ink2);margin:5px 0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:12px;padding:15px 18px;font:inherit;font-size:16px;font-weight:800;color:#fff;background:var(--teal);cursor:pointer}
+.btn:disabled{opacity:.55;cursor:default}
+.btn:focus-visible{outline:3px solid #7cc7bc;outline-offset:2px}
+.pin{margin-top:12px;font-size:13.5px;color:var(--ink3)}
+.pin summary{cursor:pointer;font-weight:700;color:var(--ink2)}
+.pin input{margin-top:8px;width:160px;padding:10px 12px;border:1px solid var(--rule);border-radius:10px;font:inherit;font-size:16px;letter-spacing:4px}
+.status{border-radius:12px;padding:14px 16px;font-size:14.5px;margin-top:14px;display:none}
+.status.show{display:block}
+.status.ok{background:var(--teal2);color:#0a4d44;border:1px solid #bfe0da}
+.status.err{background:var(--redbg);color:var(--red);border:1px solid #efcfc9}
+.status.work{background:#fff;color:var(--ink2);border:1px solid var(--rule)}
+.status strong{display:block;font-size:15.5px;margin-bottom:2px}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:s .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes s{to{transform:rotate(360deg)}}
+.fine{font-size:12.5px;color:var(--ink3);margin-top:22px}
+.fine a{color:var(--teal)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="top"><div class="in"><span class="mw">meddy</span><span class="tag">Connect WhatsApp</span></div></div>
+<main>
+  <div id="loading" class="status work show"><span class="spin"></span>Checking your link…</div>
+
+  <section id="bad" hidden>
+    <h1>This link can't be used</h1>
+    <p class="lead" id="badMsg"></p>
+  </section>
+
+  <section id="ready" hidden>
+    <h1>Connect <span id="clinicName"></span> to Meddy on WhatsApp</h1>
+    <p class="lead">Your patients will book, confirm and get reminders on your clinic's own WhatsApp number. The number stays yours: it's in your business account, and you can disconnect Meddy at any time.</p>
+
+    <div class="card">
+      <h2>Before you start (about 5 minutes)</h2>
+      <ul>
+        <li>Your <strong>Facebook login</strong>. You'll pick or create your business inside Meta's window.</li>
+        <li>The <strong>clinic phone</strong> nearby. Meta sends a code to it by SMS or call.</li>
+        <li>If that number is on the WhatsApp Business app today, Meta will ask you to move it. Your chats on the app stop once it moves.</li>
+      </ul>
+    </div>
+
+    <button class="btn" id="go" type="button">Connect WhatsApp</button>
+    <details class="pin" id="pinBox">
+      <summary>Your number already has a WhatsApp two-step PIN?</summary>
+      <p style="margin-top:6px">Only if you set one before. Enter it so we can finish the setup.</p>
+      <input id="pin" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••••" aria-label="Six-digit two-step PIN">
+    </details>
+
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <p class="fine">Meddy is built by Viyuha Technologies. What we keep and why: <a href="/v2/privacy.html#whatsapp">privacy</a>.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+  "use strict";
+  var API = "https://meddy-backend-production.up.railway.app/connect/whatsapp";
+  var t = new URLSearchParams(location.search).get("t") || "";
+  var $ = function(id){ return document.getElementById(id); };
+  var session = null, code = null, sent = false, timer = null;
+
+  function show(id){ ["loading","bad","ready"].forEach(function(x){ $(x).hidden = (x !== id); }); }
+  function status(kind, title, text){
+    var s = $("status"); s.className = "status show " + kind; s.innerHTML = "";
+    if (kind === "work") { var sp = document.createElement("span"); sp.className = "spin"; s.appendChild(sp); }
+    var b = document.createElement("strong"); b.textContent = title; s.appendChild(b);
+    if (text) s.appendChild(document.createTextNode(text));
+  }
+  function bad(msg){ $("badMsg").textContent = msg; show("bad"); $("loading").className = "status"; }
+  function detail(j, fallback){ var d = j && j.detail; return typeof d === "string" ? d : fallback; }
+
+  if (!t) { bad("The link is missing its code. Open the full link Meddy sent you."); return; }
+
+  // 1. Is the invite valid? Which clinic, which Meta app/config?
+  fetch(API + "/config?t=" + encodeURIComponent(t))
+    .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, j: j }; }); })
+    .then(function(res){
+      if (!res.ok) { bad(detail(res.j, "Ask Meddy for a new link.")); return; }
+      $("clinicName").textContent = res.j.clinic_name;
+      document.title = "Connect " + res.j.clinic_name + " · Meddy";
+      loadSdk(res.j);
+      show("ready"); $("loading").className = "status";
+    })
+    .catch(function(){ bad("We couldn't reach Meddy. Check your internet and reload this page."); });
+
+  function loadSdk(cfg){
+    window.fbAsyncInit = function(){
+      FB.init({ appId: cfg.app_id, autoLogAppEvents: true, xfbml: false, version: cfg.graph_version || "v26.0" });
+    };
+    var s = document.createElement("script");
+    s.src = "https://connect.facebook.net/en_US/sdk.js"; s.async = true; s.defer = true; s.crossOrigin = "anonymous";
+    s.onerror = function(){ status("err", "Meta's login didn't load.", " If you use an ad or tracker blocker, pause it for this page and reload."); };
+    document.head.appendChild(s);
+
+    $("go").addEventListener("click", function(){
+      if (typeof FB === "undefined") { status("err", "Still loading Meta's login…", " Wait a few seconds and try again."); return; }
+      var pin = $("pin").value.trim();
+      if (pin && !/^\d{6}$/.test(pin)) { status("err", "The PIN is 6 digits.", ""); return; }
+      session = null; code = null; sent = false;
+      $("go").disabled = true;
+      status("work", "Meta's window is open.", " Follow the steps there. Come back to this tab when it closes.");
+      FB.login(function(resp){
+        if (resp && resp.authResponse && resp.authResponse.code) { code = resp.authResponse.code; trySend(); }
+        else if (!sent) { $("go").disabled = false; status("err", "The Meta window closed before finishing.", " Nothing was changed. You can try again."); }
+      }, { config_id: cfg.config_id, response_type: "code", override_default_response_type: true, extras: { setup: {} } });
+    });
+  }
+
+  // 2. Meta tells the page which business account and number were chosen.
+  window.addEventListener("message", function(ev){
+    if (!/(^|\.)facebook\.com$/.test(new URL(ev.origin).hostname)) return;
+    var d; try { d = typeof ev.data === "string" ? JSON.parse(ev.data) : ev.data; } catch (e) { return; }
+    if (!d || d.type !== "WA_EMBEDDED_SIGNUP") return;
+    if (d.event === "CANCEL") {
+      $("go").disabled = false;
+      status("err", "Setup was stopped before the end.", " Nothing was changed. You can start again whenever you're ready.");
+    } else if (d.event === "ERROR") {
+      $("go").disabled = false;
+      status("err", "Meta reported a problem.", " " + ((d.data && d.data.error_message) || "Please try again.") );
+    } else if (d.event === "FINISH_ONLY_WABA") {
+      session = { waba_id: d.data.waba_id, phone_number_id: null }; trySend();
+    } else if (/^FINISH/.test(d.event || "")) {
+      session = { waba_id: d.data && d.data.waba_id, phone_number_id: d.data && d.data.phone_number_id }; trySend();
+    }
+  });
+
+  // 3. Meta's code lives 30 seconds: send as soon as we have both the code and the ids.
+  function trySend(){
+    if (sent || !code) return;
+    if (!session) {                           // the ids usually arrive first; give them a moment
+      clearTimeout(timer);
+      timer = setTimeout(function(){ if (!sent && !session) { $("go").disabled = false;
+        status("err", "We didn't receive your number from Meta.", " Please run the steps again and make sure you add a phone number."); } }, 8000);
+      return;
+    }
+    clearTimeout(timer);
+    if (!session.phone_number_id) { sent = true; $("go").disabled = false;
+      status("err", "No phone number was added.", " Run the steps again and add your clinic's number when Meta asks."); return; }
+    sent = true;
+    status("work", "Finishing setup…", " This takes a few seconds.");
+    var body = { t: t, code: code, waba_id: String(session.waba_id), phone_number_id: String(session.phone_number_id) };
+    var pin = $("pin").value.trim(); if (pin) body.pin = pin;
+    fetch(API + "/complete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
+      .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, status: r.status, j: j }; }); })
+      .then(function(res){
+        if (res.ok) {
+          $("go").hidden = true; $("pinBox").hidden = true;
+          status("ok", "Connected: " + (res.j.display_number || "your number") + (res.j.verified_name ? " (" + res.j.verified_name + ")" : ""),
+                 " Meddy will switch it on once your clinic's settings are ready. You don't need to do anything else.");
+          return;
+        }
+        $("go").disabled = false;
+        var d = res.j && res.j.detail;
+        if (d && d.step === "register_number") {
+          $("pinBox").open = true;
+          status("err", "Your number needs its two-step PIN.", " Enter the 6-digit PIN above and press Connect again. If you don't know it, turn two-step off in WhatsApp Manager first.");
+        } else if (d && d.step === "exchange_code") {
+          status("err", "Meta's approval timed out.", " Press Connect again; it's quicker the second time.");
+        } else if (d && d.step) {
+          status("err", "Setup stopped at: " + d.step.replace(/_/g, " ") + ".", " Meddy has the details. Please share a screenshot of this page with us.");
+        } else {
+          status("err", "Setup didn't finish.", " " + detail(res.j, "Please share a screenshot of this page with Meddy."));
+        }
+      })
+      .catch(function(){ $("go").disabled = false; status("err", "We couldn't reach Meddy.", " Check your internet and press Connect again."); });
+  }
+})();
+</script>
+</body>
+</html>
