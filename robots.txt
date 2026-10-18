@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /demo
+Disallow: /intake/
+Disallow: /onboarding/
+Disallow: /old/
+Disallow: /q.html
+Disallow: /connect.html
+Disallow: /intake-thanc.html
+Disallow: /mugham-questionnaire.html
+
+Sitemap: https://meddy.co.in/sitemap.xml
