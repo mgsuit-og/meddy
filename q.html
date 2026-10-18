@@ -61,8 +61,8 @@ textarea { min-height: 96px; resize: vertical; }
 </style>
 </head>
 <body>
-<header class="top"><img src="/v2/meddy-logo-light.png" alt="Meddy"><span>Takes about 2 minutes</span></header>
-<div class="hero"><div class="hero-in"><img src="/v2/meddy-up.png" alt=""><div><h1 id="hi">A few quick questions</h1><p>Your answers shape your Clinic Spotlight around your own clinic. Tap what fits and skip anything you're unsure of. Tap my face beside a question to see why I ask.</p></div></div></div>
+<header class="top"><img src="/meddy-logo-light.png" alt="Meddy"><span>Takes about 2 minutes</span></header>
+<div class="hero"><div class="hero-in"><img src="/meddy-up.png" alt=""><div><h1 id="hi">A few quick questions</h1><p>Your answers shape your Clinic Spotlight around your own clinic. Tap what fits and skip anything you're unsure of. Tap my face beside a question to see why I ask.</p></div></div></div>
 <main id="main"><div class="state"><p>Loading…</p></div></main>
 
 <script>
@@ -106,7 +106,7 @@ textarea { min-height: 96px; resize: vertical; }
   var main = document.getElementById("main");
   var token = new URLSearchParams(location.search).get("t") || "";
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  function state(t, p, happy) { main.innerHTML = '<div class="state">' + (happy ? '<img src="/v2/meddy-up.png" alt="">' : "") + "<b>" + t + "</b><p>" + p + "</p></div>"; }
+  function state(t, p, happy) { main.innerHTML = '<div class="state">' + (happy ? '<img src="/meddy-up.png" alt="">' : "") + "<b>" + t + "</b><p>" + p + "</p></div>"; }
   function req(method, body) {
     return fetch(API + "/public/questionnaire/" + encodeURIComponent(token), { method: method, headers: body ? { "Content-Type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined })
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { if (!r.ok) throw new Error(d.detail || "Something went wrong."); return d; }); });
@@ -122,7 +122,7 @@ textarea { min-height: 96px; resize: vertical; }
     return n ? (/\bDoctor\b/.test(String(role || "")) ? "Dr. " + n : n) : "";
   }
   function whyBtn(q, i) {
-    return '<button type="button" class="why" aria-expanded="false" aria-controls="why' + i + '" aria-label="Why we ask this" title="Why we ask"><img src="/v2/meddy-head.png" alt=""></button>';
+    return '<button type="button" class="why" aria-expanded="false" aria-controls="why' + i + '" aria-label="Why we ask this" title="Why we ask"><img src="/meddy-head.png" alt=""></button>';
   }
   function render(d) {
     var a = d.answers || {}, doc = greetName(d.doctor_name, d.contact_role);
@@ -140,7 +140,7 @@ textarea { min-height: 96px; resize: vertical; }
         }).join("") + "</section>";
       }).join("") +
       '<div class="err" id="err" role="alert"></div><button class="send" type="submit">Send my answers</button>' +
-      '<p class="note">' + esc(d.clinic_name || "") + ' · Only the Meddy team sees your answers. <a href="/v2/privacy.html" target="_blank" rel="noopener">Privacy Policy</a></p></form>';
+      '<p class="note">' + esc(d.clinic_name || "") + ' · Only the Meddy team sees your answers. <a href="/privacy.html" target="_blank" rel="noopener">Privacy Policy</a></p></form>';
     // One explanation open at a time, so the page stays calm.
     main.addEventListener("click", function (e) {
       var btn = e.target.closest(".why"); if (!btn) return;
