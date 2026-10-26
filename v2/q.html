@@ -62,7 +62,7 @@ textarea { min-height: 96px; resize: vertical; }
 </head>
 <body>
 <header class="top"><img src="/v2/meddy-logo-light.png" alt="Meddy"><span>Takes about 2 minutes</span></header>
-<div class="hero"><div class="hero-in"><img src="/v2/meddy-up.png" alt=""><div><h1 id="hi">A few quick questions</h1><p>Your answers shape your Clinic Spotlight around your own clinic. Tap what fits and skip anything you're unsure of. Tap my face beside a question to see why I ask.</p></div></div></div>
+<div class="hero"><div class="hero-in"><img src="/v2/meddy-up.png" alt=""><div><h1 id="hi">A few quick questions</h1><p>Your answers help me prepare your Spotlight. Tap what fits and skip anything you're unsure of. Tap my face beside a question to see why I ask.</p></div></div></div>
 <main id="main"><div class="state"><p>Loading…</p></div></main>
 
 <script>
@@ -126,7 +126,7 @@ textarea { min-height: 96px; resize: vertical; }
   }
   function render(d) {
     var a = d.answers || {}, doc = greetName(d.doctor_name, d.contact_role);
-    // Hospitals read "hospital" wherever the questions say "clinic" ("Clinic Spotlight" stays).
+    // Hospitals read "hospital" wherever the questions say "clinic". Page copy says "your Spotlight", so it never reads "Clinic Spotlight … hospital".
     var kw = function (t) { return d.facility_kind === "hospital" ? String(t || "").replace(/\bclinic(s?)\b/g, "hospital$1") : t; };
     var heroP = document.querySelector(".hero p"); heroP.textContent = kw(heroP.textContent);
     document.getElementById("hi").textContent = doc ? "Hi " + doc + ", a few quick questions" : "A few quick questions";
@@ -162,7 +162,7 @@ textarea { min-height: 96px; resize: vertical; }
       btn.disabled = true; btn.textContent = "Sending…";
       req("POST", { answers: out }).then(function () {
         window.scrollTo(0, 0);
-        state("Thank you" + (doc ? ", " + esc(doc) : "") + ".", "We've got your answers. We'll use them to prepare your Clinic Spotlight and be in touch on WhatsApp.", true);
+        state("Thank you" + (doc ? ", " + esc(doc) : "") + ".", "We've got your answers. We'll use them to prepare your Spotlight and be in touch on WhatsApp.", true);
       }).catch(function (e2) { document.getElementById("err").textContent = e2.message; btn.disabled = false; btn.textContent = "Send my answers"; });
     });
   }
