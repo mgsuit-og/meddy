@@ -106,6 +106,12 @@ textarea { min-height: 96px; resize: vertical; }
   var main = document.getElementById("main");
   var token = new URLSearchParams(location.search).get("t") || "";
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  // Unsent answers are kept on this phone only, so closing the tab halfway loses nothing.
+  // Cleared the moment the answers are sent. Storage can be blocked (private mode), so every call is guarded.
+  var DRAFT = "meddy-q-draft:" + token;
+  function draftGet() { try { return JSON.parse(localStorage.getItem(DRAFT) || "null"); } catch (e) { return null; } }
+  function draftPut(v) { try { localStorage.setItem(DRAFT, JSON.stringify({ at: Date.now(), answers: v })); } catch (e) {} }
+  function draftDrop() { try { localStorage.removeItem(DRAFT); } catch (e) {} }
   function state(t, p, happy) { main.innerHTML = '<div class="state">' + (happy ? '<img src="/v2/meddy-up.png" alt="">' : "") + "<b>" + t + "</b><p>" + p + "</p></div>"; }
   function req(method, body) {
     return fetch(API + "/public/questionnaire/" + encodeURIComponent(token), { method: method, headers: body ? { "Content-Type": "application/json" } : {}, body: body ? JSON.stringify(body) : undefined })
@@ -126,11 +132,15 @@ textarea { min-height: 96px; resize: vertical; }
   }
   function render(d) {
     var a = d.answers || {}, doc = greetName(d.doctor_name, d.contact_role);
+    // A draft wins over what we last received only if it was written after that send.
+    var dr = draftGet(), sentAt = d.submitted_at ? Date.parse(d.submitted_at) : 0;
+    if (dr && dr.answers && dr.at > sentAt) a = dr.answers; else { if (dr) draftDrop(); dr = null; }
     // Hospitals read "hospital" wherever the questions say "clinic". Page copy says "your Spotlight", so it never reads "Clinic Spotlight … hospital".
     var kw = function (t) { return d.facility_kind === "hospital" ? String(t || "").replace(/\bclinic(s?)\b/g, "hospital$1") : t; };
     var heroP = document.querySelector(".hero p"); heroP.textContent = kw(heroP.textContent);
     document.getElementById("hi").textContent = doc ? "Hi " + doc + ", a few quick questions" : "A few quick questions";
-    main.innerHTML = (d.submitted_at ? '<div class="done-flag">You\'ve already sent your answers. You can change them and send again.</div>' : "") +
+    main.innerHTML = (dr ? '<div class="done-flag">Welcome back. Your answers are as you left them. Tap Send when you\'re ready.</div>'
+        : d.submitted_at ? '<div class="done-flag">You\'ve already sent your answers. You can change them and send again.</div>' : "") +
       '<form id="qf" novalidate>' + SECTIONS.map(function (s) {
         return "<section><h2>" + s.h + "</h2>" + s.qs.map(function (q) {
           var i = q.k;
@@ -149,9 +159,9 @@ textarea { min-height: 96px; resize: vertical; }
         o.setAttribute("aria-expanded", "false"); document.getElementById(o.getAttribute("aria-controls")).classList.remove("on"); });
       if (!open) { btn.setAttribute("aria-expanded", "true"); box.classList.add("on"); }
     });
-    document.getElementById("qf").addEventListener("submit", function (e) {
-      e.preventDefault();
-      var f = e.target, out = {}, btn = f.querySelector(".send");
+    var form = document.getElementById("qf");
+    function collect(f) {
+      var out = {};
       SECTIONS.forEach(function (s) { s.qs.forEach(function (q) {
         // Every question is sent, empty ones too, so clearing an answer clears it on our side.
         if (q.text) { out[q.k] = f[q.k].value.trim(); return; }
@@ -159,9 +169,17 @@ textarea { min-height: 96px; resize: vertical; }
         // Days are saved as "Monday, Saturday", the same way the front-desk intake saves them.
         out[q.k] = q.multi ? (q.join ? picked.join(", ") : picked) : (picked[0] || "");
       }); });
+      return out;
+    }
+    form.addEventListener("change", function () { draftPut(collect(form)); });
+    form.addEventListener("input", function () { draftPut(collect(form)); });
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var f = e.target, out = collect(f), btn = f.querySelector(".send");
       if (!Object.keys(out).some(function (k) { return out[k].length; })) { document.getElementById("err").textContent = "Please answer at least one question."; return; }
       btn.disabled = true; btn.textContent = "Sending…";
       req("POST", { answers: out }).then(function () {
+        draftDrop();
         window.scrollTo(0, 0);
         state("Thank you" + (doc ? ", " + esc(doc) : "") + ".", "We've got your answers. We'll use them to prepare your Spotlight and be in touch on WhatsApp.", true);
       }).catch(function (e2) { document.getElementById("err").textContent = e2 instanceof TypeError ? "We couldn't reach Meddy. Check your internet and tap Send again. Your answers are still here." : e2.message; btn.disabled = false; btn.textContent = "Send my answers"; });
