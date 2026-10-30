@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow"><!-- prototype: remove with the rest of /v2 when it becomes the live site -->
+<title>Pricing · Meddy for clinics</title>
+<meta name="description" content="WhatsApp booking, reminders and Clinic OS for Indian clinics. Plans from ₹2,499 a month, with a free 14-day pilot from the day you go live.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #07090c; --card: rgba(255,255,255,.035); --card2: rgba(255,255,255,.06);
+  --dtx: #eef3f7; --dtx2: #9fb0bd; --dtx3: #66788a;
+  --dbd: rgba(150,190,185,.16); --dbd2: rgba(150,190,185,.32);
+  --signal: #5fd4be; --glow: #8cc8ff;
+  --font: 'Plus Jakarta Sans', -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--void); color: var(--dtx); line-height: 1.55; -webkit-font-smoothing: antialiased;
+  background-image: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(79,196,176,.10), transparent 70%); background-repeat: no-repeat; }
+a { color: var(--signal); }
+.top { position: sticky; top: 0; z-index: 10; background: rgba(7,9,12,.86); backdrop-filter: blur(10px); padding: 14px 22px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--dbd); }
+.top img { height: 22px; display: block; }
+.top a.back { color: var(--dtx2); font-size: 13px; font-weight: 700; text-decoration: none; border: 1px solid var(--dbd2); border-radius: 10px; padding: 8px 12px; }
+.top a.back:hover { color: #fff; border-color: var(--signal); }
+main { max-width: 1120px; margin: 0 auto; padding: 48px 16px 80px; }
+.hero { text-align: center; max-width: 680px; margin: 0 auto 26px; }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: var(--dtx3); }
+h1 { font-size: clamp(32px, 5.4vw, 48px); font-weight: 800; letter-spacing: -1.2px; line-height: 1.08; margin: 10px 0 12px; }
+.hero p { color: var(--dtx2); font-size: 16.5px; }
+
+/* billing toggle */
+.toggle { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 22px 0 30px; flex-wrap: wrap; }
+.seg { display: inline-flex; padding: 4px; border: 1px solid var(--dbd2); border-radius: 999px; background: var(--card); }
+.seg button { font: inherit; font-size: 14px; font-weight: 700; color: var(--dtx2); background: none; border: 0; border-radius: 999px; padding: 9px 18px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: #fff; color: #0b1114; }
+.seg button:focus-visible, .cta:focus-visible, summary:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; }
+.save { font-size: 13px; color: var(--dtx2); }
+.save b { color: var(--dtx); }
+
+/* plans */
+.plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
+.plan { position: relative; background: var(--card); border: 1px solid var(--dbd); border-radius: 22px; padding: 24px 22px 22px; display: flex; flex-direction: column; }
+.plan.rec { background: var(--card2); border-color: rgba(242,246,247,.45); }
+.tag { position: absolute; top: -12px; left: 22px; font-size: 11.5px; font-weight: 800; letter-spacing: .4px; background: #fff; color: #0b1114; border-radius: 999px; padding: 4px 10px; }
+.plan h2 { font-size: 22px; font-weight: 800; letter-spacing: -.3px; }
+.plan .for { color: var(--dtx2); font-size: 14px; margin-top: 2px; }
+.price { margin: 16px 0 2px; display: flex; align-items: baseline; gap: 6px; }
+.price b { font-size: 38px; font-weight: 800; letter-spacing: -1px; }
+.price span { color: var(--dtx2); font-size: 14px; }
+.alt { font-size: 13px; color: var(--dtx3); min-height: 20px; }
+.lead { font-size: 14.5px; color: var(--dtx2); margin: 14px 0 6px; }
+.grp { font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--dtx3); margin: 14px 0 6px; }
+.grp.ai { color: var(--glow); }
+.plan ul { list-style: none; display: grid; gap: 7px; }
+.plan li { font-size: 14.5px; padding-left: 22px; position: relative; }
+.plan li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 10px; height: 6px; border-left: 2px solid var(--dtx2); border-bottom: 2px solid var(--dtx2); transform: rotate(-45deg); }
+.plan .ai + ul li::before { border-color: var(--glow); }
+.cta { margin-top: auto; display: block; text-align: center; text-decoration: none; font-weight: 800; font-size: 15px; border-radius: 14px; padding: 13px 16px; color: #04201c; background: var(--signal); }
+.cta.ghost { background: none; color: var(--signal); border: 1px solid var(--signal); }
+.cta:hover { filter: brightness(1.08); }
+.spacer { height: 20px; }
+
+.pilot { margin: 22px auto 0; max-width: 760px; text-align: center; font-size: 15px; color: var(--dtx2); background: var(--card); border: 1px solid var(--dbd); border-radius: 16px; padding: 14px 18px; }
+.pilot b { color: var(--dtx); }
+
+section { margin-top: 64px; }
+section > h2 { font-size: clamp(24px, 3.4vw, 30px); font-weight: 800; letter-spacing: -.6px; }
+section > p.sub { color: var(--dtx2); margin-top: 6px; }
+.rows { margin-top: 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.row { background: var(--card); border: 1px solid var(--dbd); border-radius: 18px; padding: 18px; display: flex; flex-direction: column; gap: 6px; }
+.row h3 { font-size: 16.5px; font-weight: 800; }
+.row p { font-size: 14px; color: var(--dtx2); flex: 1; }
+.row .amt { font-weight: 800; font-size: 17px; }
+.row .amt small { font-weight: 600; color: var(--dtx3); font-size: 13px; }
+.note { margin-top: 12px; font-size: 14px; color: var(--dtx2); }
+.rows.five { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+
+.custom { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; background: var(--card2); border: 1px solid var(--dbd2); border-radius: 22px; padding: 26px; align-items: start; }
+.custom p { color: var(--dtx2); margin-top: 8px; font-size: 15px; }
+.custom ul { list-style: none; display: grid; gap: 7px; margin-bottom: 18px; }
+.custom li { font-size: 14.5px; padding-left: 22px; position: relative; }
+.custom li::before { content: ""; position: absolute; left: 2px; top: 7px; width: 10px; height: 6px; border-left: 2px solid var(--dtx2); border-bottom: 2px solid var(--dtx2); transform: rotate(-45deg); }
+
+.faq { margin-top: 16px; display: grid; gap: 10px; max-width: 820px; }
+details { background: var(--card); border: 1px solid var(--dbd); border-radius: 16px; padding: 0 18px; }
+summary { cursor: pointer; list-style: none; font-weight: 700; font-size: 16px; padding: 16px 28px 16px 0; position: relative; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; position: absolute; right: 0; top: 13px; font-size: 22px; color: var(--dtx2); }
+details[open] summary::after { content: "–"; }
+details p { color: var(--dtx2); font-size: 15px; padding: 0 0 16px; }
+
+.fine { margin-top: 40px; font-size: 13px; color: var(--dtx3); text-align: center; }
+footer { border-top: 1px solid var(--dbd); margin-top: 40px; padding: 18px 16px; font-size: 13px; color: var(--dtx3); display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+footer a { color: var(--dtx2); }
+
+@media (max-width: 960px) {
+  .plans, .rows, .rows.five { grid-template-columns: 1fr; }
+  .plans { max-width: 520px; margin: 0 auto; gap: 24px; }
+  .custom { grid-template-columns: 1fr; }
+}
+@media (max-width: 960px) and (min-width: 600px) { .rows, .rows.five { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Can I cancel?","acceptedAnswer":{"@type":"Answer","text":"Yes. Cancel within your 14-day pilot and we refund the setup fee in full. After that, a monthly plan stops after 30 days' notice, and a yearly plan runs until the year ends."}},
+{"@type":"Question","name":"Who can see my patients' records?","acceptedAnswer":{"@type":"Answer","text":"Your clinic's staff, and each person sees only the screens their role needs. The Meddy team opens a record only when you ask us for help with it."}},
+{"@type":"Question","name":"Do patients message my clinic's own WhatsApp number?","acceptedAnswer":{"@type":"Answer","text":"Yes, once we connect your number. Until then, bookings run on a Meddy number that greets patients in your clinic's name."}},
+{"@type":"Question","name":"We have two doctors. Do we pay twice?","acceptedAnswer":{"@type":"Answer","text":"No. Each plan covers one clinic with up to two doctors. Each extra doctor adds ₹999 a month. With six or more doctors, talk to us about Meddy Custom."}},
+{"@type":"Question","name":"What happens to my data if I leave?","acceptedAnswer":{"@type":"Answer","text":"We send you your patient list and visit records, then delete your clinic's data within 30 days of your request."}},
+{"@type":"Question","name":"How long does setup take?","acceptedAnswer":{"@type":"Answer","text":"About a week. You share your hours, doctors and prices, and we set up WhatsApp and Clinic OS and train your staff at the clinic."}}
+]}
+</script>
+</head>
+<body>
+<header class="top"><a href="/v2" aria-label="Meddy home"><img src="/v2/meddy-logo-light.png" alt="Meddy"></a><a class="back" href="/v2">← Back to Meddy</a></header>
+<main>
+  <div class="hero">
+    <div class="eyebrow">Meddy Clinic Plan</div>
+    <h1>Start small. Add stations as your clinic grows.</h1>
+    <p>Pick the plan that fits your clinic today. Add stations when you need them, and your patient records stay where they are.</p>
+  </div>
+
+  <div class="toggle">
+    <div class="seg" role="group" aria-label="Billing">
+      <button type="button" id="bMonth" aria-pressed="true">Monthly</button>
+      <button type="button" id="bYear" aria-pressed="false">Yearly</button>
+    </div>
+    <span class="save">Yearly: <b>2 months free</b></span>
+  </div>
+
+  <div class="plans">
+    <article class="plan">
+      <h2>Starter</h2>
+      <div class="for">Get booked</div>
+      <div class="price"><b data-m="₹2,499" data-y="₹24,990">₹2,499</b><span data-m="/ month" data-y="/ year">/ month</span></div>
+      <div class="alt" data-m="or ₹24,990 a year" data-y="₹2,083 a month, paid yearly">or ₹24,990 a year</div>
+      <p class="lead">Patients book on WhatsApp. You see the day at a glance.</p>
+      <div class="grp">On WhatsApp</div>
+      <ul><li>Booking in English, Tamil and Hindi</li><li>Booking confirmation</li></ul>
+      <div class="grp">At the clinic</div>
+      <ul><li>Appointment dashboard</li><li>New and returning patients marked</li></ul>
+      <div class="spacer"></div>
+      <a class="cta ghost" href="mailto:clinics@meddy.co.in?subject=Meddy%20demo%20(Starter)">Book a demo</a>
+    </article>
+
+    <article class="plan rec" aria-label="Growth, recommended">
+      <span class="tag">Recommended</span>
+      <h2>Growth</h2>
+      <div class="for">Keep patients coming back</div>
+      <div class="price"><b data-m="₹5,999" data-y="₹59,990">₹5,999</b><span data-m="/ month" data-y="/ year">/ month</span></div>
+      <div class="alt" data-m="or ₹59,990 a year" data-y="₹4,999 a month, paid yearly">or ₹59,990 a year</div>
+      <p class="lead">Everything in Starter. Your patients get reminders and follow-ups, so fewer of them miss their next visit.</p>
+      <div class="grp">On WhatsApp</div>
+      <ul><li>Visit reminders</li><li>Follow-up and next-visit nudges</li><li>Treatment course reminders</li><li>Prescription sent to the patient</li><li>Google review requests</li></ul>
+      <div class="grp">Clinic OS, light</div>
+      <ul><li>Front desk board: arrived, in clinic now</li><li>Patient database</li><li>Treatment plans and sessions</li><li>Simple prescription pad</li><li>Doctor's dashboard and morning summary</li></ul>
+      <div class="grp ai">Meddy AI</div>
+      <ul><li>A 3-line recap of each returning patient before you see them</li></ul>
+      <div class="spacer"></div>
+      <a class="cta" href="mailto:clinics@meddy.co.in?subject=Meddy%20demo%20(Growth)">Book a demo</a>
+    </article>
+
+    <article class="plan">
+      <h2>Pro</h2>
+      <div class="for">Your whole clinic, with Meddy</div>
+      <div class="price"><b data-m="₹9,999" data-y="₹99,990">₹9,999</b><span data-m="/ month" data-y="/ year">/ month</span></div>
+      <div class="alt" data-m="or ₹99,990 a year" data-y="₹8,333 a month, paid yearly">or ₹99,990 a year</div>
+      <p class="lead">Everything in Growth. You run the whole clinic on Clinic OS, with Meddy AI in every consult.</p>
+      <div class="grp">On WhatsApp</div>
+      <ul><li>Procedure prep the day before</li><li>Day-after check-in</li></ul>
+      <div class="grp">Clinic OS, full</div>
+      <ul><li>Nurse station and vitals</li><li>Digital consult, typed or handwritten</li><li>Visit PDF and clinical photos</li><li>Pharmacy queue</li><li>Billing, GST bills and payments</li><li>Procedure Planner, from prep to discharge</li><li>Staff logins by role</li></ul>
+      <div class="grp ai">Meddy AI</div>
+      <ul><li>Meddy briefs you on each patient as they walk in</li><li>Ask Meddy anything from a patient's record</li><li>Meddy turns your handwriting into notes</li><li>Your day at a glance</li></ul>
+      <div class="spacer"></div>
+      <a class="cta ghost" href="mailto:clinics@meddy.co.in?subject=Meddy%20demo%20(Pro)">Book a demo</a>
+    </article>
+  </div>
+
+  <p class="pilot"><b>Start with a free 14-day pilot from the day you go live.</b> Your setup fee equals one month of your plan, and we refund it in full if you cancel within the pilot.</p>
+
+  <section aria-labelledby="addons">
+    <h2 id="addons">Add-ons</h2>
+    <p class="sub">Add one station at a time to Starter or Growth, billed monthly.</p>
+    <div class="rows">
+      <div class="row"><h3>Billing and payments</h3><p>GST bills, cash, UPI and card payments, daily totals</p><div class="amt">₹1,499 <small>/ month</small></div></div>
+      <div class="row"><h3>Nurse station and vitals</h3><p>Vitals and history taken before the consult, sent to the doctor</p><div class="amt">₹1,499 <small>/ month</small></div></div>
+      <div class="row"><h3>Procedure Planner</h3><p>Prep messages, a pre-procedure checklist, procedure notes and aftercare</p><div class="amt">₹2,499 <small>/ month</small></div></div>
+    </div>
+    <p class="note">Need all three? Pro costs less.</p>
+  </section>
+
+  <section aria-labelledby="found">
+    <h2 id="found">Get found online</h2>
+    <p class="sub">One-time work that helps new patients find your clinic on Google. Pick what you need.</p>
+    <div class="rows five">
+      <div class="row"><h3>Clinic Spotlight audit</h3><p>How your clinic shows up when patients nearby search, and what to fix first</p><div class="amt">Free</div></div>
+      <div class="row"><h3>Google profile tune-up</h3><p>Categories, services, photos, hours, booking link and review replies</p><div class="amt">₹4,999 <small>once</small></div></div>
+      <div class="row"><h3>Local search setup</h3><p>The same clinic details on Google, Practo and Justdial, and pages for your main treatments</p><div class="amt">₹9,999 <small>once</small></div></div>
+      <div class="row"><h3>Website revamp</h3><p>Your current site rebuilt for phones, with one tap to call, message or book</p><div class="amt"><small>From</small> ₹14,999</div></div>
+      <div class="row"><h3>New website</h3><p>A new site for your clinic with WhatsApp booking on every page</p><div class="amt"><small>From</small> ₹24,999</div></div>
+    </div>
+    <p class="note">Pay for a year upfront and we tune up your Google profile free.</p>
+  </section>
+
+  <section aria-labelledby="custom">
+    <div class="custom">
+      <div>
+        <div class="eyebrow">For specialty clinics and hospitals</div>
+        <h2 id="custom" style="font-size:28px;font-weight:800;letter-spacing:-.6px;margin-top:6px">Meddy Custom</h2>
+        <p>We build the workflow your specialty needs, together with your team. For an interventional radiology day-care, that meant a procedure board, a pre-procedure checklist, the procedure note and a discharge summary.</p>
+      </div>
+      <div>
+        <ul><li>Everything in Pro</li><li>A specialty workflow designed with your team</li><li>Several doctors and departments</li><li>Connects to your phone line, lab or hospital software</li><li>On-site training and a named support contact</li></ul>
+        <a class="cta ghost" href="mailto:clinics@meddy.co.in?subject=Meddy%20Custom">Talk to us</a>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="faqh">
+    <h2 id="faqh">Questions doctors ask</h2>
+    <div class="faq">
+      <details><summary>Can I cancel?</summary><p>Yes. Cancel within your 14-day pilot and we refund the setup fee in full. After that, a monthly plan stops after 30 days' notice, and a yearly plan runs until the year ends.</p></details>
+      <details><summary>Who can see my patients' records?</summary><p>Your clinic's staff, and each person sees only the screens their role needs. The Meddy team opens a record only when you ask us for help with it.</p></details>
+      <details><summary>Do patients message my clinic's own WhatsApp number?</summary><p>Yes, once we connect your number. Until then, bookings run on a Meddy number that greets patients in your clinic's name.</p></details>
+      <details><summary>We have two doctors. Do we pay twice?</summary><p>No. Each plan covers one clinic with up to two doctors. Each extra doctor adds ₹999 a month. With six or more doctors, talk to us about Meddy Custom.</p></details>
+      <details><summary>What happens to my data if I leave?</summary><p>We send you your patient list and visit records, then delete your clinic's data within 30 days of your request.</p></details>
+      <details><summary>How long does setup take?</summary><p>About a week. You share your hours, doctors and prices, and we set up WhatsApp and Clinic OS and train your staff at the clinic.</p></details>
+    </div>
+  </section>
+
+  <p class="fine">Prices per clinic in Indian rupees, plus GST. Cancel with 30 days' notice.</p>
+</main>
+<footer><span>© 2026 Viyuha Technologies</span><a href="mailto:clinics@meddy.co.in">clinics@meddy.co.in</a><a href="/v2/privacy.html">Privacy</a><a href="/v2/terms.html">Terms</a></footer>
+<script>
+(function () {
+  var m = document.getElementById("bMonth"), y = document.getElementById("bYear");
+  function set(yearly) {
+    m.setAttribute("aria-pressed", String(!yearly)); y.setAttribute("aria-pressed", String(yearly));
+    document.querySelectorAll("[data-m]").forEach(function (el) { el.textContent = el.getAttribute(yearly ? "data-y" : "data-m"); });
+  }
+  m.onclick = function () { set(false); }; y.onclick = function () { set(true); };
+})();
+</script>
+</body>
+</html>
