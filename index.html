@@ -653,7 +653,21 @@ body { word-spacing: .05em; }
   .o-list span { grid-column: 1; grid-row: 2; }
   .o-list em { grid-row: 1 / span 2; grid-column: 2; align-self: center; }
 }
+
+/* slim top nav: reach the main pages without waking Meddy */
+.topnav { display: flex; align-items: center; gap: 22px; margin-left: auto; margin-right: 18px; }
+.topnav a { color: var(--dtx2); font-size: 14.5px; font-weight: 600; text-decoration: none; padding: 8px 2px; }
+.topnav a:hover { color: var(--dtx); }
+.topnav a.pill { background: #fff; color: #0b1114; padding: 9px 16px; border-radius: 999px; font-weight: 700; }
+.topnav a:focus-visible { outline: 2px solid var(--signal); outline-offset: 3px; border-radius: 8px; }
+@media (max-width: 760px) {
+  .bar { flex-wrap: wrap; row-gap: 6px; }
+  .topnav { order: 3; width: 100%; margin: 0; justify-content: space-between; gap: 6px; }
+  .topnav a { font-size: 13px; padding: 14px 0; }
+  .topnav a.pill { padding: 13px 12px; }
+}
 </style>
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -665,6 +679,12 @@ body { word-spacing: .05em; }
 
 <header class="bar">
   <img class="logo" src="/meddy-logo-light.png" alt="Meddy">
+  <nav class="topnav" aria-label="Main">
+    <a href="/#clinics" id="navClinic">For clinics</a>
+    <a href="/#patients" id="navPatient">For patients</a>
+    <a href="/pricing.html">Pricing</a>
+    <a href="/#spotlight" class="pill" id="navSpot">Free Clinic Spotlight</a>
+  </nav>
   <button class="mute" id="mute"></button>
 </header>
 
@@ -686,7 +706,7 @@ body { word-spacing: .05em; }
   </div>
   <button class="ball" id="ball" aria-label="Wake Meddy up"><span class="orb-core"></span><span class="orb-swirl"></span><span class="orb-sym" aria-hidden="true"><svg viewBox="0 0 100 100"><path class="ecg-ghost" d="M10 56 H33 L38 49 L43 60 L50 26 L57 76 L62 50 H90"/><path class="ecg" d="M10 56 H33 L38 49 L43 60 L50 26 L57 76 L62 50 H90" pathLength="140"/></svg></span><span class="orb-spec"></span><span class="orb-rim"></span></button>
 
-  <div class="hint"><div class="tap">Tap to wake Meddy</div><div class="tag">Smart care, made simple.</div></div>
+  <div class="hint"><div class="tap">Meddy is waking up…</div><div class="tag">Smart care, made simple.</div></div>
   <div class="status" id="status" aria-live="polite"></div>
   <div class="caption" id="caption" aria-live="polite"></div>
   <nav id="bubbles" aria-label="Sections"></nav>
@@ -1290,6 +1310,9 @@ body { word-spacing: .05em; }
   }
   $("ball").addEventListener("click", wake);
   buildBubbles();
+  // Auto-wake: busy visitors shouldn't have to find the orb. A tap still wakes him sooner (and turns on sound).
+  // If a deep link opened a page first, he wakes once the visitor comes back home.
+  var autoWake = setInterval(function () { if (started) return clearInterval(autoWake); if (!document.querySelector(".page.open, .panel.open")) { clearInterval(autoWake); wake(); } }, REDUCED ? 50 : 1400);
 
   // ======================= SELECT: "let me take you there" =======================
   var busy = false, lastFocus = null;
@@ -1622,6 +1645,10 @@ body { word-spacing: .05em; }
   // deep links from the clinic sub pages: /#clinics opens the clinic page, /#spotlight the form
   if (location.hash === "#spotlight") setTimeout(openSpotlight, 400);
   else if (location.hash === "#clinics") setTimeout(function () { pickSide("clinic"); }, 400);
+  else if (location.hash === "#patients") setTimeout(function () { pickSide("patient"); }, 400);
+  $("navClinic").addEventListener("click", function (e) { e.preventDefault(); pickSide("clinic"); });
+  $("navPatient").addEventListener("click", function (e) { e.preventDefault(); pickSide("patient"); });
+  $("navSpot").addEventListener("click", function (e) { e.preventDefault(); openSpotlight(); });
   // The panel's X: Get in touch closes everything and lands on the home page; the Spotlight
   // form (opened from a page) closes back to that page.
   var panelKind = "";
