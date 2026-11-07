@@ -618,6 +618,41 @@ body { word-spacing: .05em; }
 .hd-c { border-radius: 18px; background: rgba(255,255,255,.055); border-color: rgba(255,255,255,.12); }
 .hw-pr li { border-radius: 18px; background: rgba(255,255,255,.055); border-color: rgba(255,255,255,.12); }
 .wh-n { background: #2bc4b0; color: #0b1114; }
+
+/* offer groups with pricing */
+.o-sub { color: var(--dtx2); font-size: 16px; margin: -8px 0 22px; }
+.o-grp { padding: 24px; border-radius: 24px; background: rgba(255,255,255,.035); border: 1px solid var(--dbd); margin-bottom: 16px; }
+.o-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+.o-head h3 { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+.o-head span { font-size: 14px; color: var(--dtx2); }
+.o-plans { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+.o-plan { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 18px; background: rgba(255,255,255,.03); border: 1px solid var(--dbd); color: inherit; text-decoration: none; transition: border-color .2s, background .2s; }
+.o-plan:hover { border-color: var(--dbd2); background: rgba(255,255,255,.05); }
+.o-plan.rec { border-color: rgba(242,246,247,.45); background: rgba(255,255,255,.06); }
+.o-plan i { position: absolute; top: -11px; left: 16px; font-style: normal; font-size: 11.5px; font-weight: 800; background: #fff; color: #0b1114; border-radius: 999px; padding: 3px 10px; }
+.o-plan b { font-size: 17px; font-weight: 800; }
+.o-plan strong { font-size: 30px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+.o-plan strong small { font-size: 14px; font-weight: 600; color: var(--dtx2); letter-spacing: 0; }
+.o-plan p { font-size: 14px; color: var(--dtx2); line-height: 1.45; }
+.o-note { margin-top: 14px; font-size: 14.5px; color: var(--dtx2); }
+.o-links { margin-top: 14px; display: flex; gap: 20px; flex-wrap: wrap; }
+.o-links a { color: var(--signal); font-weight: 700; font-size: 15px; text-decoration: none; }
+.o-links a:hover { text-decoration: underline; }
+.o-list { list-style: none; display: grid; gap: 2px; }
+.o-list li { display: grid; grid-template-columns: 220px 1fr auto; gap: 16px; align-items: baseline; padding: 12px 14px; border-radius: 12px; }
+.o-list li:nth-child(odd) { background: rgba(255,255,255,.025); }
+.o-list b { font-size: 15.5px; font-weight: 700; }
+.o-list span { font-size: 14px; color: var(--dtx2); }
+.o-list em { font-style: normal; font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.o-list em small { font-weight: 600; font-size: 13px; color: var(--dtx2); }
+.o-fine { font-size: 13px; color: var(--dtx3); }
+@media (max-width: 760px) {
+  .o-grp { padding: 18px; }
+  .o-plans { grid-template-columns: 1fr; gap: 16px; }
+  .o-list li { grid-template-columns: 1fr auto; gap: 2px 12px; }
+  .o-list span { grid-column: 1; grid-row: 2; }
+  .o-list em { grid-row: 1 / span 2; grid-column: 2; align-self: center; }
+}
 </style>
 </head>
 <body>
@@ -709,7 +744,7 @@ body { word-spacing: .05em; }
         <div class="st-no"><i>03</i> Contacted <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5"/></svg></span></div>
         <h3>A patient messages at 10 pm and waits till morning for a reply.</h3>
         <ul class="gaps"><li>Calls missed during consultations</li><li>No way to book online</li><li>WhatsApp, Instagram and calls all scattered</li></ul>
-        <div class="fix"><span>Meddy fixes it with</span><b>Smart Appointments: 24×7 WhatsApp booking</b><b>Instagram, Facebook and calls in one inbox</b></div>
+        <div class="fix"><span>Meddy fixes it with</span><b>WhatsApp booking, day and night</b><b>Instagram, Facebook and calls in one inbox</b></div>
       </article>
       <article class="stage-card" data-guide>
         <div class="st-no"><i>04</i> Followed up <span class="st-ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 3l3 3-3 3"/><path d="M4 11V9a3 3 0 0 1 3-3h13M7 21l-3-3 3-3"/><path d="M20 13v2a3 3 0 0 1-3 3H4"/></svg></span></div>
@@ -749,15 +784,31 @@ body { word-spacing: .05em; }
       </ol>
     </section>
 
-    <section class="p-sec">
+    <section class="p-sec" id="offer">
       <h2>What we offer</h2>
-      <div class="offers swipe">
-        <div class="offer"><small>One-time</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 6.5h.01M10 6.5h.01"/></svg><b>Website Building</b><p>A new website that shows up when patients search.</p><em>+ Google profile &amp; SEO boost</em></div>
-        <div class="offer"><small>One-time</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11A8 8 0 0 0 6.3 6.3L4 8.5M4 4v4.5h4.5M4 13a8 8 0 0 0 13.7 4.7L20 15.5M20 20v-4.5h-4.5"/></svg><b>Website Revamp</b><p>Your website, faster and easier to book from.</p><em>+ Google profile &amp; SEO boost</em></div>
-        <div class="offer"><small>Monthly</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V14M10 20V9M16 20v-5M22 20H2"/><path d="M4 9l6-5 6 4 5-4"/></svg><b>SEO Boost</b><p>We keep your listing and pages current, and report each month.</p><em>+ Google profile fixes</em></div>
-        <div class="offer"><small>Monthly</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.8z"/><path d="M9 9.5c0 2.5 2.5 5 5 5l1.2-1.2-2-1-.8.8c-.9-.4-1.6-1.1-2-2l.8-.8-1-2z"/></svg><b>Smart Appointments</b><p>A WhatsApp assistant that books patients, day and night.</p><em>+ Instagram, Facebook &amp; phone · review collection</em></div>
-        <div class="offer star"><small>Monthly</small><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5"/></svg><b>Meddy Clinic OS</b><p>Your whole clinic, from booking to billing, in one place.</p><em>+ Personal Clinic AI for the owner</em></div>
+      <p class="o-sub">Two kinds of help. Take one, or both.</p>
+      <div class="o-grp">
+        <div class="o-head"><h3>Run your clinic</h3><span>Monthly plans · WhatsApp booking and Clinic OS</span></div>
+        <div class="o-plans">
+          <a class="o-plan" href="/pricing.html#plans"><b>Starter</b><strong>₹2,499<small> / month</small></strong><p>Patients book on WhatsApp in English, Tamil or Hindi. You see the day on one board.</p></a>
+          <a class="o-plan rec" href="/pricing.html#plans"><i>Recommended</i><b>Growth</b><strong>₹5,999<small> / month</small></strong><p>Reminders and follow-ups bring patients back. Front desk board, patient records and a prescription pad.</p></a>
+          <a class="o-plan" href="/pricing.html#plans"><b>Pro</b><strong>₹9,999<small> / month</small></strong><p>The whole clinic on Clinic OS: nurse, consult, pharmacy and billing, with Meddy in every consult.</p></a>
+        </div>
+        <p class="o-note">Free 14-day pilot from the day you go live. Yearly plans get 2 months free. Add a single station from ₹999 a month.</p>
+        <div class="o-links"><a href="/clinic-os.html">See each station →</a><a href="/pricing.html">Compare every feature →</a></div>
       </div>
+      <div class="o-grp">
+        <div class="o-head"><h3>Get found online</h3><span>One-time work · pick what you need</span></div>
+        <ul class="o-list">
+          <li><b>Clinic Spotlight audit</b><span>How you show up when patients nearby search</span><em>Free</em></li>
+          <li><b>Google profile tune-up</b><span>Categories, photos, hours, booking link, review replies</span><em>₹4,999</em></li>
+          <li><b>Local search setup</b><span>Same details on Google, Practo and Justdial</span><em>₹9,999</em></li>
+          <li><b>Website revamp</b><span>Your site rebuilt for phones, one tap to book</span><em><small>from</small> ₹14,999</em></li>
+          <li><b>New website</b><span>WhatsApp booking on every page</span><em><small>from</small> ₹24,999</em></li>
+        </ul>
+        <div class="o-links"><a href="/get-found.html">What each one includes →</a></div>
+      </div>
+      <p class="o-fine">Prices per clinic, plus GST.</p>
     </section>
 
     <footer class="p-end">
@@ -1568,6 +1619,9 @@ body { word-spacing: .05em; }
   $("halfClinic").addEventListener("click", function (e) { if (!e.target.closest("button")) pickSide("clinic"); });
   $("halfPeople").addEventListener("click", function (e) { if (!e.target.closest("button")) pickSide("people"); });
   $("spotBtn").addEventListener("click", openSpotlight);
+  // deep links from the clinic sub pages: /#clinics opens the clinic page, /#spotlight the form
+  if (location.hash === "#spotlight") setTimeout(openSpotlight, 400);
+  else if (location.hash === "#clinics") setTimeout(function () { pickSide("clinic"); }, 400);
   // The panel's X: Get in touch closes everything and lands on the home page; the Spotlight
   // form (opened from a page) closes back to that page.
   var panelKind = "";
