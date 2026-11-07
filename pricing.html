@@ -101,6 +101,13 @@ footer a { color: var(--dtx2); }
   .custom { grid-template-columns: 1fr; }
 }
 @media (max-width: 960px) and (min-width: 600px) { .rows, .rows.five { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.why { max-width: 760px; margin: 72px auto 0; }
+.why h2 { text-align: left; }
+.why-lead { font-size: 17px; color: var(--dtx); margin: 8px 0 18px; }
+.why ul { list-style: none; display: grid; gap: 12px; padding: 0; }
+.why li { font-size: 16px; line-height: 1.5; color: var(--dtx2); padding: 16px 18px; border-radius: 16px; background: var(--card); }
+.why li b { color: var(--dtx); }
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
@@ -118,7 +125,6 @@ footer a { color: var(--dtx2); }
 <header class="top"><a href="/" aria-label="Meddy home"><img src="/meddy-logo-light.png" alt="Meddy"></a><a class="back" href="/">← Back to Meddy</a></header>
 <main>
   <div class="hero">
-    <div class="eyebrow">Meddy Clinic Plan</div>
     <h1>Start small. Add stations as your clinic grows.</h1>
     <p>Pick the plan that fits your clinic today. Add stations when you need them, and your patient records stay where they are.</p>
   </div>
@@ -181,6 +187,17 @@ footer a { color: var(--dtx2); }
   </div>
 
   <p class="pilot"><b>Start with a free 14-day pilot from the day you go live.</b> Your setup fee equals one month of your plan, and we refund it in full if you cancel within the pilot.</p>
+
+  <section class="why" aria-labelledby="whyp">
+    <h2 id="whyp">Why our prices are on this page</h2>
+    <p class="why-lead">You should know the cost before you call us. What you see is what you pay, plus GST.</p>
+    <ul>
+      <li><b>One setup fee,</b> equal to one month of your plan. We refund it in full if you stop within your 14-day pilot.</li>
+      <li><b>We set it up in your clinic.</b> We add your doctors, hours and prices, connect WhatsApp, and train your desk in person.</li>
+      <li><b>We stay after go-live.</b> A monthly report on your clinic, and a person you can call.</li>
+      <li><b>No lock-in.</b> A monthly plan stops after 30 days' notice.</li>
+    </ul>
+  </section>
 
   <section aria-labelledby="addons">
     <h2 id="addons">Add-ons</h2>

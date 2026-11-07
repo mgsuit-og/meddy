@@ -681,7 +681,7 @@ body { word-spacing: .05em; }
   <img class="logo" src="/meddy-logo-light.png" alt="Meddy">
   <nav class="topnav" aria-label="Main">
     <a href="/#clinics" id="navClinic">For clinics</a>
-    <a href="/#patients" id="navPatient">For patients</a>
+    <a href="/clinic-os.html">Clinic OS</a>
     <a href="/pricing.html">Pricing</a>
     <a href="/#spotlight" class="pill" id="navSpot">Free Clinic Spotlight</a>
   </nav>
@@ -1647,7 +1647,6 @@ body { word-spacing: .05em; }
   else if (location.hash === "#clinics") setTimeout(function () { pickSide("clinic"); }, 400);
   else if (location.hash === "#patients") setTimeout(function () { pickSide("patient"); }, 400);
   $("navClinic").addEventListener("click", function (e) { e.preventDefault(); pickSide("clinic"); });
-  $("navPatient").addEventListener("click", function (e) { e.preventDefault(); pickSide("patient"); });
   $("navSpot").addEventListener("click", function (e) { e.preventDefault(); openSpotlight(); });
   // The panel's X: Get in touch closes everything and lands on the home page; the Spotlight
   // form (opened from a page) closes back to that page.
