@@ -130,7 +130,7 @@ li{font-size:14.5px;color:var(--ink2);margin:5px 0}
       FB.login(function(resp){
         if (resp && resp.authResponse && resp.authResponse.code) { code = resp.authResponse.code; trySend(); }
         else if (!sent) { $("go").disabled = false; status("err", "The Meta window closed before finishing.", " Nothing was changed. You can try again."); }
-      }, { config_id: cfg.config_id, response_type: "code", override_default_response_type: true, extras: { setup: {} } });
+      }, { config_id: cfg.config_id, response_type: "code", override_default_response_type: true, extras: { setup: {}, sessionInfoVersion: "3" } });
     });
   }
 
@@ -157,16 +157,18 @@ li{font-size:14.5px;color:var(--ink2);margin:5px 0}
     if (sent || !code) return;
     if (!session) {                           // the ids usually arrive first; give them a moment
       clearTimeout(timer);
-      timer = setTimeout(function(){ if (!sent && !session) { $("go").disabled = false;
-        status("err", "We didn't receive your number from Meta.", " Please run the steps again and make sure you add a phone number."); } }, 8000);
+      // If Meta's message never comes, send the code alone (it lives ~30 s): Meddy looks the ids up.
+      timer = setTimeout(function(){ if (!sent && !session) { session = { waba_id: null, phone_number_id: null, lookup: true }; trySend(); } }, 4000);
       return;
     }
     clearTimeout(timer);
-    if (!session.phone_number_id) { sent = true; $("go").disabled = false;
+    if (!session.phone_number_id && !session.lookup) { sent = true; $("go").disabled = false;
       status("err", "No phone number was added.", " Run the steps again and add your clinic's number when Meta asks."); return; }
     sent = true;
     status("work", "Finishing setup…", " This takes a few seconds.");
-    var body = { t: t, code: code, waba_id: String(session.waba_id), phone_number_id: String(session.phone_number_id) };
+    var body = { t: t, code: code };
+    if (session.waba_id) body.waba_id = String(session.waba_id);
+    if (session.phone_number_id) body.phone_number_id = String(session.phone_number_id);
     var pin = $("pin").value.trim(); if (pin) body.pin = pin;
     fetch(API + "/complete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) })
       .then(function(r){ return r.json().then(function(j){ return { ok: r.ok, status: r.status, j: j }; }); })
@@ -184,6 +186,8 @@ li{font-size:14.5px;color:var(--ink2);margin:5px 0}
           status("err", "Your number needs its two-step PIN.", " Enter the 6-digit PIN above and press Connect again. If you don't know it, turn two-step off in WhatsApp Manager first.");
         } else if (d && d.step === "exchange_code") {
           status("err", "Meta's approval timed out.", " Press Connect again; it's quicker the second time.");
+        } else if (d && d.step === "find_number") {
+          status("err", "We couldn't tell which number to connect.", " Meta says: " + (d.meta || "nothing was shared") + ". Press Connect again and add one number.");
         } else if (d && d.step) {
           status("err", "Setup stopped at: " + d.step.replace(/_/g, " ") + ".", " Meddy has the details. Please share a screenshot of this page with us.");
         } else {
