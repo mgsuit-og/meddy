@@ -4,11 +4,6 @@
       "source": "/sales",
       "destination": "https://sales.meddy.co.in/",
       "permanent": false
-    },
-    {
-      "source": "/wa/gastro",
-      "destination": "https://wa.me/916369655671?text=Hi%20Meddy%2C%20I%27d%20like%20to%20book%20an%20appointment%20with%20Gastroenterology%20ClinicOS%20-%20Meddy%20%28GASTROEN%29",
-      "permanent": false
     }
   ],
   "rewrites": [
@@ -39,6 +34,10 @@
     {
       "source": "/onboarding/mugham",
       "destination": "/mugham-questionnaire.html"
+    },
+    {
+      "source": "/wa/gastro",
+      "destination": "/wa/gastro.html"
     }
   ]
 }
