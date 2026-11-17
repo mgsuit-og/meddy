@@ -36,10 +36,6 @@
       "destination": "/mugham-questionnaire.html"
     },
     {
-      "source": "/wa/gastro",
-      "destination": "/wa/gastro.html"
-    },
-    {
       "source": "/wa/:code",
       "destination": "https://meddy-backend-production.up.railway.app/public/wa/:code"
     }
