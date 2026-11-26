@@ -693,6 +693,61 @@ body.live .led-p{animation-delay:0s,4s}
 @keyframes led{0%,6%{opacity:.18}20%,44%{opacity:.62}58%,100%{opacity:.18}}
 @media (prefers-reduced-motion:reduce){body.live .bg-led{animation:none;--r:100%;opacity:.75}}
 .bg-glow{background:radial-gradient(ellipse 34% 40% at 42% var(--by),rgba(47,179,201,.16),transparent 70%),radial-gradient(ellipse 34% 40% at 58% var(--by),rgba(111,159,232,.14),transparent 70%)!important}
+
+/* Why page: Meddy points at a TV; each problem is a channel (Nov 2026) */
+.tvw{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:8px 28px;align-items:end;margin-top:8px}
+.tv-col{min-width:0}
+.tv{padding:14px;border-radius:30px;background:linear-gradient(160deg,#1B262C,#0E1519);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 30px 70px rgba(0,0,0,.45),0 0 80px rgba(28,138,157,.12)}
+.tv-screen{position:relative;display:grid;min-height:330px;border-radius:20px;overflow:hidden;background:radial-gradient(ellipse 80% 70% at 50% 45%,rgba(28,138,157,.22),transparent 70%),#081014;box-shadow:inset 0 0 60px rgba(0,0,0,.7)}
+.tv-screen::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px)}
+.ch{grid-area:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 70px 44px;opacity:0;visibility:hidden;transition:opacity .35s ease,visibility 0s .35s}
+.ch.is-on{opacity:1;visibility:visible;transition:opacity .35s ease}
+.ch-bug{position:absolute;top:16px;left:20px;font-size:12px;font-weight:700;color:var(--signal);letter-spacing:.5px}
+.ch-title{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.ch-num{font-size:clamp(64px,9vw,108px);font-weight:800;letter-spacing:-3px;line-height:1;color:#F2B35C;text-shadow:0 0 40px rgba(242,179,92,.25)}
+.ch-txt{font-size:clamp(17px,1.9vw,21px);line-height:1.4;color:var(--dtx);max-width:440px;margin:14px 0 0}
+.ch-src{position:absolute;right:20px;bottom:14px;font-size:11.5px;color:var(--dtx3);text-decoration:underline;text-underline-offset:2px}
+.tv-static{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E")}
+.tv-screen.flick .tv-static{animation:tvStatic .22s steps(3) 1}
+@keyframes tvStatic{0%{opacity:.85;background-position:0 0}50%{opacity:.6;background-position:-40px 30px}100%{opacity:0;background-position:20px -50px}}
+.tv-arw{position:absolute;top:50%;z-index:3;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--dtx2);font-size:15px;cursor:pointer;display:grid;place-items:center}
+.tv-arw:hover,.tv-arw:focus-visible{background:rgba(255,255,255,.14);color:var(--dtx)}
+.tv-arw.prev{left:14px}.tv-arw.next{right:14px}
+.tv-feet{display:flex;justify-content:space-between;padding:0 18%;height:10px}.tv-feet i{width:60px;height:10px;border-radius:0 0 10px 10px;background:#141D22}
+.tv-remote{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.tv-tab{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:12px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:var(--dtx2);font:inherit;text-align:left;cursor:pointer;position:relative;overflow:hidden}
+.tv-tab span{font-size:12px;font-weight:700;color:var(--dtx3)}
+.tv-tab em{font-style:normal;font-size:14.5px;font-weight:700;line-height:1.3}
+.tv-tab.is-on{border-color:rgba(31,149,170,.55);background:rgba(28,138,157,.12);color:var(--dtx)}.tv-tab.is-on span{color:var(--signal)}
+.tv-tab::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--signal)}
+.tvw.playing .tv-tab.is-on::after{animation:tvBar var(--tv-dwell,6s) linear forwards}
+@keyframes tvBar{to{width:100%}}
+.tv-host{position:relative;display:flex;flex-direction:column;align-items:center}
+.say{position:relative;padding:20px 20px 18px;border-radius:22px;background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 20px 50px rgba(0,0,0,.3);text-align:left;margin-bottom:20px}
+.say::after{content:"";position:absolute;bottom:-11px;right:70px;width:20px;height:20px;transform:rotate(45deg);background:#1E2629;border-right:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14)}
+.say .kick{display:block;font-size:13px;font-weight:600;color:var(--signal);margin-bottom:6px}
+.say h2{font-size:21px;font-weight:800;letter-spacing:-.4px;line-height:1.2;margin:0 0 12px}
+.say-stat b{display:block;font-size:34px;font-weight:800;letter-spacing:-1px;color:#F2B35C;line-height:1}
+.say-stat span{display:block;font-size:14px;line-height:1.4;color:var(--dtx);margin-top:6px}
+.say-stat a{display:inline-block;font-size:11.5px;color:var(--dtx3);text-decoration:underline;text-underline-offset:2px;margin-top:6px}
+.host-bot{width:210px;filter:drop-shadow(0 20px 40px rgba(28,138,157,.25));animation:heroFloat 4.5s ease-in-out infinite}
+@media (max-width:900px){
+  .tvw{grid-template-columns:1fr}
+  .tv-host{flex-direction:row;align-items:flex-end;gap:12px}
+  .say{flex:1;margin-bottom:24px}.say::after{right:-11px;bottom:auto;top:44px;transform:rotate(-45deg)}
+  .host-bot{width:120px;flex:none;animation:none;align-self:flex-start}
+}
+@media (max-width:600px){
+  .tv{padding:9px;border-radius:22px}.tv-screen{min-height:280px;border-radius:15px}
+  .ch{padding:46px 22px 40px}
+  .ch-title{position:static;width:auto;height:auto;clip:auto;white-space:normal;font-size:17px;font-weight:800;color:var(--dtx);margin:0 0 14px;letter-spacing:-.2px}
+  .ch-num{letter-spacing:-2px}
+  .tv-arw{display:none}
+  .tv-remote{grid-template-columns:repeat(3,auto);justify-content:center}
+  .tv-tab{align-items:center;padding:8px 16px;border-radius:999px}.tv-tab em{display:none}
+  .host-bot{width:96px}
+}
+@media (prefers-reduced-motion:reduce){.host-bot{animation:none}.ch,.ch.is-on{transition:none}.tv-screen.flick .tv-static{animation:none}}
 </style>
 <script defer src="/_vercel/insights/script.js"></script>
 </head>
@@ -1008,31 +1063,51 @@ body.live .led-p{animation-delay:0s,4s}
       <p>A patient's history sits across clinics, labs, pharmacies and WhatsApp. The doctor sees it for a few minutes, and the patient goes home unsure of the next step.</p>
     </header>
 
-    <section class="wh-list">
-      <article class="wh">
-        <span class="wh-n">1</span>
-        <div class="wh-b"><h2>The story is in pieces.</h2>
-          <p class="wh-today"><b>Today:</b> each new doctor starts from scratch, with the history in paper files and phone galleries.</p></div>
-        <div class="stat"><b>31%</b><span>of hospital discharge notes had every detail the next doctor needs</span><a href="https://evidence.nihr.ac.uk/alert/most-patients-leaving-hospital-in-india-are-given-inadequate-medical-information" target="_blank" rel="noopener">PLOS One, 2020 · 546 patients</a></div>
-      </article>
-      <article class="wh">
-        <span class="wh-n">2</span>
-        <div class="wh-b"><h2>The doctor has minutes.</h2>
-          <p class="wh-today"><b>Today:</b> the doctor spends a few minutes per patient, much of it catching up on history. Calls and registers take the rest of the day.</p></div>
-        <div class="stat"><b>78%</b><span>of doctors surveyed reported high burnout in the past year</span><a href="https://medicaldialogues.in/news/health/doctors/burnout-safety-concerns-91-percent-indian-doctors-discourage-children-from-pursuing-medicine-165956" target="_blank" rel="noopener">Survey of 1,208 doctors</a></div>
-      </article>
-      <article class="wh">
-        <span class="wh-n">3</span>
-        <div class="wh-b"><h2>Patients leave without understanding.</h2>
-          <p class="wh-today"><b>Today:</b> patients remember medicines by colour, and many skip the review visit.</p></div>
-        <div class="stat"><b>36.8%</b><span>of OPD patients poorly understood their own prescription</span><a href="https://medicaldialogues.in/amp/medicine/news/handwritten-prescriptions-pose-barrier-to-patient-understanding-indian-study-finds-150068" target="_blank" rel="noopener">Indian J Pharmacology, 2025</a></div>
-      </article>
-    </section>
-
-    <section class="p-sec why wh-result">
-      <small class="kick">The result</small>
-      <h2>Doctors decide with half the information.</h2>
-      <div class="stats one"><div class="stat"><b>~1 in 10</b><span>OPD prescriptions had an unacceptable deviation from treatment guidelines</span><a href="https://medicaldialogues.in/news/health/hospital-diagnostics/45-per-cent-of-doctors-give-incomplete-prescriptions-icmr-study-127200" target="_blank" rel="noopener">ICMR study, 13 hospitals, IJMR 2024</a></div></div>
+    <section class="tvw" id="whyTv" aria-label="Three problems, one at a time">
+      <div class="tv-col">
+        <div class="tv">
+          <div class="tv-screen">
+            <article class="ch is-on" id="ch1" role="tabpanel" aria-labelledby="tab1">
+              <span class="ch-bug">CH 1</span>
+              <h2 class="ch-title">The story is in pieces.</h2>
+              <b class="ch-num">31%</b>
+              <p class="ch-txt">of hospital discharge notes had every detail the next doctor needs</p>
+              <a class="ch-src" href="https://evidence.nihr.ac.uk/alert/most-patients-leaving-hospital-in-india-are-given-inadequate-medical-information" target="_blank" rel="noopener">PLOS One, 2020 · 546 patients</a>
+            </article>
+            <article class="ch" id="ch2" role="tabpanel" aria-labelledby="tab2">
+              <span class="ch-bug">CH 2</span>
+              <h2 class="ch-title">The doctor has minutes.</h2>
+              <b class="ch-num">78%</b>
+              <p class="ch-txt">of doctors surveyed reported high burnout in the past year</p>
+              <a class="ch-src" href="https://medicaldialogues.in/news/health/doctors/burnout-safety-concerns-91-percent-indian-doctors-discourage-children-from-pursuing-medicine-165956" target="_blank" rel="noopener">Survey of 1,208 doctors</a>
+            </article>
+            <article class="ch" id="ch3" role="tabpanel" aria-labelledby="tab3">
+              <span class="ch-bug">CH 3</span>
+              <h2 class="ch-title">Patients leave without understanding.</h2>
+              <b class="ch-num">36.8%</b>
+              <p class="ch-txt">of OPD patients poorly understood their own prescription</p>
+              <a class="ch-src" href="https://medicaldialogues.in/amp/medicine/news/handwritten-prescriptions-pose-barrier-to-patient-understanding-indian-study-finds-150068" target="_blank" rel="noopener">Indian J Pharmacology, 2025</a>
+            </article>
+            <div class="tv-static" aria-hidden="true"></div>
+            <button class="tv-arw prev" type="button" aria-label="Previous channel">&#9665;</button>
+            <button class="tv-arw next" type="button" aria-label="Next channel">&#9655;</button>
+          </div>
+        </div>
+        <div class="tv-feet" aria-hidden="true"><i></i><i></i></div>
+        <div class="tv-remote" role="tablist" aria-label="Channels">
+          <button class="tv-tab is-on" id="tab1" role="tab" aria-selected="true" aria-controls="ch1" type="button"><span>CH 1</span><em>The story is in pieces.</em></button>
+          <button class="tv-tab" id="tab2" role="tab" aria-selected="false" aria-controls="ch2" tabindex="-1" type="button"><span>CH 2</span><em>The doctor has minutes.</em></button>
+          <button class="tv-tab" id="tab3" role="tab" aria-selected="false" aria-controls="ch3" tabindex="-1" type="button"><span>CH 3</span><em>Patients leave without understanding.</em></button>
+        </div>
+      </div>
+      <div class="tv-host">
+        <div class="say">
+          <small class="kick">The result</small>
+          <h2>Doctors decide with half the information.</h2>
+          <div class="say-stat"><b>~1 in 10</b><span>OPD prescriptions had an unacceptable deviation from treatment guidelines</span><a href="https://medicaldialogues.in/news/health/hospital-diagnostics/45-per-cent-of-doctors-give-incomplete-prescriptions-icmr-study-127200" target="_blank" rel="noopener">ICMR study, 13 hospitals, IJMR 2024</a></div>
+        </div>
+        <img class="host-bot" src="/meddy-reach.png" alt="" aria-hidden="true">
+      </div>
     </section>
 
     <footer class="p-end">
@@ -1710,6 +1785,56 @@ body.live .led-p{animation-delay:0s,4s}
     }
     row.addEventListener("scroll", upd, { passive: true }); window.addEventListener("resize", upd); setTimeout(upd, 50);
   });
+})();
+</script>
+<script>
+/* Why page TV: channels, auto-advance, swipe. Copy stays in the HTML. */
+(function () {
+  var root = document.getElementById("whyTv"); if (!root) return;
+  var page = document.getElementById("whyPage");
+  var tabs = [].slice.call(root.querySelectorAll(".tv-tab")), chs = [].slice.call(root.querySelectorAll(".ch"));
+  var screen = root.querySelector(".tv-screen");
+  var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var DWELL = 6000, cur = 0, timer = null, held = false, stopped = calm;
+  root.style.setProperty("--tv-dwell", DWELL + "ms");
+  function show(n, focus) {
+    n = (n + chs.length) % chs.length; if (n === cur) return;
+    if (!calm) { screen.classList.remove("flick"); void screen.offsetWidth; screen.classList.add("flick"); }
+    chs[cur].classList.remove("is-on"); tabs[cur].classList.remove("is-on"); tabs[cur].setAttribute("aria-selected", "false"); tabs[cur].tabIndex = -1;
+    cur = n;
+    chs[cur].classList.add("is-on"); tabs[cur].classList.add("is-on"); tabs[cur].setAttribute("aria-selected", "true"); tabs[cur].tabIndex = 0;
+    if (focus) tabs[cur].focus();
+    restart();
+  }
+  function visible() { return page.classList.contains("open") && !document.hidden; }
+  function restart() {
+    clearTimeout(timer); root.classList.remove("playing");
+    if (stopped || held || !visible()) return;
+    void root.offsetWidth; root.classList.add("playing");
+    timer = setTimeout(function () { show(cur + 1); }, DWELL);
+  }
+  function user(n, focus) { stopped = true; show(n, focus); clearTimeout(timer); root.classList.remove("playing"); }
+  tabs.forEach(function (t, i) {
+    t.addEventListener("click", function () { user(i); });
+    t.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { e.preventDefault(); user(cur + 1, true); }
+      else if (e.key === "ArrowLeft") { e.preventDefault(); user(cur - 1, true); }
+    });
+  });
+  root.querySelector(".tv-arw.prev").addEventListener("click", function () { user(cur - 1); });
+  root.querySelector(".tv-arw.next").addEventListener("click", function () { user(cur + 1); });
+  root.addEventListener("mouseenter", function () { held = true; restart(); });
+  root.addEventListener("mouseleave", function () { held = false; restart(); });
+  root.addEventListener("focusin", function () { held = true; restart(); });
+  root.addEventListener("focusout", function () { held = false; restart(); });
+  var x0 = null;
+  screen.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  screen.addEventListener("touchend", function (e) {
+    if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null;
+    if (Math.abs(dx) > 40) user(cur + (dx < 0 ? 1 : -1));
+  });
+  new MutationObserver(restart).observe(page, { attributes: true, attributeFilter: ["class"] });
+  document.addEventListener("visibilitychange", restart);
 })();
 </script>
 </body>
